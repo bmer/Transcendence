@@ -1,8 +1,6 @@
 //	Transcendence.h
 //
 //	Main header file
-#ifndef INCL_TRANSCENDENCE
-#define INCL_TRANSCENDENCE
 
 #ifndef INCL_TSE
 #include "TSE.h"
