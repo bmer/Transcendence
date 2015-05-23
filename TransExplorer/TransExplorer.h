@@ -1,7 +1,16 @@
-#pragma once
+//	Transcendence.h
+//
+//	Main header file
+#ifndef INCL_TRANSCENDENCE
+#define INCL_TRANSCENDENCE
 
-#include "resource.h"
-#include "..\TSE\TSE.h"
+#ifndef INCL_TSE
+#include "TSE.h"
+#endif
+
+#ifndef INCL_TSUI
+#include "TSUI.h"
+#endif
 
 //	Data Model -----------------------------------------------------------------
 

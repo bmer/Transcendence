@@ -58,14 +58,30 @@
     <None Include="TransExplorer.ico">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\Game\Resources\Header.dxfn" />
-    <None Include="..\Game\Resources\HeaderBold.dxfn" />
-    <None Include="..\Game\Resources\LogoTitle.dxfn" />
-    <None Include="ReadMe.txt" />
-    <None Include="..\Game\Resources\SubTitle.dxfn" />
-    <None Include="..\Game\Resources\SubTitleBold.dxfn" />
-    <None Include="..\Game\Resources\SubTitleHeavyBold.dxfn" />
-    <None Include="..\Game\Resources\Title.dxfn" />
+    <None Include="..\Game\Resources\Header.dxfn">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\Game\Resources\HeaderBold.dxfn">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\Game\Resources\LogoTitle.dxfn">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\Game\Resources\SubTitle.dxfn">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\Game\Resources\SubTitleBold.dxfn">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\Game\Resources\SubTitleHeavyBold.dxfn">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ReadMe.txt">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\Game\Resources\Title.dxfn">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="TransExplorer.rc">
