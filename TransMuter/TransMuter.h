@@ -1,6 +1,9 @@
-//	Transcendence.h
+//	TransMuter.h
 //
 //	Main header file
+
+#ifndef INCL_TRANSMUTER
+#define INCL_TRANSMUTER
 
 #ifndef INCL_TSE
 #include "TSE.h"
@@ -66,3 +69,6 @@ class CLoadUniverseTask : public IHITask
 		CExplorerModel &m_Model;
 	};
 
+#include "Sessions.h"
+
+#endif
