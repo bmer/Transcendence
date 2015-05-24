@@ -35,10 +35,10 @@
     <ClInclude Include="Resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TransMain.h">
+    <ClInclude Include="TransMuter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TransMuter.h">
+    <ClInclude Include="Sessions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
