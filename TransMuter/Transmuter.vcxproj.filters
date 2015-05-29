@@ -32,9 +32,6 @@
     <ClInclude Include="PreComp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TransMuter.h">
       <Filter>Header Files</Filter>
     </ClInclude>

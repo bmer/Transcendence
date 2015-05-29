@@ -13,13 +13,61 @@
 #include "TSUI.h"
 #endif
 
+struct STransMuterHIOptions
+	{
+	STransMuterHIOptions (void) :
+			sAppName(CONSTLIT("TransMuter")),
+			sClassName(CONSTLIT("transmuter_class")),
+			sAppData(CONSTLIT("Kronosaur\\TransMuter")),
+			hIcon(NULL),
+			m_cxScreenDesired(1024),
+			m_cyScreenDesired(768),
+			m_iColorDepthDesired(16),
+			m_bWindowedMode(false),
+			m_bMultiMonitorMode(false),
+			m_bForceDX(false),
+			m_bForceNonDX(false),
+			m_bForceExclusiveMode(false),
+			m_bForceNonExclusiveMode(false),
+			m_bForceScreenSize(false),
+			m_iSoundVolume(DEFAULT_SOUND_VOLUME),
+			m_bDebugVideo(false)
+		{ }
+
+	//	App options
+	CString sAppName;					//	Human readable app name (e.g., "Transcendence")
+	CString sClassName;					//	Window class name (e.g., "transcendence_class")
+	CString sAppData;					//	Path under AppData (e.g., "Kronosaur\Transcendence")
+	HICON hIcon;						//	Application icon
+
+	//	Display options
+	int m_cxScreenDesired;				//	Ignored if not WindowedMode
+	int m_cyScreenDesired;				//	Ignored if not WindowedMode
+	int m_iColorDepthDesired;
+	bool m_bWindowedMode;
+	bool m_bMultiMonitorMode;			//	If TRUE, screen spans all monitors
+
+	bool m_bForceDX;
+	bool m_bForceNonDX;
+	bool m_bForceExclusiveMode;
+	bool m_bForceNonExclusiveMode;
+	bool m_bForceScreenSize;
+
+	//	Sound options
+	int m_iSoundVolume;
+	CString m_sMusicFolder;				//	Path to music folder
+
+	//	Debug options
+	bool m_bDebugVideo;
+	};
+
 //	Data Model -----------------------------------------------------------------
 
-class CExplorerModel
+class CTransMuterModel
 	{
 	public:
-		CExplorerModel (CHumanInterface &HI) : m_HI(HI) { }
-		~CExplorerModel (void) { }
+		CTransMuterModel (CHumanInterface &HI) : m_HI(HI) { }
+		~CTransMuterModel (void) { }
 
 		void CleanUp (void) { }
 		inline const CString &GetCopyright (void) { return m_Version.sCopyright; }
@@ -38,10 +86,10 @@ class CExplorerModel
 
 //	Controller -----------------------------------------------------------------
 
-class CExplorerController : public IHIController
+class CTransMuterController : public IHIController
 	{
 	public:
-		CExplorerController (CHumanInterface &HI) : IHIController(HI),
+		CTransMuterController (CHumanInterface &HI) : IHIController(HI),
 				m_Model(HI)
 			{ }
 
@@ -52,7 +100,7 @@ class CExplorerController : public IHIController
 		virtual ALERROR OnInit (void);
 
 	private:
-		CExplorerModel m_Model;
+		CTransMuterModel m_Model;
 	};
 
 //	Background Tasks -----------------------------------------------------------
@@ -60,13 +108,13 @@ class CExplorerController : public IHIController
 class CLoadUniverseTask : public IHITask
 	{
 	public:
-		CLoadUniverseTask (CHumanInterface &HI, CExplorerModel &Model) : IHITask(HI), m_Model(Model) { }
+		CLoadUniverseTask (CHumanInterface &HI, CTransMuterModel &Model) : IHITask(HI), m_Model(Model) { }
 
 		//	IHITask virtuals
 		virtual ALERROR OnExecute (ITaskProcessor *pProcessor, CString *retsResult) { return m_Model.LoadUniverse(retsResult); }
 
 	private:
-		CExplorerModel &m_Model;
+		CTransMuterModel &m_Model;
 	};
 
 #include "Sessions.h"

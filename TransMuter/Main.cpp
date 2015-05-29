@@ -3,7 +3,7 @@
 //	Main Windows program entry-point
 
 #include "PreComp.h"
-#include "Transcendence.h"
+#include "TransMuter.h"
 
 int WINAPI WinMain (HINSTANCE hInstance, 
 					HINSTANCE hPrevInstance, 
@@ -25,7 +25,7 @@ int WINAPI WinMain (HINSTANCE hInstance,
 
 	//	Create the controller
 
-	IHIController *pController = new CTranscendenceController;
+	IHIController *pController = new CTransMuterController;
 
 	//	Run
 
