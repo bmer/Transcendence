@@ -1,11 +1,11 @@
-//	CExplorerModel.cpp
+//	CTransmuterModel.cpp
 //
-//	CExplorerModel class
-//	Copyright (c) 2011 by George Moromisato. All Rights Reserved.
+//	CTransmuterModel class
+//	Copyright (c) 2015 by George Moromisato. All Rights Reserved.
 
-#include "stdafx.h"
+#include "PreComp.h"
 
-ALERROR CExplorerModel::Init (void)
+ALERROR CTransmuterModel::Init (void)
 
 //	Init
 //
@@ -21,7 +21,7 @@ ALERROR CExplorerModel::Init (void)
 	return NOERROR;
 	}
 
-ALERROR CExplorerModel::LoadUniverse (CString *retsError)
+ALERROR CTransmuterModel::LoadUniverse (CString *retsError)
 
 //	LoadUniverse
 //
