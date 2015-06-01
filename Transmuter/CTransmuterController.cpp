@@ -1,13 +1,13 @@
-//	CTransmuterController.cpp
+//	CExplorerController.cpp
 //
-//	CTransmuterController class
+//	CExplorerController class
 //	Copyright (c) 2011 by George Moromisato. All Rights Reserved.
 
-#include "PreComp.h"
+#include "stdafx.h"
 
 #define CMD_LOAD_UNIVERSE_DONE							CONSTLIT("cmdLoadUniverseDone")
 
-ALERROR CTransmuterController::OnBoot (char *pszCommandLine, SHIOptions &Options)
+ALERROR CExplorerController::OnBoot (char *pszCommandLine, SHIOptions &Options)
 
 //	OnBoot
 //
@@ -31,7 +31,7 @@ ALERROR CTransmuterController::OnBoot (char *pszCommandLine, SHIOptions &Options
 	return NOERROR;
 	}
 
-void CTransmuterController::OnCleanUp (void)
+void CExplorerController::OnCleanUp (void)
 
 //	OnCleanUp
 //
@@ -41,7 +41,7 @@ void CTransmuterController::OnCleanUp (void)
 	m_Model.CleanUp();
 	}
 
-ALERROR CTransmuterController::OnCommand (const CString &sCmd, void *pData)
+ALERROR CExplorerController::OnCommand (const CString &sCmd, void *pData)
 
 //	OnCommand
 //
@@ -77,7 +77,7 @@ ALERROR CTransmuterController::OnCommand (const CString &sCmd, void *pData)
 	return NOERROR;
 	}
 
-ALERROR CTransmuterController::OnInit (void)
+ALERROR CExplorerController::OnInit (void)
 
 //	OnInit
 //

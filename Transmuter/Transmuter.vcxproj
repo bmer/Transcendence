@@ -19,7 +19,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120_xp</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -41,10 +41,6 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>.\bin</OutDir>
-    <IntDir>.\Debug</IntDir>
-    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX 9.0 SDK %28October 2005%29\Include;C:\Program Files %28x86%29\Microsoft DirectX SDK %28February 2010%29\Include\;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX 9.0 SDK %28October 2005%29\Lib\x86;C:\Program Files %28x86%29\Microsoft DirectX SDK %28February 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -55,9 +51,6 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PrecompiledHeaderFile>PreComp.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>.\Debug/Transmuter.pch</PrecompiledHeaderOutputFile>
-      <AdditionalIncludeDirectories>..\..\Mammoth\Include;..\..\Alchemy\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -84,15 +77,12 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="PreComp.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Transmuter.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CTransmuterController.cpp" />
-    <ClCompile Include="CTransmuterModel.cpp" />
-    <ClCompile Include="Main.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -105,38 +95,6 @@
   <ItemGroup>
     <Image Include="small.ico" />
     <Image Include="Transmuter.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Alchemy\CodeChain\CodeChain.vcxproj">
-      <Project>{39983ccd-095b-4b41-854f-4967a254a07c}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Alchemy\DirectXUtil\DirectXUtil.vcxproj">
-      <Project>{696afbf6-ca1a-4302-b9ef-01bdbc483280}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Alchemy\Graphics\Graphics.vcxproj">
-      <Project>{d52d8a0e-fd89-44d9-903d-624aad7e7155}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Alchemy\IntelJPEGUtil\IntelJPEGUtil.vcxproj">
-      <Project>{ecac7e19-acbc-4c3c-b89a-7bc7049b6f2e}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Alchemy\Kernel\Kernel.vcxproj">
-      <Project>{86ce5721-1967-49b7-9eed-3a014171daf1}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Alchemy\XMLUtil\XMLUtil.vcxproj">
-      <Project>{482b1658-7f28-4e62-94b6-ed71259c5f44}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Alchemy\zlib-1.2.7\contrib\vstudio\vc10\zlibstat.vcxproj">
-      <Project>{745dec58-ebb3-47a9-a9b8-4c6627c01bf8}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Mammoth\TSE\TSE.vcxproj">
-      <Project>{797712ea-a2b5-4e30-a2f9-5998e90afecc}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Mammoth\TSUI\TSUI.vcxproj">
-      <Project>{54a735d5-a8ea-4d72-a4b5-593f79080882}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\Transcendence\Transcendence.vcxproj">
-      <Project>{eb0afa5b-dc60-4b46-9bd7-3371612ae9c9}</Project>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
