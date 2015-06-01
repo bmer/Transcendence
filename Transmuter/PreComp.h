@@ -11,4 +11,4 @@
 #include "DirectXUtil.h"
 #include "XMLUtil.h"
 #include "Resource.h"
-#include "Transmuter.h"
+#include "TransMuter.h"
