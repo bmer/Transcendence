@@ -25,7 +25,7 @@ int WINAPI WinMain (HINSTANCE hInstance,
 
 	//	Create the controller
 
-	IHIController *pController = new CTranscendenceController;
+	IHIController *pController = new CTransmuterController;
 
 	//	Run
 
