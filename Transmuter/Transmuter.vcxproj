@@ -112,6 +112,16 @@
       <Project>{eb0afa5b-dc60-4b46-9bd7-3371612ae9c9}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="PreComp.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="Transmuter.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="CTransmuterController.cpp" />
+    <ClCompile Include="CTransmuterModel.cpp" />
+    <ClCompile Include="Main.cpp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
