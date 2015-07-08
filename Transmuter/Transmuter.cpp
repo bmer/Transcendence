@@ -1,9 +1,9 @@
-//	Main.cpp
+//	Transmuter.cpp
 //
-//	Main Windows program entry-point
+//	Transmuter
+//	Copyright (c) 2015 by Kronosaur Productions, LLC. All Rights Reserved.
 
 #include "PreComp.h"
-#include "Transmuter.h"
 
 int WINAPI WinMain (HINSTANCE hInstance, 
 					HINSTANCE hPrevInstance, 

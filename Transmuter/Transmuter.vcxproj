@@ -20,7 +20,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -113,14 +113,22 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BackgroundTasks.h" />
+    <ClInclude Include="EditorComponents.h" />
     <ClInclude Include="PreComp.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Transmuter.h" />
+    <ClInclude Include="TransmuterModel.h" />
+    <ClInclude Include="TransmuterSession.h" />
+    <ClInclude Include="UserSettingsDef.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CContextPanel.cpp" />
+    <ClCompile Include="CTextEditor.cpp" />
     <ClCompile Include="CTransmuterController.cpp" />
     <ClCompile Include="CTransmuterModel.cpp" />
-    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="CTransmuterSession.cpp" />
+    <ClCompile Include="Transmuter.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
