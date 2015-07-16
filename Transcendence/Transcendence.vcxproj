@@ -510,9 +510,6 @@
     <ResourceCompile Include="Transcendence.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Alchemy\CodeChain\CodeChain.vcxproj">
-      <Project>{39983ccd-095b-4b41-854f-4967a254a07c}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\..\Alchemy\DirectXUtil\DirectXUtil.vcxproj">
       <Project>{696afbf6-ca1a-4302-b9ef-01bdbc483280}</Project>
     </ProjectReference>

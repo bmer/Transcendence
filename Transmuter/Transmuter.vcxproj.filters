@@ -24,15 +24,33 @@
     <ClInclude Include="Transmuter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TransmuterModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TransmuterSession.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BackgroundTasks.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UserSettingsDef.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="CTransmuterController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CTransmuterModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Transmuter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CTransmuterSession.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CTextEditorSession.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
