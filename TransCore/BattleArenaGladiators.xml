@@ -7,7 +7,7 @@
 	<ItemType UNID="&itSlicerCannon;"
 			name=				"PM6 Slicer cannon"
 			level=				"6"
-			value=				"15000"
+			value=				"20000"
 			mass=				"4000"
 			frequency=			"notrandom"
 			attributes=			"cannotOrder, EI; EnergyWeapon; MajorItem"
@@ -23,7 +23,7 @@
 				type=				"beam"
 
 				damage=				"particle:1d8+1"
-				fireRate=			"5"
+				fireRate=			"6"
 				lifetime=			"30"
 				powerUse=			"350"
 
@@ -53,8 +53,6 @@
 			thrustRatio=		"4"
 			maxSpeed=			"10"
 			cargoSpace=			"25"
-
-			leavesWreck=		"50"
 			>
 
 		<!-- Configuration -->
@@ -111,14 +109,11 @@
 			manufacturer=		"Earth Industries"
 			class=				"EI100"
 			type=				"freighter"
-			score=				"95"
 
 			mass=				"100"
 			cargoSpace=			"250"
 			thrustRatio=		"2.2"
 			maxSpeed=			"12"
-
-			leavesWreck=		"75"
 
 			attributes=			"battleArena, melee1"
 			>
@@ -181,14 +176,11 @@
 			manufacturer=		""
 			class=				"light IAV"
 			type=				""
-			score=				"30"
 
 			mass=				"25"
 			cargoSpace=			"5"
 			thrustRatio=		"6"
 			maxSpeed=			"13"
-
-			leavesWreck=		"10"
 
 			attributes=			"battleArena, melee1"
 			>
@@ -241,14 +233,12 @@
 			manufacturer=		"Pacific Defense Corporation"
 			class=				"Ronin/A"
 			type=				"gunship"
-			score=				"75"
+			level=				"1"
 
 			mass=				"60"
 			cargoSpace=			"50"
 			thrustRatio=		"5.5"
 			maxSpeed=			"20"
-
-			leavesWreck=		"35"
 
 			attributes=			"battleArena, melee1"
 			>
@@ -306,14 +296,12 @@
 			manufacturer=		"Revolution Designs"
 			class=				"Earthzone"
 			type=				"armed shuttle"
-			score=				"75"
+			level=				"2"
 
 			mass=				"50"
 			cargoSpace=			"50"
 			thrustRatio=		"4"
 			maxSpeed=			"20"
-
-			leavesWreck=		"35"
 
 			attributes=			"battleArena, melee2"
 			>
@@ -377,14 +365,11 @@
 			manufacturer=		"Earth Industries"
 			class=				"EI100"
 			type=				"freighter"
-			score=				"205"
 
 			mass=				"100"
 			cargoSpace=			"250"
 			thrustRatio=		"2.2"
 			maxSpeed=			"12"
-
-			leavesWreck=		"75"
 
 			attributes=			"battleArena, melee2"
 			>
@@ -447,14 +432,12 @@
 			manufacturer=		"Earth Industries"
 			class=				"EI500"
 			type=				"freighter"
-			score=				"165"
+			level=				"2"
 
 			mass=				"150"
 			cargoSpace=			"200"
 			thrustRatio=		"1.5"
 			maxSpeed=			"18"
-
-			leavesWreck=		"75"
 
 			attributes=			"battleArena, melee2"
 			>
@@ -513,14 +496,11 @@
 			manufacturer=		""
 			class=				"medium IAV"
 			type=				""
-			score=				"55"
 
 			mass=				"50"
 			cargoSpace=			"10"
 			thrustRatio=		"6.5"
 			maxSpeed=			"16"
-
-			leavesWreck=		"30"
 
 			attributes=			"battleArena, melee2"
 			>
@@ -570,14 +550,12 @@
 			manufacturer=		""
 			class=				"heavy IAV"
 			type=				""
-			score=				"180"
+			level=				"2"
 
 			mass=				"100"
 			cargoSpace=			"10"
 			thrustRatio=		"5"
 			maxSpeed=			"16"
-
-			leavesWreck=		"40"
 
 			attributes=			"battleArena, melee2"
 			>
@@ -629,14 +607,12 @@
 			manufacturer=		"Pacific Defense Corporation"
 			class=				"Ronin/A"
 			type=				"gunship"
-			score=				"165"
+			level=				"2"
 
 			mass=				"60"
 			cargoSpace=			"50"
 			thrustRatio=		"5.5"
 			maxSpeed=			"20"
-
-			leavesWreck=		"35"
 
 			attributes=			"battleArena, melee2"
 			>
@@ -691,14 +667,12 @@
 			manufacturer=		"Zubrin Systems"
 			class=				"Sapphire"
 			type=				"yacht"
-			score=				"190"
+			level=				"2"
 
 			mass=				"30"
 			cargoSpace=			"50"
 			thrustRatio=		"6.6"
 			maxSpeed=			"20"
-
-			leavesWreck=		"30"
 
 			attributes=			"battleArena, melee2"
 			>
@@ -770,15 +744,12 @@
 			manufacturer=		"Earth Industries"
 			class=				"EI200"
 			type=				"freighter"
-			score=				"340"
 
 			size=				"54"
 			mass=				"500"
 			cargoSpace=			"500"
 			thrustRatio=		"1.8"
 			maxSpeed=			"16"
-
-			leavesWreck=		"75"
 
 			attributes=			"battleArena, gladiator"
 			>
@@ -839,14 +810,12 @@
 			manufacturer=		""
 			class=				"heavy IAV"
 			type=				""
-			score=				"530"
+			level=				"3"
 
 			mass=				"100"
 			cargoSpace=			"10"
 			thrustRatio=		"5"
 			maxSpeed=			"16"
-
-			leavesWreck=		"40"
 
 			attributes=			"battleArena, gladiator"
 			>
@@ -865,6 +834,8 @@
 				<Device chance="20" item="&itMorningStarCannon;"/>
 				<Device chance="25" item="&itFlenserCannon;"/>
 			</Table>
+
+			<Device item="&itHullPlateIonizer;"/>
 		</Devices>
 
 		<Maneuver
@@ -903,14 +874,11 @@
 			manufacturer=		"Pacific Defense Corporation"
 			class=				"Ronin/B"
 			type=				"gunship"
-			score=				"300"
 
 			mass=				"60"
 			cargoSpace=			"50"
 			thrustRatio=		"5.5"
 			maxSpeed=			"20"
-
-			leavesWreck=		"50"
 
 			attributes=			"battleArena, gladiator"
 			>
@@ -954,7 +922,7 @@
 		</Effects>
 		
 		<Names noArticle="true" personalName="true">
-			Brother Benedict; Flavius Maul; Hannibal; Marc Renser; Lawrence Dorr; 
+			Brother Brandan; Flavius Maul; Hannibal; Marc Renser; Lawrence Dorr; 
 			Anon Thraces; Perigrine; Vespatian; Gladius Quintus
 		</Names>
 
@@ -977,14 +945,12 @@
 			manufacturer=		"Zubrin Systems"
 			class=				"Sapphire"
 			type=				"yacht"
-			score=				"235"
+			level=				"3"
 
 			mass=				"30"
 			cargoSpace=			"50"
 			thrustRatio=		"6.6"
 			maxSpeed=			"20"
-
-			leavesWreck=		"30"
 
 			attributes=			"battleArena, gladiator"
 			>
@@ -1010,10 +976,8 @@
 					</Table>
 
 					<Table>
-						<Device chance="25" item="&itCeratopsQuasiArmor1;"/>
-						<Device chance="25" item="&itClass3Deflector;"/>
-						<Device chance="25" item="&itCyclotronDeflectorIV;"/>
-						<Device chance="25" item="&itR1Deflector;"/>
+						<Device chance="50" item="&itMonopoleDeflector;"/>
+						<Device chance="50" item="&itCyclotronDeflectorIII;"/>
 					</Table>
 				</Group>
 
@@ -1039,8 +1003,8 @@
 					</Table>
 
 					<Table>
-						<Device chance="50" item="&itCyclotronDeflectorIII;" enhanced="true"/>
-						<Device chance="50" item="&itMonopoleDeflector;" enhanced="true"/>
+						<Device chance="50" item="&itHullPlateIonizer;" enhanced="true"/>
+						<Device chance="50" item="&itClass2Deflector;" enhanced="true"/>
 					</Table>
 				</Group>
 			</Table>
@@ -1090,15 +1054,12 @@
 			manufacturer=		"United African States"
 			class=				"T31"
 			type=				"armed transport"
-			score=				"320"
 
 			size=				"60"
 			mass=				"1000"
 			cargoSpace=			"50"
 			thrustRatio=		"1.0"
 			maxSpeed=			"16"
-
-			leavesWreck=		"75"
 
 			attributes=			"battleArena, gladiator"
 			>
@@ -1178,14 +1139,11 @@
 			manufacturer=		"Earth Industries"
 			class=				"EI500"
 			type=				"freighter"
-			score=				"540"
 
 			mass=				"150"
 			cargoSpace=			"200"
 			thrustRatio=		"1.5"
 			maxSpeed=			"18"
-
-			leavesWreck=		"75"
 
 			attributes=			"battleArena, gladiator"
 			>
@@ -1261,14 +1219,11 @@
 			manufacturer=		"Makayev-Energia"
 			class=				"Manticore"
 			type=				"heavy gunship"
-			score=				"580"
 
 			mass=				"90"
 			cargoSpace=			"50"
 			thrustRatio=		"2.0"
 			maxSpeed=			"18"
-
-			leavesWreck=		"50"
 
 			attributes=			"battleArena, gladiator"
 			>
@@ -1355,14 +1310,11 @@
 			manufacturer=		"Pacific Defense Corporation"
 			class=				"Ronin/C"
 			type=				"gunship"
-			score=				"380"
 
 			mass=				"60"
 			cargoSpace=			"50"
 			thrustRatio=		"5.5"
 			maxSpeed=			"20"
-
-			leavesWreck=		"50"
 
 			attributes=			"battleArena, gladiator"
 			>
@@ -1432,14 +1384,11 @@
 			manufacturer=		"Zubrin Systems"
 			class=				"Sapphire"
 			type=				"yacht"
-			score=				"340"
 
 			mass=				"30"
 			cargoSpace=			"50"
 			thrustRatio=		"6.6"
 			maxSpeed=			"20"
-
-			leavesWreck=		"30"
 
 			attributes=			"battleArena, gladiator"
 			>
@@ -1523,14 +1472,12 @@
 			manufacturer=		"Pacific Defense Corporation"
 			class=				"Wolfen"
 			type=				"gunship"
-			score=				"360"
+			level=				"4"
 
 			mass=				"20"
 			cargoSpace=			"35"
 			thrustRatio=		"13"
 			maxSpeed=			"25"
-
-			leavesWreck=		"20"
 
 			attributes=			"battleArena, gladiator"
 			>
@@ -1550,7 +1497,7 @@
 				<Device chance="15" deviceID="&itPartisanCannon;"/>
 			</Table>
 
-			<Device deviceID="&itCyclotronDeflectorIII;"/>
+			<Device deviceID="&itClass1Deflector;"/>
 		</Devices>
 
 		<Maneuver
@@ -1600,14 +1547,12 @@
 			manufacturer=		"Pacific Defense Corporation"
 			class=				"Centurion"
 			type=				"heavy gunship"
-			score=				"670"
+			level=				"5"
 
 			mass=				"90"
 			cargoSpace=			"50"
 			thrustRatio=		"9.0"
-			maxSpeed=			"22"
-
-			leavesWreck=		"50"
+			maxSpeed=			"20"
 
 			attributes=			"battleArena, gladiator"
 			>
@@ -1636,12 +1581,12 @@
 				</Device>
 			</Table>
 
-			<Device item="&itCeratopsQuasiArmor1;"/>
+			<Device item="&itCyclotronDeflectorIII;"/>
 		</Devices>
 
 		<Maneuver
 			maxRotationRate=	"9.0"
-			rotationAccel=		"1.0"
+			rotationAccel=		"3.0"
 			/>
 
 		<Items>
@@ -1683,14 +1628,11 @@
 			manufacturer=		"Earth Industries"
 			class=				"EI500"
 			type=				"freighter"
-			score=				"760"
 
 			mass=				"150"
 			cargoSpace=			"200"
 			thrustRatio=		"1.5"
 			maxSpeed=			"18"
-
-			leavesWreck=		"75"
 
 			attributes=			"battleArena, gladiator"
 			>
@@ -1763,14 +1705,11 @@
 			manufacturer=		"Makayev-Energia"
 			class=				"Manticore"
 			type=				"heavy gunship"
-			score=				"810"
 
 			mass=				"90"
 			cargoSpace=			"50"
 			thrustRatio=		"2.0"
 			maxSpeed=			"18"
-
-			leavesWreck=		"50"
 
 			attributes=			"battleArena, gladiator"
 			>
@@ -1857,14 +1796,12 @@
 			manufacturer=		"Pacific Defense Corporation"
 			class=				"Wolfen"
 			type=				"gunship"
-			score=				"545"
+			level=				"5"
 
 			mass=				"20"
 			cargoSpace=			"35"
 			thrustRatio=		"13"
 			maxSpeed=			"25"
-
-			leavesWreck=		"20"
 
 			attributes=			"battleArena, gladiator"
 			>
@@ -1883,7 +1820,7 @@
 				<Device chance="20" item="&itDualRecoillessCannon;" enhanced="100"/>
 			</Table>
 
-			<Device deviceID="&itCyclotronDeflectorIII;"/>
+			<Device deviceID="&itCyclotronDeflectorI;"/>
 		</Devices>
 
 		<Maneuver
@@ -1933,14 +1870,12 @@
 			manufacturer=		"Pacific Defense Corporation"
 			class=				"Centurion"
 			type=				"heavy gunship"
-			score=				"950"
+			level=				"6"
 
 			mass=				"90"
 			cargoSpace=			"50"
 			thrustRatio=		"9.0"
 			maxSpeed=			"22"
-
-			leavesWreck=		"50"
 
 			attributes=			"battleArena, gladiator"
 			>
@@ -2018,14 +1953,11 @@
 			manufacturer=		"Makayev-Energia"
 			class=				"Manticore"
 			type=				"heavy gunship"
-			score=				"1165"
 
 			mass=				"90"
 			cargoSpace=			"50"
 			thrustRatio=		"2.0"
 			maxSpeed=			"18"
-
-			leavesWreck=		"50"
 
 			attributes=			"battleArena, gladiator"
 			>
@@ -2127,14 +2059,12 @@
 			manufacturer=		"Pacific Defense Corporation"
 			class=				"Wolfen"
 			type=				"gunship"
-			score=				"855"
+			level=				"6"
 
 			mass=				"20"
 			cargoSpace=			"35"
 			thrustRatio=		"13"
 			maxSpeed=			"25"
-
-			leavesWreck=		"20"
 
 			attributes=			"battleArena, gladiator"
 			>
@@ -2160,7 +2090,7 @@
 				</Items>
 			</Device>
 
-			<Device deviceID="&itCeratopsQuasiArmor1;"/>
+			<Device deviceID="&itHullPlateIonizer;"/>
 		</Devices>
 
 		<Maneuver
@@ -2179,7 +2109,7 @@
 
 		<AISettings
 			aggressor=			"true"
-			fireRateAdj=		"12"
+			fireRateAdj=		"15"
 			fireAccuracy=		"95"
 			perception=			"4"
 			/>
@@ -2208,25 +2138,20 @@
 			manufacturer=		"Makayev-Energia"
 			class=				"Manticore"
 			type=				"heavy gunship"
-			score=				"1485"
 
 			mass=				"90"
 			cargoSpace=			"50"
 			thrustRatio=		"4.0"
 			maxSpeed=			"22"
 
-			leavesWreck=		"50"
-
 			attributes=			"battleArena, theSlicer"
 			>
 
-		<Armor>
-			<ArmorSection start="315" span="90" armorID="&itBlastPlate;"/>
-			<ArmorSection start="225" span="90" armorID="&itBlastPlate;"/>
-			<ArmorSection start="135" span="90" armorID="&itBlastPlate;"/>
-			<ArmorSection start="45"  span="90" armorID="&itBlastPlate;"/>
-		</Armor>
-
+		<Armor
+			armorID=			"&itHeavyBlastPlate;"
+			count=				"6"
+			/>
+		
 		<Devices>
 			<Device item="&itSlicerCannon;"/>
 

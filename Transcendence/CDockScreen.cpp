@@ -219,6 +219,7 @@ void CDockScreen::AddDisplayControl (CXMLElement *pDesc,
 		CGTextArea *pControl = new CGTextArea;
 		pControl->SetFont(pControlFont);
 		pControl->SetColor(rgbControlColor);
+		pControl->SetFontTable(&g_pHI->GetVisuals());
 
 		CString sAlign = pDesc->GetAttribute(ALIGN_ATTRIB);
 		if (strEquals(sAlign, ALIGN_CENTER))
@@ -1035,10 +1036,21 @@ void CDockScreen::InitDisplayControlRect (CXMLElement *pDesc, const RECT &rcFram
 	{
 	RECT rcRect;
 
-	rcRect.left = pDesc->GetAttributeInteger(LEFT_ATTRIB);
-	rcRect.top = pDesc->GetAttributeInteger(TOP_ATTRIB);
-	rcRect.right = pDesc->GetAttributeInteger(RIGHT_ATTRIB);
-	rcRect.bottom = pDesc->GetAttributeInteger(BOTTOM_ATTRIB);
+	bool bValidLeft = pDesc->FindAttributeInteger(LEFT_ATTRIB, (int *)&rcRect.left);
+	if (!bValidLeft)
+		rcRect.left = 0;
+
+	bool bValidTop = pDesc->FindAttributeInteger(TOP_ATTRIB, (int *)&rcRect.top);
+	if (!bValidTop)
+		rcRect.top = 0;
+
+	bool bValidRight = pDesc->FindAttributeInteger(RIGHT_ATTRIB, (int *)&rcRect.right);
+	if (!bValidRight)
+		rcRect.right = 0;
+
+	bool bValidBottom = pDesc->FindAttributeInteger(BOTTOM_ATTRIB, (int *)&rcRect.bottom);
+	if (!bValidBottom)
+		rcRect.bottom = 0;
 
 	int xCenter;
 	bool bXCenter = pDesc->FindAttributeInteger(CENTER_ATTRIB, &xCenter);
@@ -1046,10 +1058,10 @@ void CDockScreen::InitDisplayControlRect (CXMLElement *pDesc, const RECT &rcFram
 	int yCenter;
 	bool bYCenter = pDesc->FindAttributeInteger(VCENTER_ATTRIB, &yCenter);
 
-	if (rcRect.right < 0)
+	if (bValidRight && rcRect.right <= 0)
 		rcRect.right = RectWidth(rcFrame) + rcRect.right;
 
-	if (rcRect.bottom < 0)
+	if (bValidBottom && rcRect.bottom <= 0)
 		rcRect.bottom = RectHeight(rcFrame) + rcRect.bottom;
 
 	int cxWidth = pDesc->GetAttributeInteger(WIDTH_ATTRIB);
@@ -1060,9 +1072,9 @@ void CDockScreen::InitDisplayControlRect (CXMLElement *pDesc, const RECT &rcFram
 			rcRect.left = xCenter + ((RectWidth(rcFrame) - cxWidth) / 2);
 			rcRect.right = rcRect.left + cxWidth;
 			}
-		else if (rcRect.right == 0)
+		else if (!bValidRight)
 			rcRect.right = rcRect.left + cxWidth;
-		else if (rcRect.left == 0)
+		else if (!bValidLeft)
 			rcRect.left = rcRect.right - cxWidth;
 		}
 	else
@@ -1079,9 +1091,9 @@ void CDockScreen::InitDisplayControlRect (CXMLElement *pDesc, const RECT &rcFram
 			rcRect.top = yCenter + ((RectHeight(rcFrame) - cyHeight) / 2);
 			rcRect.bottom = rcRect.top + cyHeight;
 			}
-		else if (rcRect.bottom == 0)
+		else if (!bValidBottom)
 			rcRect.bottom = rcRect.top + cyHeight;
-		else if (rcRect.top == 0)
+		else if (!bValidTop)
 			rcRect.top = rcRect.bottom - cyHeight;
 		}
 	else
@@ -1564,7 +1576,10 @@ void CDockScreen::ShowDisplay (bool bAnimateOnly)
 
 					//	The result is the text for the control
 
-					pControl->SetText(pResult->GetStringValue());
+					CUIHelper UIHelper(*g_pHI);
+					CString sRTF;
+					UIHelper.GenerateDockScreenRTF(pResult->GetStringValue(), &sRTF);
+					pControl->SetRichText(sRTF);
 
 					//	If we have an error, report it as well
 
@@ -1602,7 +1617,11 @@ ALERROR CDockScreen::SetDisplayText (const CString &sID, const CString &sText)
 		return ERR_FAIL;
 
 	CGTextArea *pTextControl = (CGTextArea *)pControl->pArea;
-	pTextControl->SetText(g_pTrans->ComposePlayerNameString(sText));
+
+	CUIHelper UIHelper(*g_pHI);
+	CString sRTF;
+	UIHelper.GenerateDockScreenRTF(g_pTrans->ComposePlayerNameString(sText), &sRTF);
+	pTextControl->SetRichText(sRTF);
 
 	//	If we're explicitly setting the text, then we cannot animate
 
@@ -1659,7 +1678,22 @@ void CDockScreen::ShowPane (const CString &sName)
 
 	//	Find the pane named
 
-	CXMLElement *pNewPane = m_pPanes->GetContentElementByTag(sName);
+	CXMLElement *pNewPane;
+
+	//	If our root is a dockscreen, then we ask it for a pane (this will also
+	//	check for a pane in an ancestor).
+
+	CDockScreenType *pRootDockScreen = CDockScreenType::AsType(m_pRoot);
+	if (pRootDockScreen)
+		pNewPane = pRootDockScreen->GetPane(sName);
+
+	//	Otherwise, we ask our local pane list
+
+	else
+		pNewPane = m_pPanes->GetContentElementByTag(sName);
+
+	//	Error if we did not find a pane.
+
 	if (pNewPane == NULL)
 		{
 		CString sError = strPatternSubst(CONSTLIT("Unable to find pane: %s"), sName);
@@ -1793,9 +1827,9 @@ void CDockScreen::UpdateCredits (void)
 	//	Money
 
 	CEconomyType *pEconomy = m_pLocation->GetDefaultEconomy();
-	m_pCredits->SetText(strPatternSubst(CONSTLIT("%s: %d"), 
+	m_pCredits->SetText(strPatternSubst(CONSTLIT("%s: %s"), 
 			strCapitalize(pEconomy->GetCurrencyNamePlural()),
-			(int)m_pPlayer->GetCredits(pEconomy->GetUNID())
+			strFormatInteger((int)m_pPlayer->GetCredits(pEconomy->GetUNID()), -1, FORMAT_THOUSAND_SEPARATOR)
 			));
 
 	//	Cargo space

@@ -34,9 +34,9 @@
 		<!-- Trade and Items -->
 		
 		<Trade currency="credit" max="100000" replenish="5000">
-			<Sell	criteria="m +Commonwealth; -Illegal; -Military; -NotForSale; L:1-3;" priceAdj="115" inventoryAdj="200"/>
+			<Sell	criteria="m +Commonwealth; -Illegal; -Military; -NotForSale; -notStandard; L:1-3;" priceAdj="115" inventoryAdj="200"/>
 			<Sell	criteria="*NU -Illegal; -ID; -NotForSale;"	priceAdj="110"/>
-			<Sell	criteria="rNU L:1-4; -Illegal; -NotForSale;"	priceAdj="110"	inventoryAdj="100"/>
+			<Sell	criteria="rNU L:1-4; -Illegal; -NotForSale; -notStandard;"	priceAdj="110"	inventoryAdj="100"/>
 			<Buy	criteria="amswNU -Illegal; -NotForSale;"		priceAdj="50"/>
 			<Buy	criteria="*NU -Illegal; -ID; -NotForSale;"	priceAdj="90"/>
 			<Buy	criteria="*NU -Illegal; -ID;"				priceAdj="10"/>
@@ -850,6 +850,14 @@
 							<Siblings count="1" arcInc="2d15-16" radiusInc="-20-20">
 								<Lookup table="DanteStations"/>
 							</Siblings>
+							
+							<Siblings count="1" arcInc="2d15-16" radiusInc="-20-20">
+								<Lookup table="LocationDefinition">
+									<_Morphology>
+										<Lookup table="VariantAsteroidTrojanLabel"/>
+									</_Morphology>
+								</Lookup>
+							</Siblings>
 						</Group>
 					</Trojan>
 
@@ -877,6 +885,14 @@
 
 							<Siblings count="1" arcInc="2d15-16" radiusInc="-20-20">
 								<Lookup table="DanteStations"/>
+							</Siblings>
+							
+							<Siblings count="1" arcInc="2d15-16" radiusInc="-20-20">
+								<Lookup table="LocationDefinition">
+									<_Morphology>
+										<Lookup table="VariantAsteroidTrojanLabel"/>
+									</_Morphology>
+								</Lookup>
 							</Siblings>
 						</Group>
 					</AntiTrojan>
@@ -924,6 +940,13 @@
 								<Lookup table="Stations1" probability="75"/>
 							</Orbitals>
 
+							<Orbitals distance="1d6" angle="random">
+								<Lookup table="LocationDefinition">
+									<_Morphology>
+										<Lookup table="VariantAsteroidTrojanLabel"/>
+									</_Morphology>
+								</Lookup>
+							</Orbitals>
 						</Group>
 					</Trojan>
 
@@ -941,6 +964,13 @@
 								<Lookup table="Stations1" probability="75"/>
 							</Orbitals>
 
+							<Orbitals distance="1d6" angle="random">
+								<Lookup table="LocationDefinition">
+									<_Morphology>
+										<Lookup table="VariantAsteroidTrojanLabel"/>
+									</_Morphology>
+								</Lookup>
+							</Orbitals>
 						</Group>
 					</AntiTrojan>
 
@@ -971,61 +1001,6 @@
 							<Primary>
 								<Station type="&stPrimordialPlanetoidSizeF;" name="Morgana"/>
 							</Primary>
-
-							<!-- Debug Objects -->
-
-							<Orbitals debugOnly="true" distance="8" angle="random">
-								<Stargate objName="Debug" type="&stStargate;"/>
-							</Orbitals>
-
-							<Orbitals debugOnly="true" count="1" distance="5" scale="light-minute" angle="random">
-								<!--<Station type="&stCSCSaharaEncounter;" />-->
-								<!--<Station type="&stBlackMarketShipyard;" />-->
-							</Orbitals>
-
-							<Orbitals debugOnly="true" count="1" distance="5" scale="light-minute" angle="random">
-								<Orbitals distance="12" angle="random">
-									<!--<Station type="&stDwargFortress;"/>-->
-								</Orbitals>
-								<!--<Station type="&stHuariFortress;"/>-->
-								<!--<Station type="&stCommonwealthColonyArmed;" />-->
-							</Orbitals>
-
-							<Orbitals debugOnly="true" count="1" distance="20" angle="random">
-								<Station type="&stTinkerGathering;"/>
-								<!--
-								<Station type="&stTeratonFactory;"/>
-								<Station type="&stCommonwealthFortress;"/>
-								<Station type="&stSungSlaveCamp;"/>
-								<Station type="&stCentauriOccupation;"/>
-								<Station type="&stCSCAmericaEncounter;"/>
-								<LevelTable>
-									<Station levelFrequency="c----" type="&stWondrousDevices;"/>
-									<Station levelFrequency="-----" type="&stInsuranceCompany;"/>
-								</LevelTable>
-								<Station type="&stCSCSaharaEncounter;"/>
-								<Station type="&stInsuranceCompany;"/>
-								<Station type="&stKorolovShipping;"/>
-								<Station type="&stAgriculturalStation;" />
-								<Station type="&stCorporateTradingPost;" />
-								<Station type="&stCSCArcticaEncounter;"/>
-								<Station type="&stRingerShipyard;"/>
-								<Station type="&stGaianProcessorEncounter;" />
-								<Station type="&stFerianColony;" />
-								-->
-							</Orbitals>
-
-							<!--
-							<Orbitals debugOnly="true" count="50" distance="2d10" scale="light-minute" angle="random">
-								<Group>
-									<Station type="&stFerianColony;" />
-									<Orbitals count="3d6" distance="6d6" angle="random">
-										<Station type="&stMediumAsteroid;" />
-									</Orbitals>
-								</Group>
-							</Orbitals>
-							-->
-
 						</Group>
 
 						<!-- Mordred -->
@@ -1201,6 +1176,14 @@
 								<Orbitals distance="1d8+6" angle="random">
 									<Station type="&stRaisuStation;" />
 								</Orbitals>
+								
+								<Orbitals distance="1d6" angle="random">
+									<Lookup table="LocationDefinition">
+										<_Morphology>
+											<Lookup table="VariantAsteroidTrojanLabel"/>
+										</_Morphology>
+									</Lookup>
+								</Orbitals>
 							</Trojan>
 
 							<AntiTrojan>
@@ -1208,6 +1191,14 @@
 
 								<Orbitals distance="1d8+6" angle="random">
 									<Lookup table="StJohnTrojanStations"/>
+								</Orbitals>
+								
+								<Orbitals distance="1d6" angle="random">
+									<Lookup table="LocationDefinition">
+										<_Morphology>
+											<Lookup table="VariantAsteroidTrojanLabel"/>
+										</_Morphology>
+									</Lookup>
 								</Orbitals>
 							</AntiTrojan>
 						</Group>
@@ -1219,6 +1210,14 @@
 								<Orbitals distance="1d8+6" angle="random">
 									<Lookup table="StJohnTrojanStations"/>
 								</Orbitals>
+								
+								<Orbitals distance="1d6" angle="random">
+									<Lookup table="LocationDefinition">
+										<_Morphology>
+											<Lookup table="VariantAsteroidTrojanLabel"/>
+										</_Morphology>
+									</Lookup>
+								</Orbitals>
 							</Trojan>
 
 							<AntiTrojan>
@@ -1226,6 +1225,14 @@
 
 								<Orbitals distance="1d8+6" angle="random">
 									<Station type="&stRaisuStation;" />
+								</Orbitals>
+								
+								<Orbitals distance="1d6" angle="random">
+									<Lookup table="LocationDefinition">
+										<_Morphology>
+											<Lookup table="VariantAsteroidTrojanLabel"/>
+										</_Morphology>
+									</Lookup>
 								</Orbitals>
 							</AntiTrojan>
 						</Group>
@@ -1268,6 +1275,12 @@
 			<!-- Create more stargates in case an extension added more links -->
 
 			<Lookup table="HumanSpaceStargates"/>
+			
+			<!-- Create ore deposits -->
+			
+			<Code>
+				(trnCreateOreDeposits (random 0 2))
+			</Code>
 
 		</SystemGroup>
 

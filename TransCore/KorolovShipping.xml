@@ -65,8 +65,6 @@
 			thrustRatio=		"1"
 			maxSpeed=			"8"
 			cargoSpace=			"30000"
-
-			leavesWreck=		"100"
 			>
 
 		<Names noArticle="true">Antares Heavy 1%0%0</Names>
@@ -182,8 +180,6 @@
 			thrustRatio=		"1.5"
 			maxSpeed=			"12"
 			cargoSpace=			"30000"
-
-			leavesWreck=		"100"
 			>
 
 		<Names noArticle="true">Antares Heavy 2%0%0</Names>
@@ -304,8 +300,6 @@
 			thrustRatio=		"1"
 			maxSpeed=			"8"
 			cargoSpace=			"50000"
-
-			leavesWreck=		"100"
 			>
 
 		<Names noArticle="true">Antares Heavy 5%0%0</Names>
@@ -427,8 +421,6 @@
 			thrustRatio=		"2.2"
 			maxSpeed=			"12"
 			cargoSpace=			"250"
-
-			leavesWreck=		"75"
 			>
 
 		<Names definiteArticle="true">
@@ -528,8 +520,6 @@
 			thrustRatio=		"1.8"
 			maxSpeed=			"16"
 			cargoSpace=			"500"
-
-			leavesWreck=		"75"
 			>
 
 		<Names definiteArticle="true">
@@ -630,8 +620,6 @@
 			thrustRatio=		"2"
 			maxSpeed=			"12"
 			cargoSpace=			"2000"
-
-			leavesWreck=		"100"
 			>
 
 		<Names definiteArticle="true">
@@ -755,8 +743,6 @@
 			thrustRatio=		"5.5"
 			maxSpeed=			"20"
 
-			leavesWreck=		"50"
-			
 			inherit=			"&baCharonBuster;"
 			>
 
@@ -827,8 +813,6 @@
 			cargoSpace=			"500"
 			thrustRatio=		"1.8"
 			maxSpeed=			"16"
-
-			leavesWreck=		"75"
 
 			attributes=			"commonwealth"
 			
@@ -1133,6 +1117,8 @@
 		<Image			imageID="&rsStations1;" imageX="256" imageY="0" imageWidth="224" imageHeight="224"/>
 
 		<Trade currency="credit" max="100000" replenish="5000">
+			<Sell	criteria="rNU L:1-5; -Illegal; -NotForSale; -notStandard;"	priceAdj="110"	inventoryAdj="100"/>
+			
 			<Refuel			criteria="f +BasicFuel; L:1-5;" priceAdj="90"/>
 			<RepairArmor	criteria="a L:1-8;" priceAdj="100"/>
 			<ReplaceArmor	criteria="a L:1-8;" priceAdj="100"/>
@@ -1793,8 +1779,8 @@
 															(cat
 																(objGetName gTransport 4) 
 																" (" (shpGetClassName gTransport 4) ")"
-																" is transporting " (intRoundUp cargoValue 1000) " credits worth of cargo."
-																" She will pay " escortFee " credits"
+																" is transporting " (fmtCurrency 'credit (intRoundUp cargoValue 1000)) " worth of cargo."
+																" She will pay " (fmtCurrency 'credit escortFee)
 																" if you escort her safely to "
 																(objGetName gDestination 4) "."
 																"\n\nDo you wish to accept this assignment?"
@@ -1815,8 +1801,8 @@
 															(cat
 																(objGetName gTransport 4) 
 																" (" (shpGetClassName gTransport 4) ")"
-																" is transporting " (intRoundUp cargoValue 1000) " credits worth of cargo."
-																" She will pay " escortFee " credits"
+																" is transporting " (fmtCurrency 'credit (intRoundUp cargoValue 1000)) " worth of cargo."
+																" She will pay " (fmtCurrency 'credit escortFee) 
 																" if you escort her safely to "
 																(objGetName gDestination 4)
 																" and back again."
@@ -2053,14 +2039,14 @@
 												(setq desc (cat 
 													"\"Excellent work, captain! You seem to have the aptitude to handle these missions. "
 													"Everytime you successfully escort a freighter you will earn money and increase your skills."
-													"\n\n\"We've deposited " gCost " credits in your account.\""
+													"\n\n\"We've deposited " (fmtCurrency 'credit gCost) " in your account.\""
 													))
 
 											; At the next level
 											(and (eq level 1) (geq xp 300))
 												(setq desc (cat 
 													"\"Excellent work, captain! I knew from the beginning that you had the skills to succeed."
-													"\n\n\"We've deposited " gCost " credits in your account.\""
+													"\n\n\"We've deposited " (fmtCurrency 'credit gCost) " in your account.\""
 													))
 
 											; If we're about to become a journeyman, tell the player
@@ -2069,7 +2055,7 @@
 													"\"Excellent work, captain! Your apprenticeship is almost complete. "
 													"If you can successfully complete the next escort mission, "
 													"we will be confident in your skills and promote you."
-													"\n\n\"We've deposited " gCost " credits in your account.\""
+													"\n\n\"We've deposited " (fmtCurrency 'credit gCost) " in your account.\""
 													))
 
 											; At level 1, describe the things to look forward to
@@ -2084,7 +2070,7 @@
 															"After a few more successful missions you will be ready for a promotion to Journeyman&#x97;and ready for a greater challenge!"
 															)
 														)
-													"\n\n\"We've deposited " gCost " credits in your account.\""
+													"\n\n\"We've deposited " (fmtCurrency 'credit gCost) " in your account.\""
 													))
 
 											; If the player has destroyed 3 frigates, warn her about Kronosaurus
@@ -2095,7 +2081,7 @@
 													(setq desc (cat
 														"\"Your skills are truly impressive! But the news that you've destroyed several Charon frigates has alarmed the pirates. "
 														"They're sending the Kronosaurus after you! It is the deadliest frigate in the Charon fleet and it will not stop until you are destroyed."
-														"\n\n\"We've deposited " gCost " credits in your account. You better spend them wisely!\""
+														"\n\n\"We've deposited " (fmtCurrency 'credit gCost) " in your account. You better spend them wisely!\""
 														))
 
 													; Deploy
@@ -2105,7 +2091,7 @@
 											; Standard text
 											(setq desc (cat 
 												"\"Well done, captain! You've shown skill and bravery in facing those pirates."
-												"\n\n\"We've deposited " gCost " credits in your account.\""
+												"\n\n\"We've deposited " (fmtCurrency 'credit gCost) " in your account.\""
 												))
 											)
 										)
@@ -2260,10 +2246,14 @@
 								(block (roll)
 									(setq roll (random 1 100))
 									(switch
-										(leq roll 60)
+										(and (leq roll 60)
+												(= (objGetEquipmentStatus gPlayerShip 'SRSEnhancer) 'notInstalled)
+												)
 											(setq gItem (itmCreate &itEnhanceSRSROM; 1))
 
-										(leq roll 90)
+										(and (leq roll 90)
+												(= (objGetEquipmentStatus gPlayerShip 'TargetingComputer) 'notInstalled)
+												)
 											(setq gItem (itmCreate &itTargetingComputerROM; 1))
 
 										(setq gItem (itmCreate &itEnhanceShieldsROM; 1))
@@ -2694,15 +2684,15 @@
 				</OnScreenInit>
 
 				<Display>
-					<Image left="12" right="-44" top="12" height="100" align="center" valign="center" transparent="true">
+					<Image left="12" right="-44" top="62" height="100" align="center" valign="center" transparent="true">
 						(shpGetImageDesc (item gSelect 0) 0)
 					</Image>
 
-					<Text left="12" right="-44" top="100" height="40" align="center" font="SubTitle" color="255,210,152">
+					<Text left="12" right="-44" top="150" height="40" align="center" font="SubTitle" color="255,210,152">
 						(shpGetClassName (item gSelect 0) 1)
 					</Text>
 
-					<Text left="12" width="250" top="140" bottom="-140" align="right" font="MediumBold" color="200,206,199">
+					<Text left="12" width="250" top="190" bottom="-140" align="right" font="MediumBold" color="200,206,199">
 						(switch
 							(eq gFormat 'freighter)
 								(cat
@@ -2725,7 +2715,7 @@
 							)
 					</Text>
 
-					<Text right="-44" width="250" top="140" bottom="-140" align="left" font="Medium" color="200,206,199">
+					<Text right="-44" width="250" top="190" bottom="-140" align="left" font="Medium" color="200,206,199">
 						(block (classUNID armorUNID shieldUNID weaponUNID launcherUNID armorItem shieldItem weaponItem launcherItem)
 							(setq classUNID (item gSelect 0))
 
@@ -2762,7 +2752,7 @@
 							)
 					</Text>
 
-					<Text left="52" right="-84" bottom="-12" height="120" align="center" font="Large" color="200,206,199">
+					<Text left="52" right="-84" bottom="-32" height="120" align="center" font="Large" color="200,206,199">
 						(item gSelect 1)
 					</Text>
 				</Display>

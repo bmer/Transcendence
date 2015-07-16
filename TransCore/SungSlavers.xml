@@ -221,7 +221,7 @@
 			description=		"The Nandao bolt cannon fires a sublight pulse of heavy ions. The weapon requires Nandao bolt cartridges."
 			>
 
-		<Image imageID="&rsItems1;" imageX="96" imageY="0" imageWidth="96" imageHeight="96"/>
+		<Image imageID="&rsItems6;" imageX="0" imageY="96" imageWidth="96" imageHeight="96"/>
 
 		<Weapon
 				fireRate=			"30"
@@ -233,7 +233,7 @@
 						type=			"missile"
 
 						lifetime=		"100"
-						damage=			"particle:12d8+6; WMD4"
+						damage=			"particle:15d8; WMD4"
 						hitPoints=		"15"
 
 						missileSpeed=	"60"
@@ -326,8 +326,8 @@
 	<ItemType UNID="&itParticleBoltCartridge;"
 			name=				"Nandao bolt cartridge"
 			level=				"5"
-			value=				"15"
-			mass=				"25"
+			value=				"35"
+			mass=				"10"
 			frequency=			"common"
 			numberAppearing=	"20d40"
 			attributes=			"Consumable; Missile; NotForSale; sungSlavers"
@@ -470,8 +470,6 @@
 			cargoSpace=			"10"
 
 			cyberDefenseLevel=	"4"
-
-			leavesWreck=		"35"
 			>
 
 		<!-- Configuration -->
@@ -526,8 +524,6 @@
 			cargoSpace=			"10"
 
 			cyberDefenseLevel=	"6"
-
-			leavesWreck=		"65"
 			>
 
 		<!-- Configuration -->
@@ -593,7 +589,6 @@
 			cyberDefenseLevel=	"6"
 
 			explosionType=		"&vtBlastExplosion2;"
-			leavesWreck=		"100"
 			>
 
 		<!-- Configuration -->
@@ -893,7 +888,6 @@
 			cyberDefenseLevel=	"8"
 
 			explosionType=		"&vtBlastExplosion2;"
-			leavesWreck=		"100"
 
 			attributes=			"capitalShip, genericClass, majorShip, sungSlavers"
 			>
@@ -922,6 +916,22 @@
 			rotationAccel=		"1.0"
 			/>
 
+		<Interior>
+			<Compartment name="interior"
+					hitPoints=	"180"
+					/>
+			
+			<Compartment name="main drive"
+					type=		"mainDrive"
+					hitPoints=	"80"
+
+					posX=		"0"
+					posY=		"0"
+					sizeX=		"26"
+					sizeY=		"44"
+					/>
+		</Interior>
+		
 		<Items>
 			<Item				  count="2d6"	item="&itPteracniumFuelRod;"/>
 			<Table>
@@ -978,7 +988,6 @@
 			maxSpeed=			"6"
 
 			explosionType=		"&vtBlastExplosion3;"
-			leavesWreck=		"100"
 
 			attributes=			"freighter, genericClass, sungSlavers"
 			>

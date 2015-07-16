@@ -80,7 +80,6 @@
 			cyberDefenseLevel=	"8"
 
 			explosionType=		"&vtThermoExplosion2;"
-			leavesWreck=		"100"
 			>
 
 		<!-- Configuration -->
@@ -189,33 +188,33 @@
 		<Items>
 			<RandomItem count="1d12" 
 					criteria=		"w -Specialty; -NotStandard; -NotForSale;"
-					levelFrequency=	"---ru cur"
+					levelFrequency=	"---ru cur--"
 					enhanced=		"5"
 					enhancement=	"=(intHPEnhancement1)"
 					/>
 
 			<RandomItem count="1d12" 
 					criteria=		"d~w -Specialty; -NotStandard; -NotForSale;"
-					levelFrequency=	"---ru cur"
+					levelFrequency=	"---ru cur--"
 					enhanced=		"5"
 					enhancement=	"=(intCorporateGenerateEnhancement gItem)"
 					/>
 
 			<RandomItem count="1d12" 
 					criteria=		"a -Specialty; -NotStandard; -NotForSale;"
-					levelFrequency=	"---ru cur"
+					levelFrequency=	"---ru cur--"
 					enhanced=		"5"
 					enhancement=	"=(intHPEnhancement1)"
 					/>
 
 			<RandomItem count="1d12" 
 					criteria=		"u -Specialty; -NotStandard; -NotForSale;"
-					levelFrequency=	"---ru cur"
+					levelFrequency=	"---ru cur--"
 					/>
 
 			<RandomItem count="2d12" 
 					criteria=		"m -Specialty; -NotStandard; -NotForSale;"
-					levelFrequency=	"---ru cur"
+					levelFrequency=	"---ru cur--"
 					/>
 
 			<RandomItem count="1d6" 
@@ -225,16 +224,16 @@
 		</Items>
 
 		<Trade currency="credit" max="100000" replenish="5000">
-			<Sell	criteria="m +Commonwealth; -Illegal; -NotForSale; L:4-6;" priceAdj="115" inventoryAdj="100"/>
+			<Sell	criteria="m +Commonwealth; -Illegal; -NotForSale; -notStandard; L:4-6;" priceAdj="115" inventoryAdj="100"/>
 			<Sell	criteria="*NU -Illegal; -ID; -NotForSale;"	priceAdj="115"/>
 			<Buy	criteria="adumfNU -Illegal; -ID; -NotForSale;"	priceAdj="50"/>
 			<Buy	criteria="adumfNU -Illegal; -ID;"				priceAdj="10"/>
 
 			<Refuel			criteria="f +BasicFuel; L:1-9;" priceAdj="100"/>
 			<RepairArmor	criteria="a L:1-9;" priceAdj="100"/>
-			<ReplaceArmor	criteria="a L:1-9;" priceAdj="100"/>
-			<InstallDevice	criteria="w L:1-8;" priceAdj="100"/>
-			<RemoveDevice	criteria="d L:1-8;" priceAdj="100"/>
+			<ReplaceArmor	criteria="a L:1-10;" priceAdj="100"/>
+			<InstallDevice	criteria="d L:1-10;" priceAdj="100"	upgradeInstallOnly="true"/>
+			<RemoveDevice	criteria="d L:1-10;" priceAdj="100"	upgradeInstallOnly="true"/>
 		</Trade>
 
 		<Events>
@@ -257,6 +256,7 @@
 							<Action name="Dock Services" key="D" default="1">
 								(rpgDockServices gPlayerShip {
 									checkMilitaryID: True
+									upgradeInstallOnly: True
 									})
 							</Action>
 
@@ -380,8 +380,8 @@
 			
 			<RepairArmor	criteria="a L:1-7;" priceAdj="100"/>
 			<ReplaceArmor	criteria="a L:1-7;" priceAdj="100"/>
-			<InstallDevice	criteria="s L:1-6;" priceAdj="100"/>
-			<RemoveDevice	criteria="s L:1-6;" priceAdj="100"/>
+			<InstallDevice	criteria="s L:1-7;" priceAdj="100"	upgradeInstallOnly="true"/>
+			<RemoveDevice	criteria="s L:1-7;" priceAdj="100"	upgradeInstallOnly="true"/>
 		</Trade>
 
 		<StaticData>
@@ -410,6 +410,7 @@
 							<Action name="Armor and Shields" key="A" default="1">
 								(scrShowScreen gScreen &dsRPGManageArmor; {
 									checkMilitaryID: True
+									upgradeInstallOnly: True
 									})
 							</Action>
 							
@@ -519,13 +520,13 @@
 		</Items>
 
 		<Trade currency="credit" max="50000" replenish="2500">
-			<Sell	criteria="m +Commonwealth; +BasicAmmo; -Illegal; -NotForSale;" priceAdj="110" inventoryAdj="100"/>
+			<Sell	criteria="m +Commonwealth; +BasicAmmo; -Illegal; -NotForSale; -notStandard;" priceAdj="110" inventoryAdj="100"/>
 			<Sell	criteria="*NU -Illegal; -ID; -NotForSale;"	priceAdj="110"/>
 			<Buy	criteria="mwU -Illegal; -NotForSale;"	priceAdj="60"/>
 			<Buy	criteria="mwU -Illegal; -ID;"				priceAdj="10"/>
 			
-			<InstallDevice	criteria="w L:1-4;" priceAdj="100"/>
-			<RemoveDevice	criteria="w L:1-4;" priceAdj="100"/>
+			<InstallDevice	criteria="w L:1-5;" priceAdj="100"	upgradeInstallOnly="true"/>
+			<RemoveDevice	criteria="w L:1-5;" priceAdj="100"	upgradeInstallOnly="true"/>
 		</Trade>
 
 		<Events>
@@ -553,6 +554,7 @@
 							<Action name="[W]eapons" default="1">
 								(scrShowScreen gScreen &dsRPGManageWeapons; {
 									checkMilitaryID: True
+									upgradeInstallOnly: True
 									})
 							</Action>
 
@@ -661,9 +663,12 @@
 			<Sell	criteria="*NU -Illegal; -ID; -NotForSale;"	priceAdj="120"/>
 
 			<RepairArmor	criteria="a L:1-8;" priceAdj="100"/>
-			<ReplaceArmor	criteria="a L:1-8;" priceAdj="100"/>
-			<InstallDevice	criteria="d +makayev; L:1-8;" priceAdj="100"/>
-			<RemoveDevice	criteria="d L:1-8;" priceAdj="100"/>
+			<ReplaceArmor	criteria="a +makayev; L:1-7;" priceAdj="100"/>
+			<InstallDevice	criteria="d +makayev; L:1-7;" priceAdj="100"/>
+			<RemoveDevice	criteria="d L:1-7;" priceAdj="100"/>
+			
+			<ReplaceArmor	criteria="a L:1-7;" priceAdj="unavailable"	messageID="descNoInstall"/>
+			<InstallDevice	criteria="d L:1-7;" priceAdj="unavailable"	messageID="descNoInstall"/>
 		</Trade>
 
 		<StaticData>
@@ -688,7 +693,18 @@
 			<Port x="-50"	y="50" />
 			<Port x="-50"	y="-50" />
 		</DockingPorts>
-
+		
+		<Language>
+			<Text id="descNoInstall">
+				(cat
+					"We only install Makayev items. "
+					"We cannot install " (itmGetName (@ gData 'item) 0x04) " on your ship."
+					)
+			</Text>
+			<Text id="dockServices:installAbility">
+				(cat "We install Makayev items up to tech level " (objGetProperty gSource 'installDeviceMaxLevel) ".")
+			</Text>
+		</Language>
 	</StationType>
 
 	<!-- Arms Dealer, Bushido -->
@@ -770,9 +786,12 @@
 			<Sell	criteria="*NU -Illegal; -ID; -NotForSale;"	priceAdj="120"/>
 
 			<RepairArmor	criteria="a L:1-9;" priceAdj="100"/>
-			<ReplaceArmor	criteria="a L:1-9;" priceAdj="100"/>
-			<InstallDevice	criteria="d +bushido; L:1-9;" priceAdj="100"/>
-			<RemoveDevice	criteria="d L:1-9;" priceAdj="100"/>
+			<ReplaceArmor	criteria="a +bushido; L:1-10;" priceAdj="100"/>
+			<InstallDevice	criteria="d +bushido; L:1-10;" priceAdj="100"/>
+			<RemoveDevice	criteria="d L:1-10;" priceAdj="100"/>
+			
+			<ReplaceArmor	criteria="a L:1-10;" priceAdj="unavailable"	messageID="descNoInstall"/>
+			<InstallDevice	criteria="d L:1-10;" priceAdj="unavailable"	messageID="descNoInstall"/>
 		</Trade>
 
 		<StaticData>
@@ -789,6 +808,18 @@
 			<Port x="-50"	y="50" />
 			<Port x="-50"	y="-50" />
 		</DockingPorts>
+
+		<Language>
+			<Text id="descNoInstall">
+				(cat
+					"We only install Bushido items. "
+					"We cannot install " (itmGetName (@ gData 'item) 0x04) " on your ship."
+					)
+			</Text>
+			<Text id="dockServices:installAbility">
+				(cat "We install Bushido items up to tech level " (objGetProperty gSource 'installDeviceMaxLevel) ".")
+			</Text>
+		</Language>
 
 	</StationType>
 
@@ -1236,32 +1267,35 @@
 			<Main>
 				<Panes>
 					<Default>
-
 						<OnPaneInit>
-							(scrSetDesc gScreen (cat "Welcome to " (objGetName gSource) ", your most reliable source of starship fuel and a member of the Earth Industries Conglomerate. All our fuel has been produced to the exacting standards required by today's reactors. Please use the terminal to proceed with your transaction."))
+							(block (actionStatus)
+								(scrSetDescTranslate gScreen 'desc)
+								
+								(setq actionStatus (rpgCalcDockServiceRefuelAction gSource gPlayerShip { }))
+								(scrShowAction gScreen 'actionRefuel (@ actionStatus 'visible))
+								(scrEnableAction gScreen 'actionRefuel (@ actionStatus 'enabled))
+								(scrSetActionDesc gScreen 'actionRefuel (@ actionStatus 'desc))
+								)
 						</OnPaneInit>
 
 						<Actions>
-							<Action name="Refuel" key="R" default="1">
+							<Action id="actionRefuel" default="1">
 								(scrShowScreen gScreen "&dsRPGRefuel;")
 							</Action>
 
-							<Action name="Buy Items" key="B">
+							<Action id="actionBuy">
 								(scrShowScreen gScreen &dsRPGCommoditiesExchangeBuy; {
 									checkMilitaryID: True
 									})
 							</Action>
 
-							<Action name="Undock" cancel="1" key="U">
+							<Action id="actionUndock" cancel="1">
 								<Exit/>
 							</Action>
-
 						</Actions>
-
 					</Default>
 				</Panes>
 			</Main>
-
 		</DockScreens>
 
 		<DockingPorts>
@@ -1274,6 +1308,19 @@
 			<Port x="-50"	y="70" />
 			<Port x="-50"	y="-30" />
 		</DockingPorts>
+		
+		<Language>
+			<Text id="actionRefuel">"[R]efuel"</Text>
+			<Text id="actionBuy">"[B]uy Items"</Text>
+			<Text id="actionUndock">"[U]ndock"</Text>
+			
+			<Text id="desc">
+				(cat 
+					"Welcome to " (objGetName gSource) ", your most reliable source of starship fuel and a member of the Earth Industries Conglomerate.\n\n"
+					"All our fuel has been produced to the exacting standards required by today's reactors. Please use the terminal to proceed with your transaction."
+					)
+			</Text>
+		</Language>
 
 	</StationType>
 
@@ -1367,9 +1414,12 @@
 
 			<Refuel			criteria="f +BasicFuel; L:1-10;" priceAdj="100"/>
 			<RepairArmor	criteria="a L:1-9;" priceAdj="100"/>
-			<ReplaceArmor	criteria="a L:1-9;" priceAdj="100"/>
-			<InstallDevice	criteria="d +makayev; L:1-9;" priceAdj="100"/>
-			<RemoveDevice	criteria="d L:1-9;" priceAdj="100"/>
+			<ReplaceArmor	criteria="a +makayev;" priceAdj="100"/>
+			<InstallDevice	criteria="d +makayev;" priceAdj="100"/>
+			<RemoveDevice	criteria="d L:1-10;" priceAdj="100"/>
+			
+			<ReplaceArmor	criteria="a L:1-10;" priceAdj="unavailable"	messageID="descNoInstall"/>
+			<InstallDevice	criteria="d L:1-10;" priceAdj="unavailable"	messageID="descNoInstall"/>
 		</Trade>
 
 		<StaticData>
@@ -1437,6 +1487,18 @@
 			<Port x="-56"	y="35" />
 			<Port x="-22"	y="86" />
 		</DockingPorts>
+
+		<Language>
+			<Text id="descNoInstall">
+				(cat
+					"We only install Makayev items. "
+					"We cannot install " (itmGetName (@ gData 'item) 0x04) " on your ship."
+					)
+			<Text id="dockServices:installAbility">
+				(cat "We install Makayev items up to tech level " (objGetProperty gSource 'installDeviceMaxLevel) ".")
+			</Text>
+			</Text>
+		</Language>
 
 	</StationType>
 
@@ -2382,10 +2444,8 @@
 			<Refuel			criteria="f +BasicFuel; L:1-10;" priceAdj="100"/>
 			<RepairArmor	criteria="a L:1-11;" priceAdj="100"/>
 			<ReplaceArmor	criteria="a L:1-11;" priceAdj="100"/>
-			<InstallDevice	criteria="d +taikon" priceAdj="100"/>
-			<RemoveDevice	criteria="d +taikon;" priceAdj="100"/>
-			<InstallDevice	criteria="d L:1-9;" priceAdj="100"/>
-			<RemoveDevice	criteria="d L:1-9;" priceAdj="100"/>
+			<InstallDevice	criteria="d L:1-11;" priceAdj="100"/>
+			<RemoveDevice	criteria="d L:1-11;" priceAdj="100"/>
 		</Trade>
 
 		<Events>
@@ -2932,19 +2992,19 @@
 		<Items>
 			<RandomItem count="10" 
 					criteria=		"admu -Illegal; -Military; -NotStandard; -NotForSale;"
-					levelFrequency=	"----c"
+					levelFrequency=	"----c -----"
 					enhanced=		"5"
 					enhancement=	"=(intCorporateGenerateEnhancement gItem)"
 					/>
 			<RandomItem count="15" 
 					criteria=		"admu -Illegal; -Military; -NotStandard; -NotForSale;"
-					levelFrequency=	"----u cu"
+					levelFrequency=	"----u cu---"
 					enhanced=		"5"
 					enhancement=	"=(intCorporateGenerateEnhancement gItem)"
 					/>
 			<RandomItem count="8" 
 					criteria=		"admu -Illegal; -Military; -NotStandard; -NotForSale;"
-					levelFrequency=	"----r ucur"
+					levelFrequency=	"----r ucur-"
 					enhanced=		"1"
 					enhancement=	"=(intCorporateGenerateEnhancement gItem)"
 					/>
@@ -2957,9 +3017,9 @@
 			
 			<Refuel			criteria="f +BasicFuel; L:1-8;" priceAdj="100"/>
 			<RepairArmor	criteria="a L:1-8;" priceAdj="100"/>
-			<ReplaceArmor	criteria="a L:1-8;" priceAdj="100"/>
-			<InstallDevice	criteria="d L:1-7;" priceAdj="100"/>
-			<RemoveDevice	criteria="d L:1-7;" priceAdj="100"/>
+			<ReplaceArmor	criteria="a L:1-9;" priceAdj="100"/>
+			<InstallDevice	criteria="d L:1-9;" priceAdj="100"	upgradeInstallOnly="true"/>
+			<RemoveDevice	criteria="d L:1-9;" priceAdj="100"	upgradeInstallOnly="true"/>
 		</Trade>
 
 		<Events>
@@ -2980,6 +3040,7 @@
 							<Action name="Dock Services" key="D" default="1">
 								(rpgDockServices gPlayerShip {
 									checkMilitaryID: True
+									upgradeInstallOnly: True
 									})
 							</Action>
 

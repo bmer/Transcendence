@@ -65,20 +65,29 @@ class CLoadExtensionTask : public IHITask
 		//	IHITask virtuals
 		virtual ALERROR OnExecute (ITaskProcessor *pProcessor, CString *retsResult)
 			{
-			m_HI.HIPostCommand(CONSTLIT("serviceExtensionLoadBegin"), NULL);
+			//	Status
+
 			m_HI.HIPostCommand(CONSTLIT("serviceStatus"), new CString(strPatternSubst(CONSTLIT("Loading %s..."), pathGetFilename(m_Status.sFilespec))));
 
+			//	Load the extension, but lock out the UI thread so that we don't
+			//	screw up the data structures.
+			//
+			//	NOTE: LoadNewExtension is protected by try/catch, so it will always return 
+			//	correctly.
+
+			g_pUniverse->GetSem().Lock();
 			ALERROR error = g_pUniverse->LoadNewExtension(m_Status.sFilespec, m_Status.FileDigest, retsResult);
+			g_pUniverse->GetSem().Unlock();
+
 			if (error)
 				{
 				m_HI.HIPostCommand(CONSTLIT("serviceError"), new CString(*retsResult));
-				m_HI.HIPostCommand(CONSTLIT("serviceExtensionLoadEnd"), NULL);
 				return ERR_FAIL;
 				}
 
 			m_HI.HIPostCommand(CONSTLIT("serviceStatus"), NULL);
 			m_HI.HIPostCommand(CONSTLIT("serviceExtensionLoaded"), NULL);
-			m_HI.HIPostCommand(CONSTLIT("serviceExtensionLoadEnd"), NULL);
+
 			return NOERROR;
 			}
 
@@ -146,6 +155,7 @@ class CLoadUserCollectionTask : public IHITask
 		//	IHITask virtuals
 		virtual ALERROR OnExecute (ITaskProcessor *pProcessor, CString *retsResult)
 			{
+			CSmartLock Lock(g_pUniverse->GetSem());
 			::kernelDebugLogMessage("Loading user collection.");
 			return m_Service.LoadUserCollection(pProcessor, m_Multiverse, retsResult); 
 			}
@@ -192,6 +202,38 @@ class CProcessDownloadsTask : public IHITask
 
 	private:
 		CCloudService &m_Service;
+	};
+
+class CReadHighScoreListTask : public IHITask
+	{
+	public:
+		CReadHighScoreListTask (CHumanInterface &HI, CCloudService &Service, const CAdventureHighScoreList::SSelect &Select) : IHITask(HI), 
+				m_Service(Service), 
+				m_Select(Select)
+			{ }
+
+		//	IHITask virtuals
+		virtual ALERROR OnExecute (ITaskProcessor *pProcessor, CString *retsResult)
+			{
+			ALERROR error;
+
+			CAdventureHighScoreList *pHighScoreList = new CAdventureHighScoreList;
+			if (error = m_Service.ReadHighScoreList(pProcessor, m_Select.dwAdventure, pHighScoreList, retsResult))
+				{
+				m_HI.HIPostCommand(CONSTLIT("serviceHighScoreListError"));
+				delete pHighScoreList;
+				return error;
+				}
+
+			pHighScoreList->SetSelection(m_Select.sUsername, m_Select.iScore);
+			m_HI.HIPostCommand(CONSTLIT("serviceHighScoreListLoaded"), pHighScoreList);
+
+			return NOERROR;
+			}
+
+	private:
+		CCloudService &m_Service;
+		CAdventureHighScoreList::SSelect m_Select;
 	};
 
 class CRegisterUserTask : public IHITask
@@ -296,7 +338,11 @@ class CUpgradeProgram : public IHITask
 			{ }
 
 		//	IHITask virtuals
-		virtual ALERROR OnExecute (ITaskProcessor *pProcessor, CString *retsResult) { return m_Service.DownloadUpgrade(pProcessor, m_sUpgradeURL, retsResult); }
+		virtual ALERROR OnExecute (ITaskProcessor *pProcessor, CString *retsResult) 
+			{
+			::kernelDebugLogMessage("Upgrading Transcendence.");
+			return m_Service.DownloadUpgrade(pProcessor, m_sUpgradeURL, retsResult); 
+			}
 
 	private:
 		CCloudService &m_Service;

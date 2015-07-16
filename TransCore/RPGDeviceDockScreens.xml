@@ -37,7 +37,6 @@
 				>
 			(block (
 				(criteria (if (@ gData 'criteria) (@ gData 'criteria) "dUN"))
-				(minLevel (if (@ gData 'replaceItem) (itmGetLevel (@ gData 'replaceItem)) 1))
 				)
 				
 				(scrSetListFilter gScreen (lambda (theItem)
@@ -47,7 +46,6 @@
 							(not (@ gData 'replaceItem))
 							(not (itmIsEqual theItem (@ gData 'replaceItem) 'ignoreInstalled))
 							)
-						(geq (itmGetLevel theItem) minLevel)
 						)
 					))
 				)
@@ -65,24 +63,53 @@
 							installerObj: gSource
 							installPriceAdj: (@ gData 'installPriceAdj)
 							itemInCargo: True
+							replaceItem: (@ gData 'replaceItem)
 							}))
 
+						(if (@ gData 'replaceItem)
+							(scrSetControlValue gScreen 'currentItem {
+								source: gPlayerShip
+								item: (@ gData 'replaceItem)
+								})
+							)
+							
 						(setq gCanInstall (@ theResult 'canInstall))
 						(setq gCost (@ theResult 'price))
 
 						; Set the description
 						(scrSetDesc gScreen (@ theResult 'desc))
+						(if (@ theResult 'descWarning)
+							(scrSetControlValue gScreen 'descWarning (@ theResult 'descWarning))
+							)
 
 						; Disable actions
 						(scrEnableAction gScreen 'actionInstall gCanInstall)
 						)
 				</OnPaneInit>
 
+				<Controls>
+					<ItemDisplay id="currentItem"/>
+					<Text id="desc"/>
+					<Text id="descWarning" style="warning"/>
+				</Controls>
+
 				<Actions>
 					<Action id="actionInstall" default="1">
 						(if gCanInstall
-							(block Nil
-								(shpInstallDevice gPlayerShip (scrGetItem gScreen))
+							(block (
+								(recommendedSlot {
+									deviceSlot: 
+										(if (and (@ gData 'replaceItem)
+												(itmGetInstallPos (@ gData 'replaceItem))
+												)
+											(itmGetInstallPos (@ gData 'replaceItem))
+											-1
+											)
+									slotPosIndex: (@ gData 'slotPosIndex)
+									})
+								)
+								
+								(shpInstallDevice gPlayerShip (scrGetItem gScreen) recommendedSlot)
 								(objCharge gPlayerShip (objGetDefaultCurrency gSource) gCost)
 								(typSetData &svPlayer; 'tutorialInstalled True)
 								
@@ -282,7 +309,15 @@
 							checkTotalPower: True
 							currencyUsed: (objGetDefaultCurrency gSource)
 							installerObj: gSource
+							replaceItem: (@ gData 'replaceItem)
 							}))
+
+						(if (@ gData 'replaceItem)
+							(scrSetControlValue gScreen 'currentItem {
+								source: gPlayerShip
+								item: (@ gData 'replaceItem)
+								})
+							)
 
 						(scrSetData gScreen 'result theResult)
 						(scrSetData gScreen 'cost (@ theResult 'price))
@@ -295,14 +330,29 @@
 						)
 				</OnPaneInit>
 
+				<Controls>
+					<ItemDisplay id="currentItem"/>
+					<Text id="desc"/>
+				</Controls>
+				
 				<Actions>
 					<Action id="actionBuyAndInstall" default="1">
 						(block (
 							(theItem (itmSetCount (scrGetItem gScreen) 1))
+							(recommendedSlot {
+								deviceSlot: 
+									(if (and (@ gData 'replaceItem)
+											(itmGetInstallPos (@ gData 'replaceItem))
+											)
+										(itmGetInstallPos (@ gData 'replaceItem))
+										-1
+										)
+								slotPosIndex: (@ gData 'slotPosIndex)
+								})
 							)
 							
 							(rpgBuyItem gSource theItem (scrGetData gScreen 'cost) (objGetDefaultCurrency gSource))
-							(shpInstallDevice gPlayerShip theItem)
+							(shpInstallDevice gPlayerShip theItem recommendedSlot)
 							(typSetData &svPlayer; 'tutorialInstalled True)
 							(objRemoveItem gSource theItem)
 							

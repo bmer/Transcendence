@@ -25,6 +25,9 @@ const Metric MIN_PORT_ANIMATION_DIST2 =			MIN_PORT_ANIMATION_DIST * MIN_PORT_ANI
 const DWORD FIRE_THRESHOLD =					150;
 const DWORD HIT_THRESHOLD =						90;
 
+const DWORD FIRE_THRESHOLD_EXIT =				600;
+const DWORD HIT_THRESHOLD_EXIT =				150;
+
 const DWORD DAMAGE_BAR_TIMER =					30 * 5;
 
 #define MAX_GATE_DISTANCE						(g_KlicksPerPixel * 150.0)
@@ -78,6 +81,13 @@ void CPlayerShipController::AddOrder (OrderTypes Order, CSpaceObject *pTarget, c
 //	We get an order
 
 	{
+	//	If we've got no system then we ignore this. This can happen if we try to set
+	//	an order in the middle of gating. For example, if we fail a mission due
+	//	to gating away.
+
+	if (m_pShip->GetSystem() == NULL)
+		return;
+
 	//	For now, we only deal with one order at a time
 
 	switch (Order)
@@ -516,6 +526,19 @@ void CPlayerShipController::GenerateGameStats (CGameStats &Stats, bool bGameOver
 
 	{
 	m_Stats.GenerateGameStats(Stats, m_pShip, bGameOver);
+	}
+
+CString CPlayerShipController::GetAISettingString (const CString &sSetting)
+
+//	GetAISettingString
+//
+//	Returns custom settings
+
+	{
+	if (strEquals(sSetting, CONSTLIT("underAttack")))
+		return (m_bUnderAttack ? CONSTLIT("True") : NULL_STR);
+	else
+		return NULL_STR;
 	}
 
 int CPlayerShipController::GetCombatPower (void)
@@ -1725,6 +1748,8 @@ void CPlayerShipController::OnUpdatePlayer (SUpdateCtx &Ctx)
 //	This is called every tick after all other objects have been updated.
 
 	{
+	DEBUG_TRY
+
 	//	Remember the AutoTarget. NOTE: We need to check again to see if the
 	//	target is destroyed because it could have gotten destroyed after it
 	//	was picked.
@@ -1788,8 +1813,8 @@ void CPlayerShipController::OnUpdatePlayer (SUpdateCtx &Ctx)
 		{
 		bool bStillUnderAttack = Ctx.pSystem->EnemiesInLRS()
 				&& (Ctx.pSystem->IsPlayerUnderAttack()
-					|| m_pShip->HasBeenHitLately(HIT_THRESHOLD)
-					|| m_pShip->HasFiredLately(FIRE_THRESHOLD));
+					|| m_pShip->HasBeenHitLately(HIT_THRESHOLD_EXIT)
+					|| m_pShip->HasFiredLately(FIRE_THRESHOLD_EXIT));
 		if (!bStillUnderAttack)
 			{
 			g_pHI->HICommand(CMD_PLAYER_COMBAT_ENDED);
@@ -1804,8 +1829,8 @@ void CPlayerShipController::OnUpdatePlayer (SUpdateCtx &Ctx)
 	else
 		{
 		bool bUnderAttack = Ctx.pSystem->EnemiesInLRS()
-				&& (Ctx.pSystem->IsPlayerUnderAttack()
-					|| m_pShip->HasBeenHitLately(HIT_THRESHOLD));
+				&& m_pShip->HasFiredLately(FIRE_THRESHOLD)
+				&& (m_pShip->HasBeenHitLately(HIT_THRESHOLD) || Ctx.pSystem->IsPlayerUnderAttack());
 		if (bUnderAttack)
 			{
 			g_pHI->HICommand(CMD_PLAYER_COMBAT_STARTED);
@@ -1835,6 +1860,8 @@ void CPlayerShipController::OnUpdatePlayer (SUpdateCtx &Ctx)
 
 		m_bSignalDock = false;
 		}
+
+	DEBUG_CATCH
 	}
 
 void CPlayerShipController::OnWeaponStatusChanged (void)

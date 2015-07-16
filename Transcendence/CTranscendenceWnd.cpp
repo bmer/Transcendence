@@ -31,7 +31,6 @@ int g_cyScreen = 0;
 CTranscendenceWnd::CTranscendenceWnd (HWND hWnd, CTranscendenceController *pTC) : m_hWnd(hWnd),
 		m_pTC(pTC),
 		m_State(gsNone),
-		m_pLargeHUD(NULL),
 		m_pCurrentScreen(NULL),
 		m_bShowingMap(false),
 		m_bDebugConsole(false),
@@ -199,6 +198,7 @@ void CTranscendenceWnd::Animate (CG32bitImage &TheScreen, CGameSession *pSession
 #ifdef DEBUG
 				PaintDebugLines();
 #endif
+				m_pTC->PaintDebugInfo(TheScreen, m_rcScreen);
 
 				//	Paint soundtrack info
 
@@ -352,7 +352,7 @@ void CTranscendenceWnd::Animate (CG32bitImage &TheScreen, CGameSession *pSession
 					::OffsetRect(&rcRect, -m_rcMainScreen.left, -m_rcMainScreen.top);
 					m_pCurrentScreen->Invalidate(rcRect);
 
-					rcRect = m_rcLRS;
+					rcRect = m_LRSDisplay.GetRect();
 					::OffsetRect(&rcRect, -m_rcMainScreen.left, -m_rcMainScreen.top);
 					m_pCurrentScreen->Invalidate(rcRect);
 
@@ -392,6 +392,7 @@ void CTranscendenceWnd::Animate (CG32bitImage &TheScreen, CGameSession *pSession
 #ifdef DEBUG
 				PaintDebugLines();
 #endif
+				m_pTC->PaintDebugInfo(TheScreen, m_rcScreen);
 
 				//	Update the screen
 
@@ -428,6 +429,8 @@ void CTranscendenceWnd::Animate (CG32bitImage &TheScreen, CGameSession *pSession
 					TheScreen.Fill(m_rcScreen.left, m_rcScreen.top, RectWidth(m_rcScreen), RectHeight(m_rcScreen), BAR_COLOR);
 					}
 
+				m_pTC->PaintDebugInfo(TheScreen, m_rcScreen);
+
 				if (bTopMost)
 					g_pHI->GetScreenMgr().Blt();
 				break;
@@ -458,6 +461,7 @@ void CTranscendenceWnd::Animate (CG32bitImage &TheScreen, CGameSession *pSession
 #ifdef DEBUG
 				PaintDebugLines();
 #endif
+				m_pTC->PaintDebugInfo(TheScreen, m_rcScreen);
 
 				//	Update the screen
 
@@ -515,6 +519,7 @@ void CTranscendenceWnd::CleanUpPlayerShip (void)
 	{
 	DEBUG_TRY
 
+	m_LRSDisplay.CleanUp();
 	m_ReactorDisplay.CleanUp();
 	m_DeviceDisplay.CleanUp();
 	m_TargetDisplay.CleanUp();
@@ -1289,10 +1294,6 @@ LONG CTranscendenceWnd::WMChar (char chChar, DWORD dwKeyData)
 
 			break;
 			}
-
-		case gsIntro:
-			OnCharIntro(chChar, dwKeyData);
-			break;
 
 		case gsDestroyed:
 			{
@@ -2073,10 +2074,6 @@ LONG CTranscendenceWnd::WMKeyDown (int iVirtKey, DWORD dwKeyData)
 				}
 			break;
 			}
-
-		case gsIntro:
-			OnKeyDownIntro(iVirtKey, dwKeyData);
-			break;
 
 		case gsDocked:
 			{

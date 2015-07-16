@@ -75,11 +75,16 @@
 	<!ENTITY dsRPGManageWeapons			"0x00010030">
 	<!ENTITY dsRPGDecontamination		"0x00010031">
 	<!ENTITY dsRPGAbandonedStation		"0x00010032">
+	<!ENTITY dsRPGDockServicesBase		"0x00010033">
 	
 	<!-- 0040-004F CARGO CRATE -->
 	
 	<!ENTITY stGenericCargoCrate		"0x00010040">
 	<!ENTITY rsGenericCargoCrate		"0x00010041">
+	
+	<!-- 0050-006F BEHAVIORS -->
+	
+	<!ENTITY evStdMiningBehavior		"0x00010050">
 	]>
 	
 <CoreLibrary

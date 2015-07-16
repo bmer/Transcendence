@@ -36,11 +36,14 @@
     <Filter Include="Source Files\Game Session">
       <UniqueIdentifier>{71f6b08b-1213-4ea9-b840-8e42661b07de}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SteamBuild">
+      <UniqueIdentifier>{fc4384a3-226d-4c29-a344-98fc8a0ddece}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Intro Session">
+      <UniqueIdentifier>{5a650eb1-4f17-43ad-b2f3-0a076786ce4f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CIntroShipController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="CLoadGameWithSignInTask.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -96,9 +99,6 @@
       <Filter>Source Files\Sessions</Filter>
     </ClCompile>
     <ClCompile Include="CWaitSession.cpp">
-      <Filter>Source Files\Sessions</Filter>
-    </ClCompile>
-    <ClCompile Include="IntroScreen.cpp">
       <Filter>Source Files\Sessions</Filter>
     </ClCompile>
     <ClCompile Include="CArmorDisplay.cpp">
@@ -188,9 +188,6 @@
     <ClCompile Include="CChooseAdventureSession.cpp">
       <Filter>Source Files\Sessions</Filter>
     </ClCompile>
-    <ClCompile Include="CIntroSession.cpp">
-      <Filter>Source Files\Sessions</Filter>
-    </ClCompile>
     <ClCompile Include="GameScreen.cpp">
       <Filter>Source Files\Game Session</Filter>
     </ClCompile>
@@ -227,6 +224,21 @@
     <ClCompile Include="CTranscendencePlayer.cpp">
       <Filter>Source Files\Player</Filter>
     </ClCompile>
+    <ClCompile Include="CIntroSession.cpp">
+      <Filter>Source Files\Intro Session</Filter>
+    </ClCompile>
+    <ClCompile Include="CIntroShipController.cpp">
+      <Filter>Source Files\Intro Session</Filter>
+    </ClCompile>
+    <ClCompile Include="IntroScreen.cpp">
+      <Filter>Source Files\Intro Session</Filter>
+    </ClCompile>
+    <ClCompile Include="CHighScoreDisplay.cpp">
+      <Filter>Source Files\Intro Session</Filter>
+    </ClCompile>
+    <ClCompile Include="CLRSDisplay.cpp">
+      <Filter>Source Files\Displays</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BackgroundTasks.h">
@@ -254,6 +266,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DockScreenDisplayImpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IntroSession.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -296,6 +311,12 @@
     </None>
     <None Include="Resources\Title.dxfn">
       <Filter>Resources</Filter>
+    </None>
+    <None Include="..\..\..\SteamBuild\ContentBuilder\scripts\app_build_1000.vdf">
+      <Filter>SteamBuild</Filter>
+    </None>
+    <None Include="..\..\..\SteamBuild\ContentBuilder\scripts\depot_build_1001.vdf">
+      <Filter>SteamBuild</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

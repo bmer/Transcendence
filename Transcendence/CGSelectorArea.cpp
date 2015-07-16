@@ -24,6 +24,8 @@ const int NARROW_COLUMN_RIGHT_X =			NARROW_COLUMN_SPACING - (ITEM_ENTRY_WIDTH / 
 const int WIDE_COLUMN_LEFT_X =				-WIDE_COLUMN_SPACING - (ITEM_ENTRY_WIDTH / 2);
 const int WIDE_COLUMN_RIGHT_X =				WIDE_COLUMN_SPACING - (ITEM_ENTRY_WIDTH / 2);
 
+#define SINGLE_FREE_SLOT
+
 enum ELayoutPositions
 	{
 	posFront,
@@ -454,6 +456,7 @@ ICCItem *CGSelectorArea::GetEntryAtCursor (void)
 //	type: One of the following values:
 //		'installedItem: An installed item (armor or device)
 //		'emptySlot: An empty device slot
+//	deviceSlot: The device slot number
 
 	{
 	CCodeChain &CC = g_pUniverse->GetCC();
@@ -498,6 +501,8 @@ ICCItem *CGSelectorArea::GetEntryAtCursor (void)
 				default:
 					pStruct->SetStringValue(CC, CONSTLIT("category"), GetItemCategoryID(itemcatMiscDevice));
 				}
+			if (Entry.iSlotPosIndex != -1)
+				pStruct->SetIntegerAt(CC, CONSTLIT("slotPosIndex"), Entry.iSlotPosIndex);
 			break;
 
 		case typeInstalledItem:
@@ -692,6 +697,17 @@ void CGSelectorArea::Paint (CG32bitImage &Dest, const RECT &rcRect)
 					iSelectionWidth,
 					m_VI.GetColor(colorAreaDialogHighlight));
 			}
+		else
+			{
+			CGDraw::RoundedRectOutline(Dest,
+					rcRegion.left,
+					rcRegion.top,
+					RectWidth(rcRegion),
+					RectHeight(rcRegion),
+					iCornerRadius,
+					1,
+					m_VI.GetColor(colorTextFade));
+			}
 		}
 	}
 
@@ -737,7 +753,7 @@ void CGSelectorArea::PaintEmptySlot (CG32bitImage &Dest, const RECT &rcRect, con
 			break;
 
 		case devCargo:
-			sName = CONSTLIT("cargo hold slot");
+			sName = CONSTLIT("cargo expansion slot");
 			break;
 
 		case devReactor:
@@ -745,7 +761,7 @@ void CGSelectorArea::PaintEmptySlot (CG32bitImage &Dest, const RECT &rcRect, con
 			break;
 
 		case devDrive:
-			sName = CONSTLIT("drive slot");
+			sName = CONSTLIT("drive upgrade slot");
 			break;
 
 		default:
@@ -780,6 +796,7 @@ void CGSelectorArea::PaintInstalledItem (CG32bitImage &Dest, const RECT &rcRect,
 	CSpaceObject *pSource = Entry.pItemCtx->GetSource();
 	CInstalledArmor *pArmor = Entry.pItemCtx->GetArmor();
 	CInstalledDevice *pDevice = Entry.pItemCtx->GetDevice();
+	CDeviceClass *pDeviceClass;
 
 	//	Paint the item icon
 
@@ -802,6 +819,7 @@ void CGSelectorArea::PaintInstalledItem (CG32bitImage &Dest, const RECT &rcRect,
 			Item.GetNounPhrase(nounShort | nounNoModifiers),
 			0,
 			CG16bitFont::AlignCenter);
+
 
 	//	If this is an armor segment, then paint HP, etc.
 
@@ -854,15 +872,10 @@ void CGSelectorArea::PaintInstalledItem (CG32bitImage &Dest, const RECT &rcRect,
 			}
 		}
 
-	//	If this is not a device, then nothing to do
+	//	If this is a device, then paint device-specific stuff
 
-	else if (pDevice == NULL)
-		{
-		}
-
-	//	If this is a shield generator, then paint shield stuff
-
-	else if (pDevice->GetCategory() == itemcatShields)
+	else if (pDevice
+				&& (pDeviceClass = pDevice->GetClass()))
 		{
 		int x = rcRect.right - ITEM_ENTRY_PADDING_RIGHT;
 		int y = rcRect.top + ITEM_ENTRY_PADDING_TOP;
@@ -871,42 +884,53 @@ void CGSelectorArea::PaintInstalledItem (CG32bitImage &Dest, const RECT &rcRect,
 
 		if (pDevice->IsEnabled())
 			{
-			int iHP;
-			int iMaxHP;
-			pDevice->GetStatus(pSource, &iHP, &iMaxHP);
-
-			CString sHP = strFromInt(iHP);
-			m_VI.GetFont(fontLarge).DrawText(Dest,
-					x,
-					y,
-					m_VI.GetColor(colorTextHighlight),
-					sHP,
-					CG16bitFont::AlignRight);
-			y += m_VI.GetFont(fontLarge).GetHeight();
-
-			//	Shield level
-
-			if (iMaxHP != iHP && iMaxHP > 0)
+			if (pDevice->GetCategory() == itemcatShields)
 				{
-				int iPercent = ((1000 * iHP / iMaxHP) + 5) / 10;
-				CString sPercent = strPatternSubst(CONSTLIT("%d%%"), iPercent);
+				int iHP;
+				int iMaxHP;
+				pDevice->GetStatus(pSource, &iHP, &iMaxHP);
 
-				m_VI.GetFont(fontMedium).DrawText(Dest,
+				CString sHP = strFromInt(iHP);
+				m_VI.GetFont(fontLarge).DrawText(Dest,
 						x,
 						y,
-						m_VI.GetColor(colorTextShields),
-						sPercent,
+						m_VI.GetColor(colorTextHighlight),
+						sHP,
 						CG16bitFont::AlignRight);
-				y += m_VI.GetFont(fontMedium).GetHeight();
+				y += m_VI.GetFont(fontLarge).GetHeight();
+
+				//	Shield level
+
+				if (iMaxHP != iHP && iMaxHP > 0)
+					{
+					int iPercent = ((1000 * iHP / iMaxHP) + 5) / 10;
+					CString sPercent = strPatternSubst(CONSTLIT("%d%%"), iPercent);
+
+					m_VI.GetFont(fontMedium).DrawText(Dest,
+							x,
+							y,
+							m_VI.GetColor(colorTextShields),
+							sPercent,
+							CG16bitFont::AlignRight);
+					y += m_VI.GetFont(fontMedium).GetHeight();
+					}
 				}
 			}
 		else
 			PaintModifier(Dest, x, y, CONSTLIT("disabled"), m_VI.GetColor(colorTextNormal), CG32bitPixel::Null(), &y);
 
+		//	External
+
+		if (pDevice->IsExternal() || pDeviceClass->IsExternal())
+			PaintModifier(Dest, x, y, CONSTLIT("external"), m_VI.GetColor(colorTextNormal), CG32bitPixel::Null(), &y);
+
 		//	Damaged
 
 		if (pDevice->IsDamaged())
 			PaintModifier(Dest, x, y, CONSTLIT("damaged"), m_VI.GetColor(colorTextDisadvantage), m_VI.GetColor(colorAreaDisadvantage), &y);
+
+		if (pDevice->IsDisrupted())
+			PaintModifier(Dest, x, y, CONSTLIT("ionized"), m_VI.GetColor(colorTextDisadvantage), m_VI.GetColor(colorAreaDisadvantage), &y);
 
 		//	Modifiers
 
@@ -1074,6 +1098,19 @@ void CGSelectorArea::SetRegionsFromMiscDevices (CSpaceObject *pSource)
 
 	CShipClass *pClass = pShip->GetClass();
 
+	//	Keep track of layouts that have already been used.
+
+	TArray<bool> SlotStatus;
+	SlotStatus.InsertEmpty(MISC_DEVICES_LAYOUT_COUNT);
+	for (i = 0; i < MISC_DEVICES_LAYOUT_COUNT; i++)
+		SlotStatus[i] = true;
+
+	//	Reserve the slots for named device types
+
+	SlotStatus[REACTOR_SLOT_INDEX] = false;
+	SlotStatus[DRIVE_SLOT_INDEX] = false;
+	SlotStatus[CARGO_SLOT_INDEX] = false;
+
 	//	Count the number of miscellaneous devices with 0
 	//	slots (because we may need to bump them).
 
@@ -1098,6 +1135,7 @@ void CGSelectorArea::SetRegionsFromMiscDevices (CSpaceObject *pSource)
 
 	//	Create a region for each device.
 
+	int iIndex = -1;
 	bool bHasReactor = false;
 	bool bHasDrive = false;
 	bool bHasCargo = false;
@@ -1110,6 +1148,7 @@ void CGSelectorArea::SetRegionsFromMiscDevices (CSpaceObject *pSource)
 
 		//	Figure out the layout descriptor
 
+		iIndex = -1;
 		const SLayoutDesc *pLayout = NULL;
 		switch (pDevice->GetCategory())
 			{
@@ -1124,23 +1163,41 @@ void CGSelectorArea::SetRegionsFromMiscDevices (CSpaceObject *pSource)
 				break;
 
 			case itemcatMiscDevice:
-				if (iNextUnamedSlot < MISC_DEVICES_LAYOUT_COUNT)
-					{
-					//	If this miscellaneous device does not need slots, then 
-					//	make sure we have room for it.
+				{
+				//	If this is a 0-slot device and we have no more room for
+				//	0-slot devices, then we skip it.
 
-					if (pDevice->GetClass()->GetSlotsRequired() == 0)
-						{
-						if (iNonSlotDeviceSlotsAvail > 0)
-							{
-							iNonSlotDeviceSlotsAvail--;
-							pLayout = &g_MiscDevicesLayout[iNextUnamedSlot++];
-							}
-						}
-					else
-						pLayout = &g_MiscDevicesLayout[iNextUnamedSlot++];
+				if (pDevice->GetClass()->GetSlotsRequired() == 0
+						&& iNonSlotDeviceSlotsAvail <= 0)
+					continue;
+
+				//	If the device already has a position index, then use that (assuming
+				//	it's free).
+
+				iIndex = pDevice->GetSlotPosIndex();
+				if (iIndex < 0 || iIndex >= SlotStatus.GetCount() || !SlotStatus[iIndex])
+					iIndex = -1;
+
+				//	If we don't have an assigned slot, figure it out.
+
+				if (iIndex == -1)
+					{
+					//	Look for a new position
+
+					if (!FindLayoutForPos(pDevice->GetPosOffset(pShip), SlotStatus, &iIndex))
+						continue;
+
+					//	Remember so we stay in this location.
+
+					pDevice->SetSlotPosIndex(iIndex);
 					}
+
+				//	Remember the layout and mark it as used.
+
+				pLayout = &g_MiscDevicesLayout[iIndex];
+				SlotStatus[iIndex] = false;
 				break;
+				}
 
 			case itemcatReactor:
 				pLayout = &g_MiscDevicesLayout[REACTOR_SLOT_INDEX];
@@ -1157,6 +1214,7 @@ void CGSelectorArea::SetRegionsFromMiscDevices (CSpaceObject *pSource)
 			pEntry->iType = typeInstalledItem;
 			pEntry->pItemCtx = new CItemCtx(pShip, pDevice);
 
+			pEntry->iSlotPosIndex = iIndex;
 			pEntry->rcRect.left = pLayout->xLeft;
 			pEntry->rcRect.top = pLayout->yTop;
 			pEntry->rcRect.right = pEntry->rcRect.left + ITEM_ENTRY_WIDTH;
@@ -1208,20 +1266,37 @@ void CGSelectorArea::SetRegionsFromMiscDevices (CSpaceObject *pSource)
 		pEntry->rcRect.bottom = pEntry->rcRect.top + ITEM_ENTRY_HEIGHT;
 		}
 
-	//	Always add a misc device slot
+	//	Figure out how many empty weapon slots we should create. We add one 
+	//	empty slot for each weapon slot, but we subtract one if we don't have
+	//	a launcher and we always have at least 1 empty slot, in case the player
+	//	finds a slot-less weapon.
 
-	if (iNextUnamedSlot < MISC_DEVICES_LAYOUT_COUNT)
+#ifdef SINGLE_FREE_SLOT
+	int iEmptySlots = 1;
+#else
+	int iNonWeaponSlotsInUse;
+	int iTotalSlotsInUse = pShip->CalcDeviceSlotsInUse(NULL, &iNonWeaponSlotsInUse);
+	int iEmptySlots = Max(1, Min((pClass->GetMaxDevices() - iTotalSlotsInUse), (pClass->GetMaxNonWeapons() - iNonWeaponSlotsInUse)) - (bHasReactor ? 0 : 1) - (bHasDrive ? 0 : 1) - (bHasCargo ? 0 : 1));
+#endif
+
+	for (i = 0; i < iEmptySlots; i++)
 		{
-		const SLayoutDesc *pLayout = &g_MiscDevicesLayout[iNextUnamedSlot++];
+		if (FindLayoutForPos(CVector(), SlotStatus, &iIndex))
+			{
+			const SLayoutDesc *pLayout = &g_MiscDevicesLayout[iIndex];
 
-		SEntry *pEntry = m_Regions.Insert();
-		pEntry->iType = typeEmptySlot;
-		pEntry->iSlotType = devNone;
+			SEntry *pEntry = m_Regions.Insert();
+			pEntry->iType = typeEmptySlot;
+			pEntry->iSlotType = devNone;
 
-		pEntry->rcRect.left = pLayout->xLeft;
-		pEntry->rcRect.top = pLayout->yTop;
-		pEntry->rcRect.right = pEntry->rcRect.left + ITEM_ENTRY_WIDTH;
-		pEntry->rcRect.bottom = pEntry->rcRect.top + ITEM_ENTRY_HEIGHT;
+			pEntry->iSlotPosIndex = iIndex;
+			pEntry->rcRect.left = pLayout->xLeft;
+			pEntry->rcRect.top = pLayout->yTop;
+			pEntry->rcRect.right = pEntry->rcRect.left + ITEM_ENTRY_WIDTH;
+			pEntry->rcRect.bottom = pEntry->rcRect.top + ITEM_ENTRY_HEIGHT;
+
+			SlotStatus[iIndex] = false;
+			}
 		}
 	}
 
@@ -1250,10 +1325,43 @@ void CGSelectorArea::SetRegionsFromWeapons (CSpaceObject *pSource)
 	for (i = 0; i < MISC_DEVICES_LAYOUT_COUNT; i++)
 		SlotStatus[i] = true;
 
+	//	If we don't have a launcher, we place the launcher slot first because we
+	//	want it to take precedence (position-wise).
+
+	int iIndex;
+	bool bHasLauncher = (pShip->GetNamedDevice(devMissileWeapon) != NULL);
+	if (!bHasLauncher)
+		{
+		//	See if we can figure out the proper position for the launcher based
+		//	on the class slots
+
+		CVector vLauncherPos;
+		SDeviceDesc DeviceDesc;
+		if (pClass->FindDeviceSlotDesc(devMissileWeapon, &DeviceDesc))
+			vLauncherPos = pClass->GetPosOffset(DeviceDesc.iPosAngle, DeviceDesc.iPosRadius, DeviceDesc.iPosZ, DeviceDesc.b3DPosition);
+
+		//	Find a layout
+
+		if (FindLayoutForPos(vLauncherPos, SlotStatus, &iIndex))
+			{
+			const SLayoutDesc *pLayout = &g_MiscDevicesLayout[iIndex];
+
+			SEntry *pEntry = m_Regions.Insert();
+			pEntry->iType = typeEmptySlot;
+			pEntry->iSlotType = devMissileWeapon;
+
+			pEntry->iSlotPosIndex = iIndex;
+			pEntry->rcRect.left = pLayout->xLeft;
+			pEntry->rcRect.top = pLayout->yTop;
+			pEntry->rcRect.right = pEntry->rcRect.left + ITEM_ENTRY_WIDTH;
+			pEntry->rcRect.bottom = pEntry->rcRect.top + ITEM_ENTRY_HEIGHT;
+
+			SlotStatus[iIndex] = false;
+			}
+		}
+
 	//	Create a region for each weapon.
 
-	bool bHasLauncher = false;
-	int iIndex;
 	for (i = 0; i < pShip->GetDeviceCount(); i++)
 		{
 		CInstalledDevice *pDevice = pShip->GetDevice(i);
@@ -1269,7 +1377,7 @@ void CGSelectorArea::SetRegionsFromWeapons (CSpaceObject *pSource)
 		//	it's free).
 
 		iIndex = pDevice->GetSlotPosIndex();
-		if (iIndex != -1 && !SlotStatus[iIndex])
+		if (iIndex < 0 || iIndex >= SlotStatus.GetCount() || !SlotStatus[iIndex])
 			iIndex = -1;
 
 		//	If we don't have an assigned slot, figure it out.
@@ -1292,6 +1400,7 @@ void CGSelectorArea::SetRegionsFromWeapons (CSpaceObject *pSource)
 		pEntry->iType = typeInstalledItem;
 		pEntry->pItemCtx = new CItemCtx(pShip, pDevice);
 
+		pEntry->iSlotPosIndex = iIndex;
 		pEntry->rcRect.left = pLayout->xLeft;
 		pEntry->rcRect.top = pLayout->yTop;
 		pEntry->rcRect.right = pEntry->rcRect.left + ITEM_ENTRY_WIDTH;
@@ -1302,41 +1411,46 @@ void CGSelectorArea::SetRegionsFromWeapons (CSpaceObject *pSource)
 		SlotStatus[iIndex] = false;
 		}
 
-	//	If necessary, add a launcher slot
+	//	Figure out how many empty weapon slots we should create. We add one 
+	//	empty slot for each weapon slot, but we subtract one if we don't have
+	//	a launcher and we always have at least 1 empty slot, in case the player
+	//	finds a slot-less weapon.
 
-	if (!bHasLauncher
-			&& FindLayoutForPos(CVector(), SlotStatus, &iIndex))
+#ifdef SINGLE_FREE_SLOT
+	int iEmptySlots = 1;
+#else
+	int iWeaponSlotsInUse;
+	int iTotalSlotsInUse = pShip->CalcDeviceSlotsInUse(&iWeaponSlotsInUse);
+	int iEmptySlots = Max(1, Min((pClass->GetMaxDevices() - iTotalSlotsInUse), (pClass->GetMaxWeapons() - iWeaponSlotsInUse)) - (bHasLauncher ? 0 : 1));
+#endif
+
+	//	Try to position the empty slots
+
+	CVector vWeaponPos;
+	SDeviceDesc DeviceDesc;
+	if (pClass->FindDeviceSlotDesc(devPrimaryWeapon, &DeviceDesc))
+		vWeaponPos = pClass->GetPosOffset(DeviceDesc.iPosAngle, DeviceDesc.iPosRadius, DeviceDesc.iPosZ, DeviceDesc.b3DPosition);
+
+	for (i = 0; i < iEmptySlots; i++)
 		{
-		const SLayoutDesc *pLayout = &g_MiscDevicesLayout[iIndex];
+		//	Find a position
 
-		SEntry *pEntry = m_Regions.Insert();
-		pEntry->iType = typeEmptySlot;
-		pEntry->iSlotType = devMissileWeapon;
+		if (FindLayoutForPos(vWeaponPos, SlotStatus, &iIndex))
+			{
+			const SLayoutDesc *pLayout = &g_MiscDevicesLayout[iIndex];
 
-		pEntry->rcRect.left = pLayout->xLeft;
-		pEntry->rcRect.top = pLayout->yTop;
-		pEntry->rcRect.right = pEntry->rcRect.left + ITEM_ENTRY_WIDTH;
-		pEntry->rcRect.bottom = pEntry->rcRect.top + ITEM_ENTRY_HEIGHT;
+			SEntry *pEntry = m_Regions.Insert();
+			pEntry->iType = typeEmptySlot;
+			pEntry->iSlotType = devPrimaryWeapon;
 
-		SlotStatus[iIndex] = false;
-		}
+			pEntry->iSlotPosIndex = iIndex;
+			pEntry->rcRect.left = pLayout->xLeft;
+			pEntry->rcRect.top = pLayout->yTop;
+			pEntry->rcRect.right = pEntry->rcRect.left + ITEM_ENTRY_WIDTH;
+			pEntry->rcRect.bottom = pEntry->rcRect.top + ITEM_ENTRY_HEIGHT;
 
-	//	Always add an empty slot
-
-	if (FindLayoutForPos(CVector(), SlotStatus, &iIndex))
-		{
-		const SLayoutDesc *pLayout = &g_MiscDevicesLayout[iIndex];
-
-		SEntry *pEntry = m_Regions.Insert();
-		pEntry->iType = typeEmptySlot;
-		pEntry->iSlotType = devPrimaryWeapon;
-
-		pEntry->rcRect.left = pLayout->xLeft;
-		pEntry->rcRect.top = pLayout->yTop;
-		pEntry->rcRect.right = pEntry->rcRect.left + ITEM_ENTRY_WIDTH;
-		pEntry->rcRect.bottom = pEntry->rcRect.top + ITEM_ENTRY_HEIGHT;
-
-		SlotStatus[iIndex] = false;
+			SlotStatus[iIndex] = false;
+			}
 		}
 	}
 

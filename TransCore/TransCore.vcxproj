@@ -9,6 +9,14 @@
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="SteamDebug|Win32">
+      <Configuration>SteamDebug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="SteamRelease|Win32">
+      <Configuration>SteamRelease</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{32A1A9FA-BBFD-44E6-8BBC-F6F531FDE66E}</ProjectGuid>
@@ -21,7 +29,20 @@
     <PlatformToolset>v120_xp</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='SteamDebug|Win32'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120_xp</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120_xp</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='SteamRelease|Win32'" Label="Configuration">
     <ConfigurationType>Utility</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v120_xp</PlatformToolset>
@@ -34,7 +55,13 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='SteamDebug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='SteamRelease|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
@@ -49,7 +76,31 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='SteamDebug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='SteamRelease|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
@@ -128,7 +179,9 @@
     <None Include="CommonwealthFleet.xml">
       <SubType>Designer</SubType>
     </None>
-    <None Include="CommonwealthMetropolis.xml" />
+    <None Include="CommonwealthMetropolis.xml">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="CommonwealthMilitia.xml">
       <SubType>Designer</SubType>
     </None>
@@ -193,7 +246,9 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="StdEffects.xml" />
-    <None Include="CoreExplosions.xml" />
+    <None Include="CoreExplosions.xml">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="StdFuel.xml" />
     <None Include="StdPlayerShips.xml">
       <SubType>Designer</SubType>
@@ -297,11 +352,17 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Groups.xml" />
-    <None Include="Ice.xml" />
-    <None Include="Metallic.xml" />
+    <None Include="Ice.xml">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Metallic.xml">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Mining.xml" />
     <None Include="Neurohack.xml" />
-    <None Include="Primordial.xml" />
+    <None Include="Primordial.xml">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Rocky.xml" />
     <None Include="Stargates.xml" />
     <None Include="StarSystems.xml">
@@ -309,18 +370,26 @@
     </None>
     <None Include="GalaxyCompatibility.xml" />
     <None Include="GalaxyEffects.xml" />
-    <None Include="Volcanic.xml" />
+    <None Include="Volcanic.xml">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Worlds.xml">
       <SubType>Designer</SubType>
     </None>
     <None Include="Stars.xml" />
-    <None Include="Ovoids.xml" />
+    <None Include="Ovoids.xml">
+      <SubType>Designer</SubType>
+    </None>
     <Xml Include="CompatibilityLibrary.xml" />
-    <Xml Include="CorePlaceholders.xml" />
+    <Xml Include="CorePlaceholders.xml">
+      <SubType>Designer</SubType>
+    </Xml>
+    <Xml Include="Ferians.xml" />
     <Xml Include="HumanSpaceVol01.xml" />
     <Xml Include="Ore.xml" />
     <Xml Include="RPGLibrary.xml" />
     <Xml Include="GalaxyLibrary.xml" />
+    <Xml Include="StdMiningEquipment.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

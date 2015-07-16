@@ -58,14 +58,14 @@
 
 			attributes=			"capitalShip, commonwealth, commonwealthFleet, commonwealthMilitary, cscAntarctica, majorShip, uncharted"
 			   
-			mass=				"50000"
+			size=				"400"
+			mass=				"200000"
 			cargoSpace=			"5000"
 			thrustRatio=		"0.5"
 			maxSpeed=			"2"
 			cyberDefenseLevel=	"6"
 			   
 			explosionType=		"&vtThermoExplosion4;"
-			leavesWreck=		"100"
 
 			dockScreen=			"Main"
 			defaultBackgroundID="&rsCSCBkgnd;"
@@ -79,10 +79,10 @@
 			/>
 		
 		<Devices>
-			<Device deviceID="&itTeV9Blaster;" secondaryWeapon="true" minFireArc="270" maxFireArc="90"  posAngle="0" posRadius="64"/>
-			<Device deviceID="&itTeV9Blaster;" secondaryWeapon="true" minFireArc="90"  maxFireArc="270" posAngle="180" posRadius="64"/>
-			<Device deviceID="&itTeV9Blaster;" secondaryWeapon="true" omnidirectional="true" posAngle="90" posRadius="44"/>
-			<Device deviceID="&itTeV9Blaster;" secondaryWeapon="true" omnidirectional="true" posAngle="270" posRadius="44"/>
+			<Device deviceID="&itTeV9Blaster;" secondaryWeapon="true" minFireArc="270" maxFireArc="90"  posAngle="0" posRadius="98" posZ="-5"/>
+			<Device deviceID="&itTeV9Blaster;" secondaryWeapon="true" minFireArc="90"  maxFireArc="270" posAngle="180" posRadius="98" posZ="-5"/>
+			<Device deviceID="&itTeV9Blaster;" secondaryWeapon="true" omnidirectional="true" posAngle="90" posRadius="98" posZ="-5"/>
+			<Device deviceID="&itTeV9Blaster;" secondaryWeapon="true" omnidirectional="true" posAngle="270" posRadius="98" posZ="-5"/>
 			<Device deviceID="&itNAMIHeavyLauncher;" omnidirectional="true"/>
 			
 			<Device deviceID="&itMissileDefense;" omnidirectional="true" />
@@ -124,12 +124,12 @@
 			<Item count="1d4"	item="&itR5BDeflector;"/>
 		</Items>
 
-		<Image imageID="&rsLargeShips2;" imageX="0" imageY="0" imageWidth="256" imageHeight="256" />
+		<Image imageID="&rsCSC;" imageX="0" imageY="0" imageWidth="370" imageHeight="370" />
 
 		<Effects>
-			<Effect type="thrustMain"		posAngle="170"	posRadius="75"	posZ="-5"	rotation="180"	effect="&efMainThrusterLarge;"/>
-			<Effect type="thrustMain"		posAngle="180"	posRadius="74"	posZ="-5"	rotation="180"	effect="&efMainThrusterLarge;"/>
-			<Effect type="thrustMain"		posAngle="-170"	posRadius="75"	posZ="-5"	rotation="180"	effect="&efMainThrusterLarge;"/>
+			<Effect type="thrustMain"		posAngle="166"	posRadius="116"	posZ="-10"	rotation="180"	effect="&efMainThrusterLarge;"/>
+			<Effect type="thrustMain"		posAngle="180"	posRadius="114"	posZ="-10"	rotation="180"	effect="&efMainThrusterLarge;"/>
+			<Effect type="thrustMain"		posAngle="-166"	posRadius="116"	posZ="-10"	rotation="180"	effect="&efMainThrusterLarge;"/>
 		</Effects>
 			
 		<AISettings
@@ -139,9 +139,9 @@
 			/>
 
 		<Trade currency="credit" max="100000" replenish="5000">
-			<Sell	criteria="m +Commonwealth; -Illegal; -Military; -NotForSale; L:1-10;" priceAdj="100" inventoryAdj="200"/>
+			<Sell	criteria="m +Commonwealth; -Illegal; -Military; -NotForSale; -notStandard; L:1-10;" priceAdj="100" inventoryAdj="200"/>
 			<Sell	criteria="*NU -Illegal; -ID; -NotForSale;"	priceAdj="100"/>
-			<Sell	criteria="rNU L:1-9; -Illegal; -NotForSale;"	priceAdj="100"	inventoryAdj="100"/>
+			<Sell	criteria="rNU L:1-9; -Illegal; -NotForSale; -notStandard;"	priceAdj="100"	inventoryAdj="100"/>
 			
 			<Refuel			criteria="f +BasicFuel; L:1-9;" priceAdj="90"/>
 			<RepairArmor	criteria="a L:1-10;" priceAdj="100"/>
@@ -808,14 +808,14 @@
 			attributes=			"capitalShip, commonwealth, commonwealthFleet, commonwealthMilitary, fleetLaw, majorShip"
 			inherit=			"&baCSCBase;"
 			   
-			mass=				"50000"
+			size=				"400"
+			mass=				"200000"
 			cargoSpace=			"5000"
-			thrust=				"0.5"
+			thrustRatio=		"0.5"
 			maxSpeed=			"2"
 			cyberDefenseLevel=	"6"
 			   
 			explosionType=		"&vtThermoExplosion4;"
-			leavesWreck=		"100"
 
 			dockScreen=			"Main"
 			>
@@ -828,10 +828,10 @@
 			/>
 		
 		<Devices>
-			<Device deviceID="&itStarCannon;" secondaryWeapon="true" minFireArc="270" maxFireArc="90"  posAngle="0" posRadius="64"/>
-			<Device deviceID="&itStarCannon;" secondaryWeapon="true" minFireArc="90"  maxFireArc="270" posAngle="180" posRadius="64"/>
-			<Device deviceID="&itStarCannon;" secondaryWeapon="true" omnidirectional="true" posAngle="90" posRadius="44"/>
-			<Device deviceID="&itStarCannon;" secondaryWeapon="true" omnidirectional="true" posAngle="270" posRadius="44"/>
+			<Device deviceID="&itStarCannon;" secondaryWeapon="true" minFireArc="270" maxFireArc="90"  posAngle="0" posRadius="98" posZ="-5"/>
+			<Device deviceID="&itStarCannon;" secondaryWeapon="true" minFireArc="90"  maxFireArc="270" posAngle="180" posRadius="98" posZ="-5"/>
+			<Device deviceID="&itStarCannon;" secondaryWeapon="true" omnidirectional="true" posAngle="90" posRadius="98" posZ="-5"/>
+			<Device deviceID="&itStarCannon;" secondaryWeapon="true" omnidirectional="true" posAngle="270" posRadius="98" posZ="-5"/>
 			<Device deviceID="&itNAMIHeavyLauncher;" omnidirectional="true"/>
 
 			<Device deviceID="&itMissileDefense;" omnidirectional="true" />
@@ -873,12 +873,12 @@
 			<Item count="1d4"	item="&itR5BDeflector;"/>
 		</Items>
 
-		<Image imageID="&rsLargeShips2;" imageX="0" imageY="0" imageWidth="256" imageHeight="256" />
+		<Image imageID="&rsCSC;" imageX="0" imageY="0" imageWidth="370" imageHeight="370" />
 
 		<Effects>
-			<Effect type="thrustMain"		posAngle="170"	posRadius="75"	posZ="-5"	rotation="180"	effect="&efMainThrusterLarge;"/>
-			<Effect type="thrustMain"		posAngle="180"	posRadius="74"	posZ="-5"	rotation="180"	effect="&efMainThrusterLarge;"/>
-			<Effect type="thrustMain"		posAngle="-170"	posRadius="75"	posZ="-5"	rotation="180"	effect="&efMainThrusterLarge;"/>
+			<Effect type="thrustMain"		posAngle="166"	posRadius="116"	posZ="-10"	rotation="180"	effect="&efMainThrusterLarge;"/>
+			<Effect type="thrustMain"		posAngle="180"	posRadius="114"	posZ="-10"	rotation="180"	effect="&efMainThrusterLarge;"/>
+			<Effect type="thrustMain"		posAngle="-166"	posRadius="116"	posZ="-10"	rotation="180"	effect="&efMainThrusterLarge;"/>
 		</Effects>
 			
 		<AISettings
@@ -888,9 +888,9 @@
 			/>
 
 		<Trade currency="credit" max="100000" replenish="5000">
-			<Sell	criteria="m +Commonwealth; -Illegal; -Military; -NotForSale; L:1-10;" priceAdj="100" inventoryAdj="200"/>
+			<Sell	criteria="m +Commonwealth; -Illegal; -Military; -NotForSale; -notStandard; L:1-10;" priceAdj="100" inventoryAdj="200"/>
 			<Sell	criteria="*NU -Illegal; -ID; -NotForSale;"	priceAdj="100"/>
-			<Sell	criteria="rNU L:1-9; -Illegal; -NotForSale;"	priceAdj="100"	inventoryAdj="100"/>
+			<Sell	criteria="rNU L:1-9; -Illegal; -NotForSale; -notStandard;"	priceAdj="100"	inventoryAdj="100"/>
 			
 			<Refuel			criteria="f +BasicFuel; L:1-9;" priceAdj="90"/>
 			<RepairArmor	criteria="a L:1-10;" priceAdj="100"/>
@@ -1558,7 +1558,7 @@
 		</Items>
 
 		<Trade currency="credit" max="50000" replenish="2500">
-			<Sell	criteria="m +Commonwealth; -PremiumAmmo; -Illegal; -NotForSale;" priceAdj="115" inventoryAdj="100"/>
+			<Sell	criteria="m +Commonwealth; -PremiumAmmo; -Illegal; -NotForSale; -notStandard;" priceAdj="115" inventoryAdj="100"/>
 			<Sell	criteria="*NU -Illegal; -ID; -NotForSale;"	priceAdj="110"/>
 			<Buy	criteria="amswNU -Illegal; -NotForSale;"	priceAdj="50"/>
 			<Buy	criteria="*NU -Illegal; -ID; -NotForSale;"	priceAdj="90"/>

@@ -23,8 +23,6 @@
 			reactorPower=		"30"
 			maxArmor=			"2500"
 			maxDevices=			"1"
-
-			leavesWreck=		"0"
 			>
 
 		<!-- Configuration -->
@@ -83,8 +81,6 @@
 			maxArmor=			"3000"
 			maxDevices=			"2"
 			maxWeapons=			"1"
-			   
-			leavesWreck=		"0"
 			>
 
 		<!-- Configuration -->
@@ -169,8 +165,6 @@
 			maxArmor=			"3000"
 			maxDevices=			"2"
 			maxWeapons=			"1"
-			   
-			leavesWreck=		"0"
 			>
 
 		<!-- Configuration -->
@@ -245,8 +239,6 @@
 			maxArmor=			"3000"
 			maxDevices=			"3"
 			maxWeapons=			"1"
-			   
-			leavesWreck=		"0"
 			>
 
 		<!-- Configuration -->
@@ -309,8 +301,6 @@
 			maxWeapons=			"1"
 			   
 			dockScreen=			"Main"
-
-			leavesWreck=		"95"
 			>
 
 		<!-- Configuration -->
@@ -406,8 +396,6 @@
 			maxArmor=			"4000"
 			maxDevices=			"2"
 			maxWeapons=			"1"
-			   
-			leavesWreck=		"0"
 			>
 
 		<!-- Configuration -->
@@ -493,8 +481,6 @@
 			maxArmor=			"4000"
 			maxDevices=			"2"
 			maxWeapons=			"1"
-			   
-			leavesWreck=		"0"
 			>
 
 		<!-- Configuration -->
@@ -554,8 +540,6 @@
 			maxArmor=			"3000"
 			maxDevices=			"2"
 			maxWeapons=			"1"
-			   
-			leavesWreck=		"0"
 			>
 
 		<!-- Configuration -->
@@ -699,7 +683,7 @@
 								(if exploredObj
 									(block Nil
 										(objSetKnown exploredObj)
-										(objSendMessage gSender gSource (objTranslate gSource 'ObjectExplored))
+										(objSendMessage gPlayerShip gSource (objTranslate gSource 'ObjectExplored))
 										
 										(objClearShowAsDestination exploredObj)
 										)
@@ -716,7 +700,7 @@
 											(objClearShowAsDestination gSource)
 								
 											(objSetData gSource 'behavior 'escorting)
-											(objSendMessage gSender gSource (objTranslate gSource 'ExplorationDone))
+											(objSendMessage gPlayerShip gSource (objTranslate gSource 'ExplorationDone))
 											)
 											
 									;	Otherwise, go to new object

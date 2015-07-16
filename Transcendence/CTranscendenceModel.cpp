@@ -1410,17 +1410,17 @@ ALERROR CTranscendenceModel::LoadUniverse (const CString &sCollectionFolder, con
 		Ctx.bDefaultExtensions = true;
 		Ctx.bForceTDB = m_bForceTDB;
 
+		//	Add additional CodeChain primitives
+
+		SPrimitiveDefTable *pNewTable = Ctx.CCPrimitives.Insert();
+		m_HI.GetCodeChainPrimitives(pNewTable);
+
+		pNewTable = Ctx.CCPrimitives.Insert();
+		GetCodeChainExtensions(pNewTable);
+
+		//	Initialize the universe
+
 		if (error = m_Universe.Init(Ctx, retsError))
-			return error;
-
-		//	Initialize TSUI CodeChain primitives
-
-		if (error = m_HI.InitCodeChainPrimitives(m_Universe.GetCC()))
-			return error;
-
-		//	Initialize Transcendence application primitives
-
-		if (error = InitCodeChainExtensions(m_Universe.GetCC()))
 			return error;
 
 		return NOERROR;
@@ -2138,9 +2138,28 @@ ALERROR CTranscendenceModel::ShowScreen (CDesignType *pRoot, const CString &sScr
 			}
 		}
 
-	//	Compose the new frame
-
 	const SDockFrame &CurFrame = m_DockFrames.GetCurrent();
+
+	//	See if we need to nest this screen. Sometimes we rely on the fact that 
+	//	a redirected screen (via <GetGlobalDockScreen>) is nested so that when
+	//	we're done we can go back to the station's original screen.
+	//
+	//	But other times, if we bring up a nested screen directly via a command
+	//	(e.g., from invoking or something) then we want to ignore the nesting
+	//	directive (otherwise we just return to the same screen).
+	//
+	//	This code figures out whether we're about to nest on ourselves.
+
+	bool bNestedScreen = pScreen->GetAttributeBool(NESTED_SCREEN_ATTRIB);
+	if (bNestedScreen 
+			&& bFirstFrame
+			&& CurFrame.sScreen == sScreenActual
+			&& CurFrame.sPane == sPane)
+		{
+		bNestedScreen = false;
+		}
+
+	//	Compose the new frame
 
 	SDockFrame NewFrame;
 	NewFrame.pLocation = CurFrame.pLocation;
@@ -2155,7 +2174,7 @@ ALERROR CTranscendenceModel::ShowScreen (CDesignType *pRoot, const CString &sScr
 
 	bool bNewFrame;
 	SDockFrame OldFrame;
-	if (bNewFrame = (!bReturn && !bFirstFrame && pScreen->GetAttributeBool(NESTED_SCREEN_ATTRIB)))
+	if (bNewFrame = (!bReturn && bNestedScreen))
 		m_DockFrames.Push(NewFrame);
 	else if (!bReturn)
 		m_DockFrames.SetCurrent(NewFrame, &OldFrame);
@@ -2725,9 +2744,13 @@ void CTranscendenceModel::UseItem (CItem &Item)
 	CItemList &ItemList = pShip->GetItemList();
 	CItemType *pType = Item.GetType();
 
+	CItemType::SUseDesc UseDesc;
+	if (!pType->GetUseDesc(&UseDesc))
+		return;
+
 	//	Use in cockpit
 
-	if (pType->IsUsableInCockpit())
+	if (UseDesc.bUsableInCockpit)
 		{
 		CString sError;
 
@@ -2748,7 +2771,7 @@ void CTranscendenceModel::UseItem (CItem &Item)
 
 	//	Use screen
 
-	else if (pType->GetUseScreen())
+	else if (UseDesc.pScreenRoot)
 		{
 		CCodeChain &CC = m_Universe.GetCC();
 
@@ -2758,10 +2781,8 @@ void CTranscendenceModel::UseItem (CItem &Item)
 
 		//	Show the dock screen
 
-		CString sScreen;
-		CDesignType *pRoot = pType->GetUseScreen(&sScreen);
 		CString sError;
-		if (!ShowShipScreen(pType, pRoot, sScreen, NULL_STR, NULL, &sError))
+		if (!ShowShipScreen(pType, UseDesc.pScreenRoot, UseDesc.sScreenName, NULL_STR, NULL, &sError))
 			{
 			pShip->SendMessage(NULL, sError);
 			::kernelDebugLogMessage(sError);

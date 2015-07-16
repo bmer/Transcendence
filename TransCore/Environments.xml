@@ -7,15 +7,15 @@
 			dragFactor=			"73"
 			attributes=			"nebula"
 
-			mapColor=			"0xa7, 0x73, 0x97"
+			mapColor=			"#be83ac"
 			autoEdges=			"true"
 			>
 
 		<Image imageID="&rsLightNebula;" 
 				imageX="0" 
 				imageY="0" 
-				imageWidth="1024" 
-				imageHeight="1024"/>
+				imageWidth="2048" 
+				imageHeight="2048"/>
 	</SpaceEnvironmentType>
 
 <!-- BACKWARD COMPATIBILITY -->

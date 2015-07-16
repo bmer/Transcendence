@@ -140,18 +140,22 @@ class CDockScreenActions
 	public:
 		enum SpecialAttribs
 			{
-			specialAll,
+			specialNone			= 0x00000000,
+			specialAll			= 0xFFFFFFFF,
 
-			specialDefault,
-			specialCancel,
-			specialNextKey,
-			specialPrevKey,
+			specialCancel		= 0x00000001,
+			specialDefault		= 0x00000002,
+			specialNextKey		= 0x00000004,
+			specialPrevKey		= 0x00000008,
+			specialPgDnKey		= 0x00000010,
+			specialPgUpKey		= 0x00000020,
 			};
 
-		CDockScreenActions (void) : m_pData(NULL) { }
+		CDockScreenActions (void) : m_pData(NULL), m_cxJustify(-1) { }
 		~CDockScreenActions (void);
 
 		ALERROR AddAction (const CString &sID, int iPos, const CString &sLabel, CExtension *pExtension, ICCItem *pCode, int *retiAction);
+		int CalcAreaHeight (CDesignType *pRoot, const RECT &rcFrame);
 		void CleanUp (void);
 		void CreateButtons (CGFrameArea *pFrame, CDesignType *pRoot, DWORD dwFirstTag, const RECT &rcFrame);
 		void Execute (int iAction, CDockScreen *pScreen);
@@ -161,7 +165,6 @@ class CDockScreenActions
 		bool FindByID (ICCItem *pItem, int *retiAction = NULL);
 		bool FindByKey (const CString &sKey, int *retiAction);
 		bool FindSpecial (SpecialAttribs iSpecial, int *retiAction);
-		inline CGButtonArea *GetButton (int iAction) const { return m_Actions[iAction].pButton; }
 		inline int GetCount (void) const { return m_Actions.GetCount(); }
 		inline const CString &GetKey (int iAction) const { return m_Actions[iAction].sKey; }
 		inline const CString &GetLabel (int iAction) const { return m_Actions[iAction].sLabel; }
@@ -171,7 +174,7 @@ class CDockScreenActions
 		bool IsSpecial (int iAction, SpecialAttribs iSpecial);
 		inline bool IsVisible (int iAction) const { return m_Actions[iAction].bVisible; }
 		ALERROR RemoveAction (int iAction);
-		inline void SetButton (int iAction, CGButtonArea *pButton) { m_Actions[iAction].pButton = pButton; }
+		void SetDesc (int iAction, const CString &sDesc);
 		void SetEnabled (int iAction, bool bEnabled = true);
 		void SetLabel (int iAction, const CString &sLabelDesc, const CString &sKey);
 		void SetSpecial (int iAction, SpecialAttribs iSpecial, bool bEnabled = true);
@@ -181,10 +184,20 @@ class CDockScreenActions
 	private:
 		struct SActionDesc
 			{
+			SActionDesc (void) :
+					pExtension(NULL),
+					pCmd(NULL),
+					pCode(NULL),
+					bVisible(false),
+					bEnabled(false),
+					dwSpecial(0)
+				{ }
+
 			CString sID;
 			CString sLabel;			//	Label for the action
 			CString sKey;			//	Accelerator key
-			CGButtonArea *pButton;	//	Pointer to button area
+			CString sDescID;		//	Language ID to load description
+			CString sDesc;			//	Description
 
 			CExtension *pExtension;	//	Source of the code
 
@@ -195,20 +208,30 @@ class CDockScreenActions
 			bool bVisible;			//	Action is visible
 			bool bEnabled;			//	Action is enabled
 
-			bool bDefault;			//	This is the default action [Enter]
-			bool bCancel;			//	This is the cancel action [Esc]
-			bool bPrev;				//	This is the prev action [<-]
-			bool bNext;				//	This is the next action [->]
+			DWORD dwSpecial;		//	Special keys
 			bool bMinor;			//	This is a minor/option button
+
+			CString sLabelTmp;		//	Temporary cache (after justify)
+			CString sKeyTmp;
+			CString sDescTmp;
 			};
 
 		void ExecuteCode (CDockScreen *pScreen, const CString &sID, CExtension *pExtension, ICCItem *pCode);
+		SpecialAttribs GetSpecialFromName (const CString &sSpecialName);
+		int Justify (CDesignType *pRoot, int cxJustify);
 		void ParseLabelDesc (const CString &sLabelDesc, CString *retsLabel, CString *retsKey = NULL, TArray<SpecialAttribs> *retSpecial = NULL);
 		void SetLabelDesc (SActionDesc *pAction, const CString &sLabelDesc, bool bOverrideSpecial = true);
+		void SetSpecial (SActionDesc *pAction, const TArray<SpecialAttribs> &Special);
 		void SetSpecial (SActionDesc *pAction, SpecialAttribs iSpecial, bool bEnabled);
 
 		TArray<SActionDesc> m_Actions;
 		ICCItem *m_pData;			//	Data passed in to scrShowScreen (may be NULL)
+
+		int m_cxJustify;			//	Width that we justified for
+		bool m_bLongButtons;		//	If true, we display long buttons
+		int m_iMinorButtonCount;	//	Number of minor buttons
+		int m_cyMajorButtons;		//	Total height of major buttons
+		int m_cyTotalHeight;		//	Total height of all buttons
 	};
 
 class CDockPane
@@ -270,11 +293,20 @@ class CDockPane
 			bool bReplaceInput;				//	Keeps track of counter state
 			};
 
-		void CreateControl (EControlTypes iType, const CString &sID);
+		struct SControlStyle
+			{
+			CG32bitPixel BackColor;
+
+			const CG16bitFont *pTextFont;
+			CG32bitPixel TextColor;
+			};
+
+		void CreateControl (EControlTypes iType, const CString &sID, const CString &sStyle);
 		ALERROR CreateControls (CString *retsError);
 		bool FindControl (const CString &sID, SControl **retpControl = NULL) const;
 		CGTextArea *GetTextControlByType (EControlTypes iType) const;
 		SControl *GetControlByType (EControlTypes iType) const;
+		void GetControlStyle (const CString &sStyle, SControlStyle *retStyle) const;
 		void RenderControls (void);
 		ALERROR ReportError (const CString &sError);
 

@@ -1178,7 +1178,7 @@
 	<!ENTITY stHereticSun				"0x001C200F">
 
 	<!ENTITY scIocrymCommandShip		"0x001C3001">
-	<!ENTITY scSvalbardExplorer		"0x001C3002">
+	<!ENTITY scSvalbardExplorer			"0x001C3002">
 	<!ENTITY scIocrymWarningBuoy		"0x001C3003">
 	<!ENTITY scIocrymSentinel			"0x001C3004">
 	<!ENTITY scHuygensExplorer			"0x001C3005">
@@ -1286,8 +1286,8 @@
 	<!ENTITY stHeliotropeOutpost		"0x08010040">
 	<!ENTITY stHeliotropeColony			"0x08010041">
 	<!ENTITY scHeliotropeGunship		"0x08010042">
-	<!ENTITY scHeliotropeDestroyer		"0x08010043">	<!-- For compatibility -->
 	<!ENTITY scHeliotropeFrigate		"0x08010043">	<!-- Reclassified -->
+	<!ENTITY scHeliotropeDestroyer		"0x08010043">	<!-- For compatibility -->
 	<!ENTITY itHeliotropeFuel			"0x08010044">
 	<!ENTITY svHeliotropes				"0x08010045">
 	<!ENTITY tbHeliotropeEncounters		"0x08010046">
@@ -1304,7 +1304,8 @@
 	<!ENTITY rsXenophobeWorldship		"0x08010088">
 
 	<!ENTITY stVentariColony			"0x080100C0">
-	<!ENTITY scVentariCruiser			"0x080100C1">
+	<!ENTITY scVentariDestroyer			"0x080100C1">	<!-- Reclassified -->
+	<!ENTITY scVentariCruiser			"0x080100C1">	<!-- For compatibility -->
 
 	<!ENTITY stAbbasidOutpost			"0x08010100">
 	<!ENTITY itAbbasidThanogram			"0x08010101">
@@ -1561,14 +1562,24 @@
 	
 	<!ENTITY rsPointJunoHero			"0x00100060">
 	<!ENTITY rsFleetEmblems				"0x00100061">
+	<!ENTITY rsCSC						"0x00100062">
+	<!ENTITY rsCSCWreckage				"0x00100063">
+	<!ENTITY rsAquila					"0x00100064">
+	<!ENTITY rsAurochs					"0x00100065">
 	
 	<!-- 0080-009F COMMONWEALTH -->
 	
 	<!ENTITY rsStKatsArcologyHero		"0x00100080">
 	<!ENTITY rsCommonwealthMetropolis	"0x00100081">
 	<!ENTITY rsCommonwealthMetropolisArmored	"0x00100082">
+	<!ENTITY it10MWReactor				"0x00100083">
+	<!ENTITY it15MWReactor				"0x00100084">
 	
 	<!-- 00A0-00BF ARES ORTHODOXY -->
+	
+	<!ENTITY rsCometfall				"0x001000A0">
+	<!ENTITY rsDeimos					"0x001000A1">
+	<!ENTITY rsPolarFreighter			"0x001000A2">
 	
 	<!-- 00C0-00CF SALVAGERS -->
 	
@@ -1591,6 +1602,7 @@
 	<!-- 0100-011F CHARON PIRATES AND MARAUDERS -->
 	
 	<!ENTITY rsTripoli					"0x00100100">
+	<!ENTITY evCharonRaiderBehavior		"0x00100101">
 	
 	<!-- 0120-013F SUNG SLAVERS -->
 	
@@ -1599,6 +1611,39 @@
 	<!-- 0140-014F XENOPHOBES -->
 	
 	<!ENTITY rsXenophobeDefender		"0x00100140">
+	
+	<!-- 0150-015F HUARI EMPIRE -->
+	
+	<!ENTITY rsHurin					"0x00100150">
+	
+	<!-- 0160-017F MINING EQUIPMENT -->
+	
+	<!ENTITY baMiningPodItem			"0x00100160">
+	<!ENTITY stMiningPod				"0x00100161">
+	<!ENTITY ovMiningPodTimer			"0x00100162">
+	<!ENTITY itSeismicScannerPod		"0x00100163">
+	<!ENTITY vtSeismicScannerPower		"0x00100164">
+	<!ENTITY ovMiningPodRadius			"0x00100165">
+	<!ENTITY ovMiningPodArmedRadius		"0x00100166">
+	<!ENTITY itClassAExcavationPod		"0x00100167">
+	<!ENTITY itClassBExcavationPod		"0x00100168">
+	<!ENTITY itClassCExcavationPod		"0x00100169">
+	<!ENTITY itAdvancedScannerPod		"0x0010016A">
+	<!ENTITY vtClassAExcavationPower	"0x0010016B">
+	<!ENTITY vtClassBExcavationPower	"0x0010016C">
+	<!ENTITY vtClassCExcavationPower	"0x0010016D">
+	<!ENTITY vtAdvancedScannerPower		"0x0010016E">
+	<!ENTITY baSeismicScannerPower		"0x0010016F">
+	<!ENTITY rsMiningPod				"0x00100170">
+	
+	<!-- 0180-018F OUTLAW MINERS -->
+	
+	<!ENTITY baOutlawMine				"0x00100180">
+	<!ENTITY tbOutlawMinerProspector	"0x00100181">
+	
+	<!-- 0190-019F VENTARI SETTLERS -->
+	
+	<!ENTITY rsVentariDestroyer			"0x00100190">
 	
 	<!-- 1000-FFFF RESERVED -->
 	]>
@@ -1647,6 +1692,7 @@
 	<Module filename="CorporateHierarchy.xml"/>
 	<Module filename="DwargRaiders.xml"/>
 	<Module filename="EncountersVol01.xml"/>
+	<Module filename="Ferians.xml"/>
 	<Module filename="Iocrym.xml"/>
 	<Module filename="KateMorgental.xml"/>
 	<Module filename="KorolovShipping.xml"/>
@@ -1670,6 +1716,7 @@
 	<Module filename="StdDevices.xml"/>
 	<Module filename="StdEffects.xml"/>
 	<Module filename="StdFuel.xml"/>
+	<Module filename="StdMiningEquipment.xml"/>
 	<Module filename="StdPlayerShips.xml"/>
 	<Module filename="StdShields.xml"/>
 	<Module filename="StdSovereigns.xml"/>

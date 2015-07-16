@@ -19,8 +19,6 @@
 			thrustRatio=		"2.0"
 			maxSpeed=			"18"
 			cargoSpace=			"200"
-
-			leavesWreck=		"75"
 			>
 
 		<Names definiteArticle="true">
@@ -94,8 +92,6 @@
 			thrustRatio=		"6"
 			maxSpeed=			"13"
 
-			leavesWreck=		"10"
-
 			attributes=			"commonwealth, genericClass"
 			>
 
@@ -149,8 +145,6 @@
 			thrustRatio=		"6.5"
 			maxSpeed=			"16"
 
-			leavesWreck=		"30"
-
 			attributes=			"commonwealth, genericClass"
 			>
 
@@ -202,8 +196,6 @@
 			cargoSpace=			"10"
 			thrustRatio=		"5"
 			maxSpeed=			"16"
-
-			leavesWreck=		"40"
 
 			attributes=			"commonwealth, genericClass"
 			>
@@ -257,8 +249,6 @@
 			cargoSpace=			"50"
 			thrustRatio=		"2.0"
 			maxSpeed=			"18"
-
-			leavesWreck=		"50"
 
 			attributes=			"commonwealth, genericClass"
 			>
@@ -359,8 +349,6 @@
 			thrustRatio=		"5.5"
 			maxSpeed=			"20"
 
-			leavesWreck=		"35"
-
 			attributes=			"commonwealth,genericClass"
 			>
 
@@ -407,8 +395,6 @@
 			cargoSpace=			"50"
 			thrustRatio=		"5.5"
 			maxSpeed=			"20"
-
-			leavesWreck=		"50"
 
 			attributes=			"commonwealth,genericClass"
 			>
@@ -466,8 +452,6 @@
 			thrustRatio=		"5.5"
 			maxSpeed=			"20"
 
-			leavesWreck=		"50"
-
 			attributes=			"commonwealth,genericClass"
 			>
 
@@ -523,8 +507,6 @@
 			cargoSpace=			"50"
 			thrust=				"150"
 			maxSpeed=			"20"
-
-			leavesWreck=		"30"
 
 			attributes=			"commonwealth,genericClass"
 			>
@@ -589,7 +571,6 @@
 			cargoSpace=			"120000"
 
 			explosionType=		"&vtBlastExplosion4;"
-			leavesWreck=		"100"
 			>
 
 		<Names definiteArticle="true">
@@ -693,8 +674,6 @@
 			thrust=				"200"
 			maxSpeed=			"25"
 
-			leavesWreck=		"20"
-
 			attributes=			"commonwealth,genericClass"
 			>
 
@@ -792,25 +771,17 @@
 		<Items>
 			<RandomItem count="10" 
 					criteria=		"ad -Illegal; -Military; -Alien; -Specialty; -NotStandard; -NotForSale;"
-					level=			"2"
-					levelCurve=		"1"
+					levelFrequency=	"systemLevel:u|c|ur"
 					/>
 			<RandomItem count="10" 
-					criteria=		"* -Illegal; -Military; -Alien; -Specialty; -NotStandard; -NotForSale;"
-					level=			"2"
-					levelCurve=		"1"
+					criteria=		"*~ad -Illegal; -Military; -Alien; -Specialty; -NotStandard; -NotForSale;"
+					levelFrequency=	"systemLevel:u|c|ur"
 					/>
-			<RandomItem count="3" 
-					criteria=		"* -Illegal; -Military; -Alien; -Specialty; -NotStandard; -NotForSale;"
-					level=			"3"
-					levelCurve=		"1"
-					/>
-
 			<Item count="4d12"	item="&itHelium3FuelRod;" />
 		</Items>
 
 		<Trade currency="credit" max="50000" replenish="2500">
-			<Sell	criteria="m +Commonwealth; +BasicAmmo; -Illegal; -NotForSale; L:1-3;" priceAdj="115" inventoryAdj="100"/>
+			<Sell	criteria="m +Commonwealth; +BasicAmmo; -Illegal; -NotForSale; -notStandard; L:1-3;" priceAdj="115" inventoryAdj="100"/>
 			<Sell	criteria="*NU -Illegal; -ID; -NotForSale;"	priceAdj="110"/>
 			<Buy	criteria="amswNU -Illegal; -NotForSale;"		priceAdj="50"/>
 			<Buy	criteria="*NU -Illegal; -ID; -NotForSale;"	priceAdj="90"/>
@@ -819,6 +790,8 @@
 			<Refuel			criteria="f +BasicFuel; L:1-5;" priceAdj="93"/>
 			<RepairArmor	criteria="a L:1-5;" priceAdj="100"/>
 			<ReplaceArmor	criteria="a L:1-5;" priceAdj="100"/>
+			<InstallDevice	criteria="d L:1-5;" priceAdj="100"/>
+			<RemoveDevice	criteria="d L:1-5;" priceAdj="100"/>
 		</Trade>
 
 		<Ships>
@@ -1022,7 +995,7 @@
 		</Items>
 
 		<Trade currency="credit" max="50000" replenish="2500">
-			<Sell	criteria="m +Commonwealth; -Military; -Illegal; -NotForSale;" priceAdj="115" inventoryAdj="100"/>
+			<Sell	criteria="m +Commonwealth; -Military; -Illegal; -NotForSale; -notStandard;" priceAdj="115" inventoryAdj="100"/>
 			<Sell	criteria="*NU -Illegal; -ID; -NotForSale;"	priceAdj="110"/>
 			<Buy	criteria="amswNU -Illegal; -NotForSale;"		priceAdj="50"/>
 			<Buy	criteria="*NU -Illegal; -ID; -NotForSale;"	priceAdj="90"/>
@@ -1153,6 +1126,7 @@
 
 			attributes=			"commonwealth, commonwealthCustoms, fleetDelivery, friendly, generic, human, majorStation, populated"
 			levelFrequency=		"uucuu r---- ----- ----- -----"
+			unique=				"inSystem"
 			locationCriteria=	"+planetary"
 			enemyExclusionRadius="75"
 			>
@@ -1161,7 +1135,7 @@
 
 		<Trade currency="credit" max="50000" replenish="2500">
 			<Sell	criteria="*NU -Illegal; -ID; -NotForSale;"	priceAdj="110"/>
-			<Sell	criteria="rNU L:1-5; -Illegal; -NotForSale;"	priceAdj="110"	inventoryAdj="100"/>
+			<Sell	criteria="rNU L:1-5; -Illegal; -NotForSale; -notStandard;"	priceAdj="110"	inventoryAdj="100"/>
 			
 			<Refuel			criteria="f +BasicFuel; L:1-7;" priceAdj="95"/>
 			<RepairArmor	criteria="a L:1-8;" priceAdj="100"/>
@@ -2202,7 +2176,7 @@
 		</Items>
 
 		<Trade currency="credit" max="50000" replenish="2500">
-			<Sell	criteria="m +Commonwealth; -PremiumAmmo; -Illegal; -NotForSale;" priceAdj="115" inventoryAdj="100"/>
+			<Sell	criteria="m +Commonwealth; -PremiumAmmo; -Illegal; -NotForSale; -notStandard;" priceAdj="115" inventoryAdj="100"/>
 			<Sell	criteria="*NU -Illegal; -ID; -NotForSale;"	priceAdj="110"/>
 			<Buy	criteria="amswNU -Illegal; -NotForSale;"		priceAdj="50"/>
 			<Buy	criteria="*NU -Illegal; -ID; -NotForSale;"	priceAdj="90"/>

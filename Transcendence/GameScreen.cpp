@@ -66,10 +66,6 @@
 #define SO_BETA_FORMATION					CONSTLIT("Beta formation")
 #define SO_GAMMA_FORMATION					CONSTLIT("Gamma formation")
 
-const int LRS_UPDATE_DELAY = 5;
-const int g_LRSWidth = 200;
-const int g_LRSHeight = 200;
-
 const int g_WeaponStatusWidth = 350;
 const int g_WeaponStatusHeight = 32;
 
@@ -81,6 +77,11 @@ const int g_iStellarScale = 0;
 const int g_iPlanetaryScale = 1;
 
 const int MAP_ZOOM_SPEED =					16;
+
+const int LRS_UPDATE_DELAY =				5;
+const int MIN_LRS_SIZE =					200;
+const int LRS_SCALE =						27;
+const CG32bitPixel RGB_LRS_BACKGROUND =		CG32bitPixel(17, 21, 26);
 
 void CTranscendenceWnd::Autopilot (bool bTurnOn)
 
@@ -424,26 +425,23 @@ ALERROR CTranscendenceWnd::InitDisplays (void)
 
 	m_bTransparencyEffects = true;
 
-	//	Create a bitmap for the LRS
-
-	if (!m_LRS.Create(g_LRSWidth, g_LRSHeight, CG32bitImage::alpha8))
-		return ERR_FAIL;
-
-	//m_rcLRS.left = m_rcScreen.left;
-	m_rcLRS.left = m_rcScreen.right - g_LRSWidth;
-	//m_rcLRS.top = g_cyScreen - g_LRSHeight;
-	m_rcLRS.top = 0;
-	m_rcLRS.right = m_rcLRS.left + g_LRSWidth;
-	m_rcLRS.bottom = m_rcLRS.top + g_LRSHeight;
-
 	//	Find some bitmaps that we need. NOTE: We lock the images because we
 	//	don't dispose of them.
 	//
 	//	LATER: These should be obtained form the player ship.
 
-	m_pLargeHUD = g_pUniverse->GetLibraryBitmap(g_LRSImageUNID, CDesignCollection::FLAG_IMAGE_LOCK);
 	m_pSRSSnow = g_pUniverse->GetLibraryBitmap(g_SRSSnowImageUNID, CDesignCollection::FLAG_IMAGE_LOCK);
-	m_pLRSBorder = g_pUniverse->GetLibraryBitmap(g_LRSBorderUNID, CDesignCollection::FLAG_IMAGE_LOCK);
+
+	//	Create LRS
+
+	int iLRSDiameter = Max(MIN_LRS_SIZE, LRS_SCALE * RectHeight(m_rcScreen) / 100);
+	rcRect.left = m_rcScreen.right - iLRSDiameter;
+	rcRect.top = 0;
+	rcRect.right = rcRect.left + iLRSDiameter;
+	rcRect.bottom = rcRect.top + iLRSDiameter;
+	m_LRSDisplay.Init(GetPlayer(), rcRect);
+	m_LRSDisplay.SetSnowImage(m_pSRSSnow);
+	m_LRSDisplay.SetBackgroundColor(RGB_LRS_BACKGROUND);
 
 	//	Create the message display
 
@@ -538,72 +536,18 @@ void CTranscendenceWnd::PaintLRS (void)
 //	Paint the long-range scanner
 
 	{
+	DEBUG_TRY
+
 	//	Update the LRS every 10 ticks
 
 	if ((m_iTick % LRS_UPDATE_DELAY) == 0)
-		{
-		bool bNewEnemies;
-
-		m_LRS.Blt(0, 0, g_LRSWidth, g_LRSHeight, *m_pLargeHUD, 0, 0);
-
-		//	If we're not blind, paint the LRS
-
-		if (GetPlayer() == NULL 
-				|| !GetPlayer()->GetShip()->IsLRSBlind())
-			{
-			RECT rcView;
-			rcView.left = 0;
-			rcView.top = 0;
-			rcView.right = g_LRSWidth;
-			rcView.bottom = g_LRSHeight;
-
-			Metric rKlicksPerPixel = g_LRSRange * 2 / RectWidth(rcView);
-			g_pUniverse->PaintPOVLRS(m_LRS, rcView, rKlicksPerPixel, 0, &bNewEnemies);
-
-			//	Notify player of enemies
-
-			if (bNewEnemies)
-				GetPlayer()->OnEnemyShipsDetected();
-			}
-
-		//	If we're blind, paint snow
-
-		else
-			{
-			PaintSnow(m_LRS, 0, 0, g_LRSWidth, g_LRSHeight);
-
-			int iCount = mathRandom(1, 8);
-			for (int i = 0; i < iCount; i++)
-				{
-				m_LRS.Fill(0, mathRandom(0, g_LRSHeight),
-						g_LRSWidth,
-						mathRandom(1, 20),
-						CG32bitPixel(108, 252, 128));
-				}
-			}
-
-		//	Mask out the border
-
-		m_LRS.SetMask(0,
-				0,
-				g_LRSWidth,
-				g_LRSHeight,
-				*m_pLRSBorder,
-				CG32bitPixel::Null(),
-				0,
-				0);
-		}
+		m_LRSDisplay.Update();
 
 	//	Blt the LRS
 
-	g_pHI->GetScreen().Blt(0,
-			0,
-			RectWidth(m_rcLRS),
-			RectHeight(m_rcLRS),
-			200,
-			m_LRS,
-			m_rcLRS.left,
-			m_rcLRS.top);
+	m_LRSDisplay.Paint(g_pHI->GetScreen());
+
+	DEBUG_CATCH
 	}
 
 void CTranscendenceWnd::PaintMainScreenBorder (void)
@@ -927,7 +871,8 @@ void CTranscendenceWnd::ShowCommsTargetMenu (void)
 
 		//	Add the squadron option, if necessary
 
-		if (m_MenuData.GetCount() > 1 || GetPlayer()->HasFleet())
+		if ((m_MenuData.GetCount() > 1 && GetCommsStatus() != 0) 
+				|| GetPlayer()->HasFleet())
 			m_MenuData.AddMenuItem(SQUADRON_KEY, SQUADRON_LABEL, 0, 0);
 
 		//	Done
@@ -1229,16 +1174,17 @@ void CTranscendenceWnd::ShowUsePicker (void)
 
 			//	Make sure we should show this entry
 
-			if (!pType->IsUsableInCockpit() && pType->GetUseScreen() == NULL)
+			CItemType::SUseDesc UseDesc;
+			if (!pType->GetUseDesc(&UseDesc))
 				continue;
 
-			if (pType->IsUsableOnlyIfInstalled() && !Item.IsInstalled())
+			if (UseDesc.bOnlyIfInstalled && !Item.IsInstalled())
 				continue;
 
-			if (pType->IsUsableOnlyIfUninstalled() && Item.IsInstalled())
+			if (UseDesc.bOnlyIfUninstalled && Item.IsInstalled())
 				continue;
 
-			if (pType->IsUsableOnlyIfEnabled())
+			if (UseDesc.bOnlyIfEnabled)
 				{
 				CInstalledDevice *pDevice = pShip->FindDevice(Item);
 				if (pDevice == NULL || !pDevice->IsEnabled())
@@ -1247,7 +1193,7 @@ void CTranscendenceWnd::ShowUsePicker (void)
 
 			//	Add to the list
 
-			bool bHasUseKey = (pType->IsKnown() && !pType->GetUseKey().IsBlank() && (*pType->GetUseKey().GetASCIIZPointer() != chUseKey));
+			bool bHasUseKey = (pType->IsKnown() && !UseDesc.sUseKey.IsBlank() && (*UseDesc.sUseKey.GetASCIIZPointer() != chUseKey));
 
 			//	Any items without use keys sort first (so that they are easier
 			//	to access).
@@ -1258,7 +1204,7 @@ void CTranscendenceWnd::ShowUsePicker (void)
 
 			SortedList.Insert(strPatternSubst(CONSTLIT("%d%s%04d"),
 						(bHasUseKey ? 1 : 0),
-						(bHasUseKey ? strPatternSubst(CONSTLIT("%s0"), pType->GetUseKey()) : strPatternSubst(CONSTLIT("%02d"), MAX_ITEM_LEVEL - pType->GetLevel())),
+						(bHasUseKey ? strPatternSubst(CONSTLIT("%s0"), UseDesc.sUseKey) : strPatternSubst(CONSTLIT("%02d"), MAX_ITEM_LEVEL - pType->GetLevel())),
 						i),
 					i);
 			}
@@ -1271,6 +1217,10 @@ void CTranscendenceWnd::ShowUsePicker (void)
 			CItem &Item = List.GetItem(SortedList.GetValue(i));
 			CItemType *pType = Item.GetType();
 
+			CItemType::SUseDesc UseDesc;
+			if (!pType->GetUseDesc(&UseDesc))
+				continue;
+
 			CString sCount;
 			if (Item.GetCount() > 1)
 				sCount = strFromInt(Item.GetCount());
@@ -1278,8 +1228,8 @@ void CTranscendenceWnd::ShowUsePicker (void)
 			//	Show the key only if the item is identified
 
 			CString sKey;
-			if (pType->IsKnown() && (*pType->GetUseKey().GetASCIIZPointer() != chUseKey))
-				sKey = pType->GetUseKey();
+			if (pType->IsKnown() && (*UseDesc.sUseKey.GetASCIIZPointer() != chUseKey))
+				sKey = UseDesc.sUseKey;
 
 			//	Name of item
 

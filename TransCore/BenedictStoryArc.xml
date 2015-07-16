@@ -37,6 +37,7 @@
 					;	then show the intro screen
 						
 					(and (eq (objGetType gSource) &stSistersOfDomina;)
+							(not (objGetProperty gSource 'abandoned))
 							(eq (sysGetNode) (objGetProperty gPlayerShip 'startingSystem))
 							(not (typGetData &unidBenedictStoryArc; 'firstDockedAtSisters))
 							)
@@ -47,6 +48,7 @@
 					;	show our home.
 				
 					(and (eq (objGetType gSource) &stBeringStation;)
+							(not (objGetProperty gSource 'abandoned))
 							(eq (sysGetNode) (objGetProperty gPlayerShip 'startingSystem))
 							)
 						(list &dsPilgrimBeringStation; Nil 6)
@@ -136,21 +138,36 @@
 				<OnPaneInit>
 					(block (
 						(nextActionPos 0)
+						(desc "")
+						(meetBenedict 
+							(and (typGetData &dsBenedictIntro; 'q1)
+								(typGetData &dsBenedictIntro; 'q2)
+								(typGetData &dsBenedictIntro; 'q3)
+								)
+							)
 						)
 						
 						;	Set the description
 						
 						(switch
 							(not (typGetData &unidBenedictStoryArc; 'firstDockedAtSisters))
-								(scrSetDesc gScreen (typTranslate &dsBenedictIntro; 'IntroFirst))
+								(setq desc (typTranslate &dsBenedictIntro; 'IntroFirst))
 							
 							(not (scrGetData gScreen 'answerQ))
-								(scrSetDesc gScreen (typTranslate &dsBenedictIntro; 'IntroReturning))
+								(setq desc (typTranslate &dsBenedictIntro; 'IntroReturning))
 								
-							(scrSetDesc gScreen
+							(setq desc
 								(typTranslate &dsBenedictIntro; (cat (scrGetData gScreen 'answerQ) ":Answer"))
 								)
 							)
+							
+						;	Add Benedict information, if necessary
+						
+						(if meetBenedict
+							(setq desc (cat desc (typTranslate &dsBenedictIntro; 'BenedictMeeting)))
+							)
+							
+						(scrSetDesc gScreen desc)
 						
 						;	Add unanswered questions as actions:
 						
@@ -182,15 +199,17 @@
 								)
 							)
 							
-						;	Last question always goes to Benedict, but we set the label
-						;	based on whether we've talked to him before
-							
-						(scrSetActionLabel gScreen 'actionBenedict 
-							(typTranslate &dsBenedictIntro; 
-								(if (typGetData &dsBenedictIntro; 'q3)
-									"q3:LabelAgain"
-									"q3:Label"
+						(if (not (typGetData &dsBenedictIntro; 'q3))
+							(block Nil
+								(scrAddAction gScreen 'q3 nextActionPos
+									(typTranslate &dsBenedictIntro; "q3:Label")
+									(block Nil
+										(scrSetData gScreen 'answerQ 'q3)
+										(typSetData &dsBenedictIntro; 'q3 True)
+										(scrRefreshScreen gScreen)
+										)
 									)
+								(setq nextActionPos (add nextActionPos 1))
 								)
 							)
 							
@@ -199,34 +218,16 @@
 						(if (not (typGetData &unidBenedictStoryArc; 'firstDockedAtSisters))
 							(typSetData &unidBenedictStoryArc; 'firstDockedAtSisters (unvGetTick))
 							)
+							
+						;	If this is the last answer, then we continue with Benedict.
+						
+						(scrShowAction gScreen 'actionBenedict meetBenedict)
+						(scrShowAction gScreen 'actionDone (not meetBenedict))
 						)
 				</OnPaneInit>
 
 				<Actions>
-					<Action id="actionBenedict">
-						(block Nil
-						
-							;	Remember that we've already talked to Benedict
-							(typSetData &dsBenedictIntro; 'q3 True)
-							
-							;	Continue
-							(scrShowPane gScreen "BenedictIntro")
-							)
-					</Action>
-					
-					<Action id="actionDone" cancel="1">
-						(scrShowPane gScreen "IntroSkip")
-					</Action>
-				</Actions>
-			</Default>
-			
-			<BenedictIntro>
-				<OnPaneInit>
-					(scrSetDesc gScreen (typTranslate &dsBenedictIntro; "q3:Answer"))
-				</OnPaneInit>
-				
-				<Actions>
-					<Action id="actionContinue" default="1" cancel="1">
+					<Action id="actionBenedict" default="true" cancel="true">
 						(block (theMission)
 						
 							;	If we listened this far, we get to use the sanctum
@@ -249,8 +250,12 @@
 								)
 							)
 					</Action>
+					
+					<Action id="actionDone" cancel="1">
+						(scrShowPane gScreen "IntroSkip")
+					</Action>
 				</Actions>
-			</BenedictIntro>
+			</Default>
 			
 			<IntroSkip>
 				<OnPaneInit>
@@ -282,12 +287,13 @@
 		</Panes>
 		
 		<Language>
+			<Text id="actionBenedict">"[C]ontinue"</Text>
 			<Text id="actionDone">"Do[n]e"</Text>
 			
 			<Text id="IntroFirst">
 				(cat
 					"You are docked at an abbey of the Sisters of Domina. "
-					"A woman wearing a flowing cardinal robe approaches you.\n\n"
+					"A woman in a flowing cardinal robe approaches you.\n\n"
 							
 					"\"Welcome, pilgrim! Your journey to the Galactic Core has just begun. "
 					"Your path will be filled with many obstacles, but do not worry: "
@@ -310,43 +316,36 @@
 					"your ship.\n\n"
 					
 					"The abbess continues: \"This is Benedict, our most valuable friend. "
-					"He will help you on your journey.\""
+					"He will help you prepare for your journey.\""
 					)
 			</Text>
 			
 			<Text id="q1:Label">"\"Who is [D]omina?\""</Text>
 			<Text id="q1:Answer">
-				(random (list
-					(cat
-						"\"Domina speaks to you in your dreams and visions. "
-						"She summons those like you to journey to the Core. "
-						"Perhaps if you reach her you will understand. "
-						"But do not be afraid&#x97;Domina will protect you.\""
-						)
-					(cat
-						"\"Domina speaks to you from her throne at the Galactic Core. "
-						"Only she knows the purpose of your journey. Perhaps if you reach her you will understand.\""
-						)
-					(cat
-						"\"Domina is the divine intelligence that guides you. "
-						"She waits for you at the Galactic Core for some purpose. "
-						"Perhaps if you reach her you will understand.\""
-						)
-					))
+				(cat
+					"\"Domina is the divine intelligence who brought you here!\n\n"
+					
+					"\"You can feel her in your thoughts, can't you? She compels you "
+					"to make the long journey to the Core.\n\n"
+					
+					"\"I envy you! Very few are chosen by Domina, and though we see "
+					"only a fraction of her plan, we know she fights to defend all life "
+					"in the Galaxy. Whatever her plan, your journey will affect "
+					"all humanity.\n\n"
+					
+					"\"Perhaps when you reach her you will understand.\""
+					)
 			</Text>
 			
 			<Text id="q2:Label">"\"How do I reach the [G]alactic Core?\""</Text>
 			<Text id="q2:Answer">
-				(random (list
-					(cat
-						"\"The stargates will take you. Seek them out and enter. "
-						"But be prepared for many obstacles. You must grow stronger to reach the Core.\""
-						)
-					(cat
-						"\"The stargates will take you. Seek them out and enter. "
-						"But remember that the farther you go, the greater the dangers.\""
-						)
-					))
+				(cat
+					"\"The stargates will take you. Seek them out and enter. "
+					"But be prepared for many obstacles. You must grow stronger to reach the Core.\n\n"
+					
+					"\"You will upgrade your ship in your travels, and eventually you'll "
+					"command terrible energies, enough to defeat anyone who blocks your path.\""
+					)
 			</Text>
 			
 			<Text id="q3:Label">"\"[W]hat obstacles will I face?\""</Text>
@@ -354,7 +353,13 @@
 				(cat
 					"\"Star travel is dangerous, even in the Commonwealth. "
 					"You'll face pirates, outlaws and worse before you reach the Core. "
-					"But we can prepare you.\"\n\n"
+					"But we can prepare you.\""
+					)
+			</Text>
+			
+			<Text id="BenedictMeeting">
+				(cat
+					"\n\n"
 					
 					"The abbess signals an unseen companion and a stout man emerges from "
 					"the shadows. He marches to the abbess's side, looking past you at "
@@ -364,8 +369,6 @@
 					"He will help you.\""
 					)
 			</Text>
-			
-			<Text id="q3:LabelAgain">"\"I'd like [B]enedict to help\""</Text>
 		</Language>
 	</DockScreen>
 

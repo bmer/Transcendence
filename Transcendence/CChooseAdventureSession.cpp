@@ -136,7 +136,7 @@ void CChooseAdventureSession::CmdOK (void)
 
 	//	Remember the default extensions
 
-	m_Settings.SetDefaultExtensions(NewAdventure.pAdventure->GetUNID(), g_pUniverse->InDebugMode(), Defaults);
+	m_Settings.SetDefaultExtensions(NewAdventure.pAdventure->GetUNID(), m_ExtensionList, g_pUniverse->InDebugMode(), Defaults);
 
 	//	Remember some variables because after we close the session this object
 	//	will be gone.
@@ -471,6 +471,10 @@ void CChooseAdventureSession::SetAdventureDesc (CExtension *pAdventure)
 	bool bDisable = (m_ExtensionList.GetCount() == 0);
 	SetPropertyBool(CMD_SELECT_ALL, PROP_ENABLED, !bDisable);
 	SetPropertyBool(CMD_DESELECT_ALL, PROP_ENABLED, !bDisable);
+
+	//	If this adventure is disabled, then disable the OK button
+
+	SetPropertyBool(CMD_OK_SESSION, PROP_ENABLED, !pAdventure->IsDisabled());
 	}
 
 void CChooseAdventureSession::SetAdventureStatus (CExtension *pAdventure, int yPos)
@@ -637,7 +641,13 @@ void CChooseAdventureSession::SetAdventureTitle (CExtension *pAdventure, int *re
 	pText->SetPropertyColor(PROP_COLOR, VI.GetColor(colorTextDialogInput));
 	pText->SetPropertyFont(PROP_FONT, &MediumFont);
 	pText->SetPropertyString(PROP_TEXT_ALIGN_HORZ, ALIGN_CENTER);
-	pText->SetPropertyString(PROP_TEXT, pAdventure->GetDesc());
+
+	//	If the adventure is disabled, for some reason, we show that reason.
+
+	if (pAdventure->IsDisabled())
+		pText->SetPropertyString(PROP_TEXT, strPatternSubst(CONSTLIT("{/rtf %s }"), pAdventure->GetDisabledReason()));
+	else
+		pText->SetPropertyString(PROP_TEXT, pAdventure->GetDesc());
 
 	pRoot->AddTrack(pText, 0);
 
@@ -816,7 +826,7 @@ void CChooseAdventureSession::SetExtensions (CExtension *pAdventure, int yPos)
 	//	Get the default list of options
 
 	TArray<DWORD> Defaults;
-	m_Settings.GetDefaultExtensions(pAdventure->GetUNID(), g_pUniverse->InDebugMode(), &Defaults);
+	m_Settings.GetDefaultExtensions(pAdventure->GetUNID(), m_ExtensionList, g_pUniverse->InDebugMode(), &Defaults);
 
 	//	Add all extension options
 

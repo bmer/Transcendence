@@ -79,6 +79,1056 @@
 						)
 					)
 				))
+				
+			(setq rpgCalcDockServiceArmorAction (lambda (dockObj shipObj options)
+				(block (
+					(armorForSale 
+						(filter (objGetItems dockObj "aUN") theItemToBuy
+							(and (objGetSellPrice dockObj theItemToBuy)
+									(objGetArmorReplacePrice dockObj theItemToBuy)
+									)
+							)
+						)
+					(armorInCargo (objGetItems shipObj "aU"))
+					(armorToInstall
+						(filter armorInCargo theItemToInstall
+							(block (
+								(installStatus (objGetItemProperty dockObj theItemToInstall 'installItemStatus))
+								)
+								(and (@ installStatus 'canInstall)
+									(not (@ installStatus 'upgradeInstallOnly))
+									)
+								)
+							)
+						)
+						
+					(shieldsForSale 
+						(filter (objGetItems dockObj "sUN") theItemToBuy
+							(and (objGetSellPrice dockObj theItemToBuy)
+									(objGetItemProperty dockObj theItemToBuy 'installDevicePrice)
+									)
+							)
+						)
+					(shieldsToInstall
+						(filter (objGetItems shipObj "sU") theItemToInstall
+							(block (
+								(installStatus (objGetItemProperty dockObj theItemToInstall 'installDeviceStatus))
+								)
+								(and (@ installStatus 'canInstall)
+									(not (@ installStatus 'upgradeInstallOnly))
+									)
+								)
+							)
+						)
+						
+					(maxArmorLevel (map armorForSale 'reduceMax theItemToBuy (itmGetLevel theItemToBuy)))
+					(maxShieldsLevel (map shieldsForSale 'reduceMax theItemToBuy (itmGetLevel theItemToBuy)))
+					(maxRepairArmorLevel (objGetProperty dockObj 'repairArmorMaxLevel))
+					
+					(minPlayerArmorLevel (map (objGetItems shipObj "aI") 'reduceMin theItemToUpgrade (itmGetLevel theItemToUpgrade)))
+					(minPlayerShieldsLevel (map (objGetItems shipObj "sI") 'reduceMin theItemToUpgrade (itmGetLevel theItemToUpgrade)))
+					)
+					
+					(switch
+						(= dockObj shipObj)
+							{
+								visible: True
+								enabled: True
+								desc: (or (scrTranslate gScreen "actionArmor:shipConfig")
+										(typTranslate &dsRPGDockServicesBase; "actionArmor:shipConfig")
+										)
+								}
+								
+						;	If we have upgrades
+						
+						(and armorForSale
+								(geq maxArmorLevel minPlayerArmorLevel)
+								)
+							{
+								visible: True
+								enabled: True
+								desc: (or (objTranslate dockObj "dockServices:armorAbility" { items:armorForSale maxLevel:maxArmorLevel })
+										(scrTranslate gScreen "actionArmor:defaultArmorUpgrade" { items:armorForSale maxLevel:maxArmorLevel })
+										(typTranslate &dsRPGDockServicesBase; "actionArmor:defaultArmorUpgrade" { items:armorForSale maxLevel:maxArmorLevel })
+										)
+								}
+						
+						(and shieldsForSale
+								(geq maxShieldsLevel minPlayerShieldsLevel)
+								)
+							{
+								visible: True
+								enabled: True
+								desc: (or (objTranslate dockObj "dockServices:shieldsAbility" { items:shieldsForSale maxLevel:maxShieldsLevel })
+										(scrTranslate gScreen "actionArmor:defaultShieldsUpgrade" { items:shieldsForSale maxLevel:maxShieldsLevel })
+										(typTranslate &dsRPGDockServicesBase; "actionArmor:defaultShieldsUpgrade" { items:shieldsForSale maxLevel:maxShieldsLevel })
+										)
+								}
+						
+						;	If we can install something for the player
+						
+						armorToInstall
+							{
+								visible: True
+								enabled: True
+								desc: (or (scrTranslate gScreen "actionArmor:defaultArmorInstall" { items:armorToInstall maxLevel:(objGetProperty dockObj 'installArmorMaxLevel) })
+										(typTranslate &dsRPGDockServicesBase; "actionArmor:defaultArmorInstall" { items:armorToInstall maxLevel:(objGetProperty dockObj 'installArmorMaxLevel) })
+										)
+								}
+								
+						shieldsToInstall
+							{
+								visible: True
+								enabled: True
+								desc: (or (scrTranslate gScreen "actionArmor:defaultShieldsInstall" { items:shieldsToInstall maxLevel:(objGetProperty dockObj 'installDeviceMaxLevel) })
+										(typTranslate &dsRPGDockServicesBase; "actionArmor:defaultShieldsInstall" { items:shieldsToInstall maxLevel:(objGetProperty dockObj 'installDeviceMaxLevel) })
+										)
+								}
+								
+						;	Can we repair the player's armor?
+						
+						(geq maxRepairArmorLevel minPlayerArmorLevel)
+							{
+								visible: True
+								enabled: True
+								desc: (or (scrTranslate gScreen "actionArmor:defaultArmorRepair" { maxLevel:maxRepairArmorLevel })
+										(typTranslate &dsRPGDockServicesBase; "actionArmor:defaultArmorRepair" { maxLevel:maxRepairArmorLevel })
+										)
+								}
+								
+						maxRepairArmorLevel
+							{
+								visible: True
+								enabled: Nil
+								desc: (or (scrTranslate gScreen "actionArmor:noTechToRepair" { maxLevel:maxRepairArmorLevel })
+										(typTranslate &dsRPGDockServicesBase; "actionArmor:noTechToRepair" { maxLevel:maxRepairArmorLevel })
+										)
+								}
+								
+						;	Otherwise, nothing
+						
+						{
+							visible: True
+							enabled: Nil
+							desc: (or (scrTranslate gScreen "actionArmor:nothing")
+									(typTranslate &dsRPGDockServicesBase; "actionArmor:nothing")
+									)
+							}
+						)
+					)
+				))
+			
+			(setq rpgCalcDockServiceBuyAmmo (lambda (dockObj shipObj theItem options)
+				(switch
+					(= dockObj shipObj)
+						{
+							visible: Nil
+							}
+							
+					;	If this item does not require ammo, then we hide the action
+					
+					(not (itmGetProperty theItem 'ammoType))
+						{
+							visible: Nil
+							}
+							
+					;	If the station doesn't have any ammo to sell, then we disabled and
+					;	explain.
+					
+					(not (filter (objGetItems dockObj (cat "m +launchedBy:" (itmGetType theItem) ";")) theItemToBuy
+							(objGetSellPrice dockObj theItemToBuy)
+							))
+						{
+							visible: True
+							enabled: Nil
+							desc: 
+								(if (= (@ options 'category) 'launcher)
+									(scrTranslate gScreen "actionBuyMissiles:noMissilesToBuy" { item:theItem })
+									(scrTranslate gScreen "actionBuyAmmo:noAmmoToBuy" { item:theItem })
+									)
+							}
+							
+					;	Otherwise, we do have some
+					
+					{
+						visible: True
+						enabled: True
+						desc:
+							(if (= (@ options 'category) 'launcher)
+								(scrTranslate gScreen "actionBuyMissiles:missilesForSale" { item:theItem })
+								(scrTranslate gScreen "actionBuyAmmo:ammoForSale" { item:theItem })
+								)
+						}
+					)
+				))
+				
+			(setq rpgCalcDockServiceInstallAction (lambda (dockObj shipObj options)
+				(switch
+					(= dockObj shipObj)
+						{
+							visible: Nil
+							}
+				
+					;	If no items to install, action is disabled
+					
+					(not (objGetItems shipObj (@ options 'criteria)))
+						{
+							visible: True
+							enabled: Nil
+							desc: (scrTranslate gScreen "actionInstall:noItemInCargo" { category:(@ options 'category) })
+							}
+							
+					;	If none of the items in our cargo hold can be installed because
+					;	the station requires an upgrade (purchase) then we show an error.
+					
+					(not (filter (objGetItems shipObj (@ options 'criteria)) theItemToInstall
+							(not (@ (objGetItemProperty dockObj theItemToInstall 'installItemStatus) 'upgradeInstallOnly))
+							))
+						{
+							visible: True
+							enabled: Nil
+							desc: (scrTranslate gScreen "actionInstall:upgradeInstallOnly" { category:(@ options 'category) })
+							}
+							
+					{
+						visible: True
+						enabled: True
+						desc: (or (objTranslate dockObj "dockServices:installAbility" { category:(@ options 'category) })
+								(scrTranslate gScreen "actionInstall:defaultAbility" { category:(@ options 'category) dockObj:dockObj })
+								)
+						}
+					)
+				))
+				
+			(setq rpgCalcDockServiceMiscDevicesAction (lambda (dockObj shipObj options)
+				(block (
+					(itemsForSale 
+						(filter (objGetItems dockObj "d~wsUN") theItemToBuy
+							(and (objGetSellPrice dockObj theItemToBuy)
+									(objGetItemProperty dockObj theItemToBuy 'installDevicePrice)
+									)
+							)
+						)
+					(itemsToInstall
+						(filter (objGetItems shipObj "d~wsU") theItemToInstall
+							(block (
+								(installStatus (objGetItemProperty dockObj theItemToInstall 'installDeviceStatus))
+								)
+								(and (@ installStatus 'canInstall)
+									(not (@ installStatus 'upgradeInstallOnly))
+									)
+								)
+							)
+						)
+					(itemsToRemove
+						(filter (objGetItems shipObj "d~wsrI") theItemToRemove
+							(block (
+								(removeStatus (objGetItemProperty dockObj theItemToRemove 'removeItemStatus))
+								)
+								(and (@ removeStatus 'canRemove)
+									(not (@ removeStatus 'upgradeInstallOnly))
+									)
+								)
+							)
+						)
+						
+					(maxLevel (map itemsForSale 'reduceMax theItemToBuy (itmGetLevel theItemToBuy)))
+					)
+					
+					(switch
+						(= dockObj shipObj)
+							{
+								visible: True
+								enabled: True
+								desc: (scrTranslate gScreen "actionMiscDevices:shipConfig")
+								}
+								
+						;	If we have upgrades
+						
+						itemsForSale
+							{
+								visible: True
+								enabled: True
+								desc: (or (objTranslate dockObj "dockServices:miscDevicesAbility" { items:itemsForSale maxLevel:maxLevel })
+										(scrTranslate gScreen "actionMiscDevices:defaultUpgrade" { items:itemsForSale maxLevel:maxLevel })
+										)
+								}
+						
+						;	If we can install something for the player
+						
+						itemsToInstall
+							{
+								visible: True
+								enabled: True
+								desc: (scrTranslate gScreen "actionMiscDevices:defaultInstall" { items:itemsToInstall maxLevel:(objGetProperty dockObj 'installDeviceMaxLevel) })
+								}
+								
+						;	If we can remove something for the player
+						
+						itemsToRemove
+							{
+								visible: True
+								enabled: True
+								desc: (scrTranslate gScreen "actionMiscDevices:defaultRemove" { items:itemsToRemove maxLevel:(objGetProperty dockObj 'installDeviceMaxLevel) })
+								}
+								
+						;	Otherwise, nothing
+						
+						{
+							visible: True
+							enabled: Nil
+							desc: (scrTranslate gScreen "actionMiscDevices:nothing")
+							}
+						)
+					)
+				))
+			
+			(setq rpgCalcDockServiceRefuelAction (lambda (dockObj shipObj options)
+				(block (
+					(currencyUsed (objGetDefaultCurrency dockObj))
+					(fuelToUse (objGetRefuelItemAndPrice dockObj shipObj))
+					(fuelItem (@ fuelToUse 0))
+					(cost (@ fuelToUse 1))
+					(maxCount (if fuelToUse (shpGetFuelNeeded shipObj fuelItem) 0))
+					(maxAfford (if (gr cost 0) (divide (objGetBalance shipObj currencyUsed) cost) 0))
+					)
+					
+					(switch
+						(= dockObj shipObj)
+							{
+								visible: Nil
+								}
+								
+						(not (objGetProperty dockObj 'refuelMaxLevel))
+							{
+								visible: True
+								enabled: Nil
+								desc: (or (scrTranslate gScreen "actionRefuel:noRefuel")
+										(typTranslate &dsRPGDockServicesBase; "actionRefuel:noRefuel")
+										)
+								}
+								
+						(not fuelToUse)
+							{
+								visible: True
+								enabled: Nil
+								desc: (or (scrTranslate gScreen "actionRefuel:noCompatibleFuel")
+										(typTranslate &dsRPGDockServicesBase; "actionRefuel:noCompatibleFuel")
+										)
+								}
+								
+						(and (= cost 0) (= maxCount 0))
+							{
+								visible: True
+								enabled: Nil
+								desc: (or (scrTranslate gScreen "actionRefuel:freeRefuel" { item:fuelItem needed:maxCount })
+										(typTranslate &dsRPGDockServicesBase; "actionRefuel:freeRefuel" { item:fuelItem needed:maxCount })
+										)
+								}
+								
+						(= cost 0)
+							{
+								visible: True
+								enabled: True
+								desc: (or (scrTranslate gScreen "actionRefuel:freeRefuel" { item:fuelItem needed:maxCount })
+										(typTranslate &dsRPGDockServicesBase; "actionRefuel:freeRefuel" { item:fuelItem needed:maxCount })
+										)
+								
+								fuelItem: fuelItem
+								cost: cost
+								maxCount: maxCount
+								maxAfford: maxAfford
+								maxNeeded: maxCount
+								}
+								
+						(= maxCount 0)
+							{
+								visible: True
+								enabled: Nil
+								desc: (or (scrTranslate gScreen "actionRefuel:noFuelNeeded" { item:fuelItem })
+										(typTranslate &dsRPGDockServicesBase; "actionRefuel:noFuelNeeded" { item:fuelItem })
+										)
+								}
+								
+						(= maxAfford 0)
+							{
+								visible: True
+								enabled: Nil
+								desc: (or (scrTranslate gScreen "actionRefuel:cantAfford" { item:fuelItem cost:(fmtCurrency currencyUsed cost) needed:maxCount afford:maxAfford })
+										(typTranslate &dsRPGDockServicesBase; "actionRefuel:cantAfford" { item:fuelItem cost:(fmtCurrency currencyUsed cost) needed:maxCount afford:maxAfford })
+										)
+								}
+								
+						(ls maxAfford maxCount)
+							{
+								visible: True
+								enabled: True
+								desc: (or (scrTranslate gScreen "actionRefuel:cantAfford" { item:fuelItem cost:(fmtCurrency currencyUsed cost) needed:maxCount afford:maxAfford })
+										(typTranslate &dsRPGDockServicesBase; "actionRefuel:cantAfford" { item:fuelItem cost:(fmtCurrency currencyUsed cost) needed:maxCount afford:maxAfford })
+										)
+								
+								fuelItem: fuelItem
+								cost: cost
+								maxCount: maxAfford
+								maxAfford: maxAfford
+								maxNeeded: maxCount
+								}
+								
+						{
+							visible: True
+							enabled: True
+							desc: (or (scrTranslate gScreen "actionRefuel:refuel" { item:fuelItem cost:(fmtCurrency currencyUsed cost) needed:maxCount })
+									(typTranslate &dsRPGDockServicesBase; "actionRefuel:refuel" { item:fuelItem cost:(fmtCurrency currencyUsed cost) needed:maxCount })
+									)
+								
+							fuelItem: fuelItem
+							cost: cost
+							maxCount: maxCount
+							maxAfford: maxAfford
+							maxNeeded: maxCount
+							}
+						)
+					)
+				))
+				
+			(setq rpgCalcDockServiceRemoveAction (lambda (dockObj shipObj theItem options)
+				(switch
+					(= dockObj shipObj)
+						{
+							visible: Nil
+							}
+							
+					;	For devices, excluding reactors
+					
+					(itmMatches theItem "d~rI")
+						(block (
+							(currencyUsed (objGetDefaultCurrency dockObj))
+							(itemStatus (shpCanRemoveDevice shipObj theItem))
+							(dockStatus (objGetItemProperty dockObj theItem 'removeItemStatus))
+							(costToRemove (@ dockStatus 'price))
+							)
+							
+							(switch
+								(@ dockStatus 'upgradeInstallOnly)
+									{
+										visible: Nil	;	The Replace action already shows the message, so no need to repeat
+										enabled: Nil
+										desc: (scrTranslate gScreen "actionRemove:upgradeInstallOnly" { item:theItem })
+										}
+										
+								(not (@ dockStatus 'canRemove))
+									{
+										visible: True
+										enabled: Nil
+										desc: (scrTranslate gScreen "actionRemove:noTech" { item:theItem })
+										}
+										
+								(not (isint itemStatus))
+									{
+										visible: True
+										enabled: Nil
+										desc: itemStatus
+										}
+								
+								(not (eq itemStatus 0))
+									{
+										visible: True
+										enabled: Nil
+										desc: (scrTranslate gScreen "actionRemove:cannotRemove" { item:theItem })
+										}
+								
+								(gr (itmGetMass theItem) (objGetCargoSpaceLeft shipObj))
+									{
+										visible: True
+										enabled: Nil
+										desc: (scrTranslate gScreen "actionRemove:noRoomInCargo")
+										}
+								
+								(ls (objGetBalance shipObj currencyUsed) costToRemove)
+									{
+										visible: True
+										enabled: Nil
+										desc: (scrTranslate gScreen "actionRemove:cannotAfford" { cost:(fmtCurrency currencyUsed costToRemove) })
+										cost: costToRemove
+										}
+								
+								(eq costToRemove 0)
+									{
+										visible: True
+										enabled: True
+										desc: (scrTranslate gScreen "actionRemove:freeRemove")
+										cost: 0
+										}
+
+								{
+									visible: True
+									enabled: True
+									desc: (scrTranslate gScreen "actionRemove:remove" { cost:(fmtCurrency currencyUsed costToRemove) })
+									cost: costToRemove
+									}
+								)
+							
+							)
+				
+					;	Otherwise, not supported
+					
+					{
+						visible: Nil
+						}
+					)
+				))
+				
+			(setq rpgCalcDockServiceRepairAction (lambda (dockObj shipObj theItem options)
+				(switch
+					(= dockObj shipObj)
+						{
+							visible: Nil
+							}
+				
+					;	If armor segment...
+					
+					(= (itmGetProperty theItem 'category) 'armor)
+						(block (
+							(damage (objGetArmorDamage shipObj theItem))
+							(maxHP (shpGetArmorMaxHitPoints shipObj theItem))
+							(currencyUsed (objGetDefaultCurrency dockObj))
+							(costToRepair (objGetArmorRepairPrice dockObj theItem damage))
+							(armorNoun (cat (objGetArmorName shipObj theItem) " " (itmGetName theItem 0x20)))
+							)
+							
+							(switch
+								(eq damage 0)
+									{
+										visible: True
+										enabled: Nil
+										desc: (typTranslate &dsRPGManageArmor; 'descArmorNotDamaged { armorNoun:armorNoun })
+										}
+
+								(gr (itmGetProperty theItem 'repairLevel) (objGetProperty dockObj 'repairArmorMaxLevel))
+									{
+										visible: True
+										enabled: Nil
+										desc: (typTranslate &dsRPGManageArmor; 'descArmorNoTech { armorNoun:armorNoun })
+										}
+										
+								(not costToRepair)
+									{
+										visible: True
+										enabled: Nil
+										desc: (typTranslate &dsRPGManageArmor; 'descArmorCantRepair { armorNoun:armorNoun })
+										}
+
+								(ls (subtract maxHP damage) (divide maxHP 4))
+									{
+										visible: True
+										enabled: Nil
+										desc: (typTranslate &dsRPGManageArmor; 'descArmorTooMuchDamage { armorNoun:armorNoun })
+										}
+
+								(ls (objGetBalance shipObj currencyUsed) costToRepair)
+									{
+										visible: True
+										enabled: Nil
+										desc: (typTranslate &dsRPGManageArmor; 'descArmorCantAfford { armorNoun:armorNoun cost:(fmtCurrency currencyUsed costToRepair) })
+										cost: costToRepair
+										}
+
+								(eq costToRepair 0)
+									{
+										visible: True
+										enabled: True
+										desc: (typTranslate &dsRPGManageArmor; 'descArmorFreeRepair { armorNoun:armorNoun })
+										cost: 0
+										}
+
+								{
+									visible: True
+									enabled: True
+									desc: (typTranslate &dsRPGManageArmor; 'descArmorRepair { armorNoun:armorNoun cost:(fmtCurrency currencyUsed costToRepair) })
+									cost: costToRepair
+									}
+								)
+							)
+							
+					;	Otherwise, not supported
+					
+					{
+						visible: Nil
+						}
+					)
+				))
+				
+			(setq rpgCalcDockServiceReplaceAction (lambda (dockObj shipObj theItem options)
+				(switch
+					(= dockObj shipObj)
+						{
+							visible: Nil
+							}
+				
+					;	For armor
+					
+					(itmMatches theItem "aI")
+						(block (
+							(itemsAvail 
+								(filter (objGetItems shipObj (@ options 'criteria)) theItemInCargo
+									(not (itmIsEqual theItemInCargo theItem 'ignoreInstalled))
+									)
+								)
+							(maxLevel (map itemsAvail 'reduceMax theItemInCargo (itmGetLevel theItemInCargo)))
+							)
+							
+							(switch
+								(not itemsAvail)
+									{
+										visible: True
+										enabled: Nil
+										desc: (scrTranslate gScreen "actionReplace:noItemInCargo" { category:(@ options 'category) item:theItem })
+										}
+										
+								(ls maxLevel (itmGetLevel theItem))
+									{
+										visible: True
+										enabled: True
+										desc: (or (objTranslate dockObj "dockServices:installAbility" { category:(@ options 'category) maxLevel:maxLevel })
+												(scrTranslate gScreen "actionReplace:defaultAbility" { category:(@ options 'category) dockObj:dockObj maxLevel:maxLevel })
+												)
+										}
+										
+								{
+									visible: True
+									enabled: True
+									desc: (or (objTranslate dockObj "dockServices:installAbility" { category:(@ options 'category) })
+											(scrTranslate gScreen "actionReplace:defaultAbility" { category:(@ options 'category) dockObj:dockObj })
+											)
+									}
+								)
+							)
+							
+					;	For all devices
+					
+					(itmMatches theItem "dI")
+						(block (
+							(itemsAvail 
+								(filter (objGetItems shipObj (@ options 'criteria)) theItemInCargo
+									(not (itmIsEqual theItemInCargo theItem 'ignoreInstalled))
+									)
+								)
+							(maxLevel (map itemsAvail 'reduceMax theItemInCargo (itmGetLevel theItemInCargo)))
+						
+							(currencyUsed (objGetDefaultCurrency dockObj))
+							(itemStatus (shpCanRemoveDevice shipObj theItem))
+							(dockStatus (objGetItemProperty dockObj theItem 'removeItemStatus))
+							)
+							
+							(switch
+								(not (isint itemStatus))
+									{
+										visible: Nil	;	If we cannot be removed, then the Remove action will show the error
+										enabled: Nil
+										desc: itemStatus
+										}
+								
+								(not (eq itemStatus 0))
+									{
+										visible: Nil	;	If we cannot be removed, then the Remove action will show the error
+										enabled: Nil
+										desc: (scrTranslate gScreen "actionReplace:cannotReplace" { item:theItem })
+										}
+								
+								(@ dockStatus 'upgradeInstallOnly)
+									{
+										visible: True
+										enabled: Nil
+										desc: (scrTranslate gScreen "actionReplace:upgradeInstallOnly" { item:theItem })
+										}
+										
+								(not itemsAvail)
+									{
+										visible: True
+										enabled: Nil
+										desc: (scrTranslate gScreen "actionReplace:noItemInCargo" { category:(@ options 'category) })
+										}
+								
+								(not (@ dockStatus 'canRemove))
+									{
+										visible: True
+										enabled: Nil
+										desc: (scrTranslate gScreen "actionReplace:noTech" { item:theItem })
+										}
+										
+								(ls maxLevel (itmGetLevel theItem))
+									{
+										visible: True
+										enabled: True
+										desc: (or (objTranslate dockObj "dockServices:installAbility" { category:(@ options 'category) maxLevel:maxLevel })
+												(scrTranslate gScreen "actionReplace:defaultAbility" { category:(@ options 'category) dockObj:dockObj maxLevel:maxLevel })
+												)
+										}
+										
+								{
+									visible: True
+									enabled: True
+									desc: (or (objTranslate dockObj "dockServices:installAbility" { category:(@ options 'category) })
+											(scrTranslate gScreen "actionReplace:defaultAbility" { category:(@ options 'category) dockObj:dockObj })
+											)
+									}
+								)
+							
+							)
+				
+					;	Otherwise, not supported
+					
+					{
+						visible: Nil
+						}
+					)
+				))
+				
+			(setq rpgCalcDockServiceUpgradeAction (lambda (dockObj shipObj theItem options)
+				(switch
+					(= dockObj shipObj)
+						{
+							visible: Nil
+							}
+				
+					;	For installing a new device
+					
+					(and (not theItem) (!= (@ options 'category) 'armor))
+						(block (
+							(itemsForSale 
+								(filter (objGetItems dockObj (@ options 'criteria)) theItemToBuy
+									(and (objGetSellPrice dockObj theItemToBuy)
+											(objGetItemProperty dockObj theItemToBuy 'installDevicePrice)
+											)
+									)
+								)
+							(maxLevel (map itemsForSale 'reduceMax theItem (itmGetLevel theItem)))
+							)
+							
+							(switch
+								(not itemsForSale)
+									{
+										visible: True
+										enabled: Nil
+										desc: (scrTranslate gScreen "actionUpgrade:noItemForSale" { category:(@ options 'category) })
+										}
+					
+								{
+									visible: True
+									enabled: True
+									desc: (or (objTranslate dockObj "dockServices:upgradeAbility" { category:(@ options 'category) maxLevel:maxLevel })
+											(scrTranslate gScreen "actionUpgrade:defaultAbility" { category:(@ options 'category) dockObj:dockObj maxLevel:maxLevel })
+											)
+									}
+								)
+							)
+				
+					;	For armor
+					
+					(itmMatches theItem "aI")
+						(block (
+							(itemsForSale 
+								(filter (objGetItems dockObj (@ options 'criteria)) theItemToBuy
+									(and (objGetSellPrice dockObj theItemToBuy)
+											(objGetArmorReplacePrice dockObj theItemToBuy)
+											)
+									)
+								)
+							(maxLevel (map itemsForSale 'reduceMax theItemToBuy (itmGetLevel theItemToBuy)))
+							(maxLevelUpgrade
+								(map itemsForSale 'reduceMax theItemToBuy 
+									(if (not (itmIsEqual theItemToBuy theItem 'ignoreInstalled))
+										(itmGetLevel theItemToBuy)
+										0
+										)
+									)
+								)
+							)
+							
+							(switch
+								(not itemsForSale)
+									{
+										visible: True
+										enabled: Nil
+										desc: (scrTranslate gScreen "actionUpgrade:noItemForSale" { category:(@ options 'category) })
+										}
+										
+								(ls maxLevelUpgrade (itmGetLevel theItem))
+									{
+										visible: True
+										enabled: Nil
+										desc: (scrTranslate gScreen "actionUpgrade:noItemUpgrade" { category:(@ options 'category) item:theItem })
+										}
+					
+								{
+									visible: True
+									enabled: True
+									desc: (or (objTranslate dockObj "dockServices:upgradeAbility" { category:(@ options 'category) maxLevel:maxLevel })
+											(scrTranslate gScreen "actionUpgrade:defaultAbility" { category:(@ options 'category) dockObj:dockObj maxLevel:maxLevel })
+											)
+									}
+								)
+							)
+							
+					;	For all devices (except miscellaneous devices)
+					
+					(and (itmMatches theItem "dI")
+							(!= (@ options 'category) 'device)
+							)
+						(block (
+							(itemsForSale 
+								(filter (objGetItems dockObj (@ options 'criteria)) theItemToBuy
+									(and (objGetSellPrice dockObj theItemToBuy)
+											(objGetItemProperty dockObj theItemToBuy 'installDevicePrice)
+											)
+									)
+								)
+							(maxLevel (map itemsForSale 'reduceMax theItemToBuy (itmGetLevel theItemToBuy)))
+							(maxLevelUpgrade
+								(map itemsForSale 'reduceMax theItemToBuy 
+									(if (not (itmIsEqual theItemToBuy theItem 'ignoreInstalled))
+										(itmGetLevel theItemToBuy)
+										0
+										)
+									)
+								)
+						
+							(currencyUsed (objGetDefaultCurrency dockObj))
+							(itemStatus (shpCanRemoveDevice shipObj theItem))
+							(dockStatus (objGetItemProperty dockObj theItem 'removeItemStatus))
+							)
+							
+							(switch
+								(not (isint itemStatus))
+									{
+										visible: Nil	;	If we cannot be removed, then the Remove action will show the error
+										enabled: Nil
+										desc: itemStatus
+										}
+								
+								(not (eq itemStatus 0))
+									{
+										visible: Nil	;	If we cannot be removed, then the Remove action will show the error
+										enabled: Nil
+										desc: (scrTranslate gScreen "actionReplace:cannotReplace" { item:theItem })
+										}
+								
+								(not itemsForSale)
+									{
+										visible: True
+										enabled: Nil
+										desc: (scrTranslate gScreen "actionUpgrade:noItemForSale" { category:(@ options 'category) })
+										}
+								
+								(ls maxLevelUpgrade (itmGetLevel theItem))
+									{
+										visible: True
+										enabled: Nil
+										desc: (scrTranslate gScreen "actionUpgrade:noItemUpgrade" { category:(@ options 'category) item:theItem })
+										}
+										
+								(not (@ dockStatus 'canRemove))
+									{
+										visible: True
+										enabled: Nil
+										desc: (scrTranslate gScreen "actionUpgrade:noTech" { item:theItem })
+										}
+										
+								(not (isint itemStatus))
+									{
+										visible: True
+										enabled: Nil
+										desc: itemStatus
+										}
+								
+								(not (eq itemStatus 0))
+									{
+										visible: True
+										enabled: Nil
+										desc: (scrTranslate gScreen "actionUpgrade:cannotUpgrade" { item:theItem })
+										}
+								
+								{
+									visible: True
+									enabled: True
+									desc: (or (objTranslate dockObj "dockServices:upgradeAbility" { category:(@ options 'category) maxLevel:maxLevel })
+											(scrTranslate gScreen "actionUpgrade:defaultAbility" { category:(@ options 'category) dockObj:dockObj maxLevel:maxLevel })
+											)
+									}
+								)
+							
+							)
+				
+					;	Otherwise, not supported
+					
+					{
+						visible: Nil
+						}
+					)
+				))
+				
+			(setq rpgCalcDockServiceWeaponsAction (lambda (dockObj shipObj options)
+				(block (
+					(itemsForSale 
+						(filter (objGetItems dockObj "wUN") theItemToBuy
+							(and (objGetSellPrice dockObj theItemToBuy)
+									(objGetItemProperty dockObj theItemToBuy 'installDevicePrice)
+									)
+							)
+						)
+					(itemsToInstall
+						(filter (objGetItems shipObj "wU") theItemToInstall
+							(block (
+								(installStatus (objGetItemProperty dockObj theItemToInstall 'installDeviceStatus))
+								)
+								(and (@ installStatus 'canInstall)
+									(not (@ installStatus 'upgradeInstallOnly))
+									)
+								)
+							)
+						)
+					(itemsToRemove
+						(filter (objGetItems shipObj "wI") theItemToRemove
+							(block (
+								(removeStatus (objGetItemProperty dockObj theItemToRemove 'removeItemStatus))
+								)
+								(and (@ removeStatus 'canRemove)
+									(not (@ removeStatus 'upgradeInstallOnly))
+									)
+								)
+							)
+						)
+					(ammoWeapons (filter (objGetItems shipObj "wI") theItem
+						(itmGetProperty theItem 'ammoType)
+						))
+					(ammoForSale
+						(filter (objGetItems dockObj "m") theItem
+							(and
+								(objGetSellPrice dockObj theItem)
+								(filter ammoWeapons theWeapon
+									(itmMatches theItem (cat "m +launchedBy:" (itmGetType theWeapon) ";"))
+									)
+								)
+							)
+						)
+						
+					(maxLevel (map itemsForSale 'reduceMax theItemToBuy (itmGetLevel theItemToBuy)))
+					(minPlayerLevel (map (objGetItems shipObj "wI") 'reduceMin theItemToUpgrade (itmGetLevel theItemToUpgrade)))
+					)
+					
+					(switch
+						(= dockObj shipObj)
+							{
+								visible: True
+								enabled: True
+								desc: (scrTranslate gScreen "actionWeapons:shipConfig")
+								}
+								
+						;	If we have upgrades
+						
+						(and itemsForSale
+								(geq maxLevel minPlayerLevel)
+								)
+							{
+								visible: True
+								enabled: True
+								desc: (or (objTranslate dockObj "dockServices:weaponsAbility" { items:itemsForSale maxLevel:maxLevel })
+										(scrTranslate gScreen "actionWeapons:defaultUpgrade" { items:itemsForSale maxLevel:maxLevel })
+										)
+								}
+						
+						;	If we can install something for the player
+						
+						itemsToInstall
+							{
+								visible: True
+								enabled: True
+								desc: (or (objTranslate dockObj "dockServices:installAbility" { items:itemsToInstall maxLevel:(objGetProperty dockObj 'installDeviceMaxLevel) })
+										(scrTranslate gScreen "actionWeapons:defaultInstall" { items:itemsToInstall maxLevel:(objGetProperty dockObj 'installDeviceMaxLevel) })
+										)
+								}
+								
+						;	If we can sell ammo
+						
+						ammoForSale
+							{
+								visible: True
+								enabled: True
+								desc: (scrTranslate gScreen "actionWeapons:defaultAmmo" { items:ammoForSale maxLevel:(map ammoForSale 'reduceMax theItem (itmGetLevel theItem)) })
+								}
+								
+						;	If we can remove items
+						
+						itemsToRemove
+							{
+								visible: True
+								enabled: True
+								desc: (or (objTranslate dockObj "dockServices:installAbility" { items:itemsToRemove maxLevel:(objGetProperty dockObj 'installDeviceMaxLevel) })
+										(scrTranslate gScreen "actionWeapons:defaultRemove" { items:itemsToRemove maxLevel:(objGetProperty dockObj 'installDeviceMaxLevel) })
+										)
+								}
+								
+						;	No upgrades for player
+						
+						itemsForSale
+							{
+								visible: True
+								enabled: Nil
+								desc: (scrTranslate gScreen "actionWeapons:noBetterUpgrades" { maxLevel:maxLevel })
+								}
+								
+						;	Otherwise, nothing
+						
+						{
+							visible: True
+							enabled: Nil
+							desc: (scrTranslate gScreen "actionWeapons:nothing")
+							}
+						)
+					)
+				))
+				
+			;	rpgCalcToHit
+			;
+			;	This is a generic function useful for calculating probability of
+			;	something happending when you have an attack value and a defense
+			;	value.
+			;
+			;	attack and defense must both be between 0 and 100. The result is
+			;	a probability of success from 0 to 100.
+			;
+			;	See: https://forums.kronosaur.com/viewtopic.php?p=63206#p63206
+				
+			(setq rpgCalcToHit (lambda (attack defense)
+				(switch
+					(leq attack 0)
+						0
+						
+					(leq defense 0)
+						attack
+						
+					(divide (* attack attack) (+ attack defense))
+					)
+				))
+			
+			;	rpgGetInstallerList
+			;
+			;	Returns a list of objects that are able to install the given item
+			;	on the given ship. The objects are returned in a list sorted
+			;	by distance to the ship.
+			
+			(setq rpgGetInstallerList (lambda (theShip theItem)
+				(filter (sysFindObject theShip "TAF +populated; S:d") theObj
+					(block (
+						(installStatus (objGetItemProperty theObj theItem 'installDeviceStatus))
+						)
+													
+						(and (@ installStatus 'canInstall)
+							(not (@ installStatus 'upgradeInstallOnly))
+							)
+						)
+					)
+				))
 
 			(setq rpgGetReactorUpgradeList (lambda (theObj theShip theCriteria)
 				(block (minPower reactorList additionalList)
@@ -150,6 +1200,7 @@
 				;	itemInCargo:			If True, item is in player's cargo hold
 				;	maxTechLevel:			The maximum tech level we will install (unless we match techCriteriaOverride)
 				;	noCargoCheck:			If True, then we don't check to see if the old device fits in cargo
+				;	replaceItem:			If not Nil, we try to replace this device.
 				;	targetObj:				Object on which to install (if Nil, we assume player ship)
 				;	techCriteria:			If not Nil, the item must match this criteria
 				;	techCriteriaOverride:	If not Nil, and item matches this criteria, install even if above maxTechLevel
@@ -162,14 +1213,15 @@
 				;	price:					Total installation cost
 				;	desc:					Description of installation attempt
 
-				(block (thisItem totalCost canInstall desc itemName currencyUsed targetObj installerObj textYourShip textWe textYour)
+				(block (thisItem totalCost canInstall desc descWarning itemName currencyUsed targetObj installerObj textYourShip textWe textYour)
 				
 					(setq thisItem (@ data 'item))
 					(setq currencyUsed (@ data 'currencyUsed))
 					(setq targetObj (if (@ data 'targetObj) (@ data 'targetObj) gPlayerShip))
 					(setq installerObj (if (@ data 'installerObj) (@ data 'installerObj) gSource))
 					(if (not currencyUsed) (setq currencyUsed (objGetDefaultCurrency targetObj)))
-					(setq itemName (itmGetName thisItem (if (or (@ data 'upgrade) (@ data 'buyAndInstall)) 0x40 0x04)))
+					(setq itemName (itmGetName thisItem 0x04))
+					;(setq itemName (itmGetName thisItem (if (or (@ data 'upgrade) (@ data 'buyAndInstall)) 0x40 0x04)))
 					(setq canInstall Nil)
 					
 					;	If the target object is not the player's ship, then we need to modify
@@ -198,6 +1250,9 @@
 						
 					(if thisItem
 						(block (
+							;	We use installDeviceStatus instead of installItemStatus because we
+							;	don't want to install armor objects.
+							
 							(status (objGetItemProperty installerObj thisItem 'installDeviceStatus))
 							(itemPrice 
 								(if (or (@ data 'upgrade) (@ data 'buyAndInstall)) 
@@ -205,8 +1260,19 @@
 									0
 									)
 								)
+							(recommendedSlot
+								(switch
+									(not (@ data 'replaceItem))
+										-1
+										
+									(not (itmGetInstallPos (@ data 'replaceItem)))
+										-1
+										
+									(itmGetInstallPos (@ data 'replaceItem))
+									)
+								)
 							
-							cargoNeeded itemToReplace resultMessage resultCode returnValue stationCannotInstall
+							cargoNeeded itemToReplace resultMessage resultCode returnValue stationCannotInstall removeStatus
 							)
 						
 							;	Compute the cost to install
@@ -231,7 +1297,7 @@
 								
 							;	Ask the object is we can install the item
 
-							(setq returnValue (objCanInstallItem targetObj thisItem))
+							(setq returnValue (objCanInstallItem targetObj thisItem recommendedSlot))
 							(setq resultCode (@ returnValue 1))
 							(setq resultMessage (@ returnValue 2))
 							(setq itemToReplace (@ returnValue 3))
@@ -270,6 +1336,15 @@
 
 								(not totalCost)
 									(setq desc (cat (strCapitalize textWe) " cannot install " itemName " on " textYourShip "."))
+									
+								;	Some stations only install an item if you purchase it from them.
+								
+								(and (@ status 'upgradeInstallOnly)
+										(not (@ data 'upgrade))
+										)
+									(setq desc (cat "Sorry, installation services are only available for purchased upgrades."))
+									
+								;	Check military ID
 
 								(and (@ data 'checkMilitaryID)
 										(itmHasModifier thisItem "Military")
@@ -286,7 +1361,10 @@
 									(setq desc resultMessage)
 
 								(eq resultCode 'noDeviceSlotsLeft)
-									(setq desc (cat (strCapitalize textYourShip) " cannot support any more devices."))
+									(if (gr (itmGetProperty thisItem 'deviceSlots) 1)
+										(setq desc (cat (strCapitalize textYourShip) " does not have enough open device slots to install this device."))
+										(setq desc (cat (strCapitalize textYourShip) " does not have an open device slot for this device."))
+										)
 
 								(eq resultCode 'reactorTooWeak)
 									(setq desc (cat (strCapitalize textYourShip) "'s reactor is not powerful enough for this device."))
@@ -295,10 +1373,16 @@
 									(setq desc (cat "The power output of " itemName " is too high for " textYourShip "."))
 
 								(eq resultCode 'noWeaponSlotsLeft)
-									(setq desc (cat (strCapitalize textYourShip) " cannot support any more weapons."))
-
+									(if (gr (itmGetProperty thisItem 'deviceSlots) 1)
+										(setq desc (cat (strCapitalize textYourShip) " does not have enough open weapon slots to install this device."))
+										(setq desc (cat (strCapitalize textYourShip) " does not have an open weapon slot for this device."))
+										)
+								
 								(eq resultCode 'noNonWeaponSlotsLeft)
-									(setq desc (cat (strCapitalize textYourShip) " cannot support any more non-weapon devices."))
+									(if (gr (itmGetProperty thisItem 'deviceSlots) 1)
+										(setq desc (cat (strCapitalize textYourShip) " does not have enough open non-weapon slots to install this device."))
+										(setq desc (cat (strCapitalize textYourShip) " does not have an open non-weapon slot for this device."))
+										)
 									
 								(and (eq resultCode 'replacementRequired)
 										(eq (itmGetType thisItem) (itmGetType itemToReplace))
@@ -330,10 +1414,7 @@
 								(block Nil
 									(if (not (@ data 'totalPrice))
 										(setq totalCost 
-											(add totalCost 
-												; Remove cost is 1/2 of install cost
-												(divide (multiply gMargin (itmGetInstallCost itemToReplace currencyUsed)) 200)
-												)
+											(add totalCost (objGetItemProperty installerObj itemToReplace 'removeDevicePrice))
 											)
 										)
 
@@ -343,6 +1424,17 @@
 									(if (@ data 'itemInCargo)
 										(setq cargoNeeded (subtract cargoNeeded (itmGetMass thisItem)))
 										)
+									)
+								)
+								
+							; See if we are allowed to remove the device
+							
+							(if (and canInstall itemToReplace
+									(neq (setq removeStatus (shpCanRemoveDevice targetObj itemToReplace)) 0)
+									)
+								(block Nil
+									(setq desc (cat desc ". " (if (isint removeStatus) "Unfortunately, you cannot remove the device." removeStatus)))
+									(setq canInstall Nil)
 									)
 								)
 
@@ -391,8 +1483,11 @@
 							(if (and canInstall
 									itemToReplace
 									(ls (itmGetLevel thisItem) (itmGetLevel itemToReplace))
+									(= (itmGetProperty thisItem 'category) (itmGetProperty itemToReplace 'category))
+									(!= (itmGetProperty thisItem 'category) 'device)
+									(!= (itmGetProperty thisItem 'category) 'cargoHold)
 									)
-								(setq desc (cat desc "  (However, the " (itmGetName itemToReplace 0x00) " is higher level.)"))
+								(setq descWarning (cat "Note: Your currently installed " (itmGetName itemToReplace 0x00) " is higher level."))
 								)
 							)
 							
@@ -404,6 +1499,7 @@
 						canInstall: canInstall
 						price: totalCost
 						desc: desc
+						descWarning: descWarning
 						}
 					)
 				))

@@ -375,14 +375,14 @@ PLAYER DATA
 			type=				"cruiser"
 			defaultSovereign=	"&svCommonwealthFleet;"
 
-			mass=				"10000"
+			size=				"220"
+			mass=				"26000"
 			cargoSpace=			"1000"
 			thrustRatio=		"1"
 			maxSpeed=			"16"
 
 			cyberDefenseLevel=	"8"
 			explosionType=		"&vtThermoExplosion2;"
-			leavesWreck=		"100"
 
 			attributes=			"capitalShip, commonwealth, commonwealthFleet, commonwealthMilitary, genericClass"
 			>
@@ -395,8 +395,8 @@ PLAYER DATA
 			/>
 		
 		<Devices>
-			<Device deviceID="&itStarCannon;" secondaryWeapon="true" minFireArc="355" maxFireArc="175" posAngle="99" posRadius="22"/>
-			<Device deviceID="&itStarCannon;" secondaryWeapon="true" minFireArc="160" maxFireArc="5" posAngle="261" posRadius="22"/>
+			<Device deviceID="&itStarCannon;" secondaryWeapon="true" minFireArc="355" maxFireArc="175" posAngle="90" posRadius="24" posZ="8"/>
+			<Device deviceID="&itStarCannon;" secondaryWeapon="true" minFireArc="160" maxFireArc="5" posAngle="-90" posRadius="24" posZ="8"/>
 			<Device deviceID="&itNAMIHeavyLauncher;" omnidirectional="true"/>
 			<Device deviceID="&itR9Deflector;"/>
 		</Devices>
@@ -422,12 +422,12 @@ PLAYER DATA
 					/>
 		</Interior>
 
-		<Image imageID="&rsLargeShips1;" imageX="1728" imageY="0" imageWidth="192" imageHeight="192" imageFrameCount="0" imageTicksPerFrame="0"/>
+		<Image imageID="&rsAquila;" imageWidth="210" imageHeight="210"/>
 
 		<Effects>
-			<Effect type="thrustMain"		posAngle="168"	posRadius="82"	posZ="-20"	rotation="180"	effect="&efMainThrusterLarge;"/>
-			<Effect type="thrustMain"		posAngle="-168"	posRadius="82"	posZ="-20"	rotation="180"	effect="&efMainThrusterLarge;"/>
-			<Effect type="thrustMain"		posAngle="180"	posRadius="82"	posZ="-5"	rotation="180"	effect="&efMainThrusterLarge;"/>
+			<Effect type="thrustMain"		posAngle="168"	posRadius="94"	posZ="-20"	rotation="180"	effect="&efMainThrusterLarge;"/>
+			<Effect type="thrustMain"		posAngle="-168"	posRadius="94"	posZ="-20"	rotation="180"	effect="&efMainThrusterLarge;"/>
+			<Effect type="thrustMain"		posAngle="180"	posRadius="94"	posZ="-5"	rotation="180"	effect="&efMainThrusterLarge;"/>
 		</Effects>
 
 		<Items>
@@ -699,14 +699,14 @@ PLAYER DATA
 			attributes=			"capitalShip, commonwealth, commonwealthFleet, commonwealthMilitary, genericClass, fleetLaw, majorShip"
 			inherit=			"&baCSCBase;"
 			   
-			mass=				"50000"
+			size=				"400"
+			mass=				"200000"
 			thrustRatio=		"0.5"
 			maxSpeed=			"2"
 			cargoSpace=			"5000"
 			cyberDefenseLevel=	"8"
 			   
 			explosionType=		"&vtThermoExplosion4;"
-			leavesWreck=		"100"
 
 			dockScreen=			"Main"
 			>
@@ -719,10 +719,10 @@ PLAYER DATA
 			/>
 		
 		<Devices>
-			<Device deviceID="&itTeV9Blaster;" secondaryWeapon="true" minFireArc="270" maxFireArc="90"  posAngle="0" posRadius="64"/>
-			<Device deviceID="&itTeV9Blaster;" secondaryWeapon="true" minFireArc="90"  maxFireArc="270" posAngle="180" posRadius="64"/>
-			<Device deviceID="&itTeV9Blaster;" secondaryWeapon="true" omnidirectional="true" posAngle="90" posRadius="44"/>
-			<Device deviceID="&itTeV9Blaster;" secondaryWeapon="true" omnidirectional="true" posAngle="270" posRadius="44"/>
+			<Device deviceID="&itTeV9Blaster;" secondaryWeapon="true" minFireArc="270" maxFireArc="90"  posAngle="0" posRadius="98" posZ="-5"/>
+			<Device deviceID="&itTeV9Blaster;" secondaryWeapon="true" minFireArc="90"  maxFireArc="270" posAngle="180" posRadius="98" posZ="-5"/>
+			<Device deviceID="&itTeV9Blaster;" secondaryWeapon="true" omnidirectional="true" posAngle="90" posRadius="98" posZ="-5"/>
+			<Device deviceID="&itTeV9Blaster;" secondaryWeapon="true" omnidirectional="true" posAngle="270" posRadius="98" posZ="-5"/>
 			
 			<Device deviceID="&itMissileDefense;" omnidirectional="true" />
 			<Device deviceID="&vtDamageControlParty;"/>
@@ -764,12 +764,12 @@ PLAYER DATA
 
 		<!-- Image and Effects -->
 
-		<Image imageID="&rsLargeShips2;" imageX="0" imageY="0" imageWidth="256" imageHeight="256" />
+		<Image imageID="&rsCSC;" imageX="0" imageY="0" imageWidth="370" imageHeight="370" />
 
 		<Effects>
-			<Effect type="thrustMain"		posAngle="170"	posRadius="75"	posZ="-5"	rotation="180"	effect="&efMainThrusterLarge;"/>
-			<Effect type="thrustMain"		posAngle="180"	posRadius="74"	posZ="-5"	rotation="180"	effect="&efMainThrusterLarge;"/>
-			<Effect type="thrustMain"		posAngle="-170"	posRadius="75"	posZ="-5"	rotation="180"	effect="&efMainThrusterLarge;"/>
+			<Effect type="thrustMain"		posAngle="166"	posRadius="116"	posZ="-10"	rotation="180"	effect="&efMainThrusterLarge;"/>
+			<Effect type="thrustMain"		posAngle="180"	posRadius="114"	posZ="-10"	rotation="180"	effect="&efMainThrusterLarge;"/>
+			<Effect type="thrustMain"		posAngle="-166"	posRadius="116"	posZ="-10"	rotation="180"	effect="&efMainThrusterLarge;"/>
 		</Effects>
 			
 		<!-- AI and Behavior -->
@@ -781,9 +781,9 @@ PLAYER DATA
 			/>
 		
 		<Trade currency="credit" max="100000" replenish="5000">
-			<Sell	criteria="m +Commonwealth; -Illegal; -Military; -NotForSale; L:1-10;" priceAdj="100" inventoryAdj="200"/>
+			<Sell	criteria="m +Commonwealth; -Illegal; -Military; -NotForSale; -notStandard; L:1-10;" priceAdj="100" inventoryAdj="200"/>
 			<Sell	criteria="*NU -Illegal; -ID; -NotForSale;"	priceAdj="100"/>
-			<Sell	criteria="rNU L:1-9; -Illegal; -NotForSale;"	priceAdj="100"	inventoryAdj="100"/>
+			<Sell	criteria="rNU L:1-9; -Illegal; -NotForSale; -notStandard;"	priceAdj="100"	inventoryAdj="100"/>
 			
 			<Refuel			criteria="f +BasicFuel; L:1-9;" priceAdj="90"/>
 			<RepairArmor	criteria="a L:1-10;" priceAdj="100"/>
@@ -3308,14 +3308,14 @@ PLAYER DATA
 			attributes=			"capitalShip, commonwealth, commonwealthFleet, commonwealthMilitary, fleetLaw, majorShip"
 			inherit=			"&baCSCBase;"
 			   
-			mass=				"50000"
+			size=				"400"
+			mass=				"200000"
 			cargoSpace=			"5000"
 			thrustRatio=		"0.5"
 			maxSpeed=			"2"
 			cyberDefenseLevel=	"6"
 			   
 			explosionType=		"&vtThermoExplosion4;"
-			leavesWreck=		"100"
 
 			dockScreen=			"Main"
 			>
@@ -3328,10 +3328,10 @@ PLAYER DATA
 			/>
 		
 		<Devices>
-			<Device deviceID="&itTeV9Blaster;" secondaryWeapon="true" minFireArc="270" maxFireArc="90"  posAngle="0" posRadius="64"/>
-			<Device deviceID="&itTeV9Blaster;" secondaryWeapon="true" minFireArc="90"  maxFireArc="270" posAngle="180" posRadius="64"/>
-			<Device deviceID="&itTeV9Blaster;" secondaryWeapon="true" omnidirectional="true" posAngle="90" posRadius="44"/>
-			<Device deviceID="&itTeV9Blaster;" secondaryWeapon="true" omnidirectional="true" posAngle="270" posRadius="44"/>
+			<Device deviceID="&itTeV9Blaster;" secondaryWeapon="true" minFireArc="270" maxFireArc="90"  posAngle="0" posRadius="98" posZ="-5"/>
+			<Device deviceID="&itTeV9Blaster;" secondaryWeapon="true" minFireArc="90"  maxFireArc="270" posAngle="180" posRadius="98" posZ="-5"/>
+			<Device deviceID="&itTeV9Blaster;" secondaryWeapon="true" omnidirectional="true" posAngle="90" posRadius="98" posZ="-5"/>
+			<Device deviceID="&itTeV9Blaster;" secondaryWeapon="true" omnidirectional="true" posAngle="270" posRadius="98" posZ="-5"/>
 			
 			<Device deviceID="&itMissileDefense;" omnidirectional="true" />
 			<Device deviceID="&vtDamageControlParty;"/>
@@ -3369,12 +3369,12 @@ PLAYER DATA
 			<Item count="1d4"	item="&itR1Deflector;"/>
 		</Items>
 
-		<Image imageID="&rsLargeShips2;" imageX="0" imageY="0" imageWidth="256" imageHeight="256" />
+		<Image imageID="&rsCSC;" imageX="0" imageY="0" imageWidth="370" imageHeight="370" />
 
 		<Effects>
-			<Effect type="thrustMain"		posAngle="170"	posRadius="75"	posZ="-5"	rotation="180"	effect="&efMainThrusterLarge;"/>
-			<Effect type="thrustMain"		posAngle="180"	posRadius="74"	posZ="-5"	rotation="180"	effect="&efMainThrusterLarge;"/>
-			<Effect type="thrustMain"		posAngle="-170"	posRadius="75"	posZ="-5"	rotation="180"	effect="&efMainThrusterLarge;"/>
+			<Effect type="thrustMain"		posAngle="166"	posRadius="116"	posZ="-10"	rotation="180"	effect="&efMainThrusterLarge;"/>
+			<Effect type="thrustMain"		posAngle="180"	posRadius="114"	posZ="-10"	rotation="180"	effect="&efMainThrusterLarge;"/>
+			<Effect type="thrustMain"		posAngle="-166"	posRadius="116"	posZ="-10"	rotation="180"	effect="&efMainThrusterLarge;"/>
 		</Effects>
 			
 		<AISettings
@@ -3384,9 +3384,9 @@ PLAYER DATA
 			/>
 
 		<Trade currency="credit" max="100000" replenish="5000">
-			<Sell	criteria="m +Commonwealth; -Illegal; -Military; -NotForSale; L:1-10;" priceAdj="100" inventoryAdj="200"/>
+			<Sell	criteria="m +Commonwealth; -Illegal; -Military; -NotForSale; -notStandard; L:1-10;" priceAdj="100" inventoryAdj="200"/>
 			<Sell	criteria="*NU -Illegal; -ID; -NotForSale;"	priceAdj="100"/>
-			<Sell	criteria="rNU L:1-8; -Illegal; -NotForSale;"	priceAdj="100"	inventoryAdj="100"/>
+			<Sell	criteria="rNU L:1-8; -Illegal; -NotForSale; -notStandard;"	priceAdj="100"	inventoryAdj="100"/>
 			
 			<Refuel			criteria="f +BasicFuel; L:1-9;" priceAdj="90"/>
 			<RepairArmor	criteria="a L:1-9;" priceAdj="100"/>
@@ -3766,13 +3766,13 @@ PLAYER DATA
 			type=				"transport"
 			defaultSovereign=	"&svCommonwealthFleet;"
 
-			mass=				"8000"
+			size=				"65"
+			mass=				"2000"
 			cargoSpace=			"5600"
 			thrustRatio=		"0.8"
 			maxSpeed=			"15"
 
 			explosionType=		"&vtBlastExplosion4;"
-			leavesWreck=		"80"
 
 			attributes=			"freighter, genericClass"
 			>
@@ -3793,7 +3793,7 @@ PLAYER DATA
 		</Armor>
 
 		<Devices>
-			<Device deviceID="&itTeV9Blaster;" omnidirectional="true"/>
+			<Device deviceID="&itTeV9Blaster;" omnidirectional="true" posAngle="180" posRadius="12" posZ="10"/>
 			<Device deviceID="&itR5Deflector;"/>
 		</Devices>
 
@@ -3802,11 +3802,37 @@ PLAYER DATA
 			rotationAccel=		"0.5"
 			/>
 
-		<Image imageID="&rsMediumShips3;" imageX="768" imageY="0" imageWidth="96" imageHeight="96" imageFrameCount="0" imageTicksPerFrame="0"/>
+		<Interior>
+			<Compartment name="interior"
+					hitPoints=	"30"
+					/>
+			
+			<Compartment name="main drive"
+					type=		"mainDrive"
+					hitPoints=	"70"
+
+					posX=		"-31"
+					posY=		"0"
+					sizeX=		"28"
+					sizeY=		"42"
+					/>
+			
+			<Compartment name="cargo contatiners"
+					type=		"cargo"
+					hitPoints=	"50"
+
+					posX=		"10"
+					posY=		"0"
+					sizeX=		"40"
+					sizeY=		"40"
+					/>
+		</Interior>
+		 
+		<Image imageID="&rsAurochs;" imageWidth="96" imageHeight="96"/>
 
 		<Effects>
 			<Effect type="thrustMain"		posAngle="157"	posRadius="43"	posZ="0"	rotation="180"	effect="&efMainThrusterLarge;"/>
-			<Effect type="thrustMain"		posAngle="180"	posRadius="42"	posZ="10"	rotation="180"	effect="&efMainThrusterLarge;"/>
+			<Effect type="thrustMain"		posAngle="180"	posRadius="42"	posZ="5"	rotation="180"	effect="&efMainThrusterLarge;"/>
 			<Effect type="thrustMain"		posAngle="-157"	posRadius="43"	posZ="0"	rotation="180"	effect="&efMainThrusterLarge;"/>
 		</Effects>
 
@@ -4106,8 +4132,6 @@ PLAYER DATA
 			thrustRatio=		"9.0"
 			maxSpeed=			"22"
 
-			leavesWreck=		"40"
-
 			attributes=			"commonwealth,commonMilitary,genericClass"
 			>
 
@@ -4178,8 +4202,6 @@ PLAYER DATA
 			thrustRatio=		"9.0"
 			maxSpeed=			"20"
 
-			leavesWreck=		"50"
-
 			attributes=			"commonwealth,commonMilitary,genericClass"
 			>
 
@@ -4237,8 +4259,6 @@ PLAYER DATA
 			cargoSpace=			"50"
 			thrustRatio=		"12.0"
 			maxSpeed=			"22"
-
-			leavesWreck=		"50"
 
 			attributes=			"commonwealth,commonMilitary,genericClass"
 			>
@@ -5288,8 +5308,12 @@ PLAYER DATA
 
 <!-- RESOURCES -->
 
+	<Image UNID="&rsAurochs;"		bitmap="Resources\Aurochs.jpg" bitmask="Resources\AurochsMask.bmp" loadOnUse="true"/>
+	<Image UNID="&rsAquila;"		bitmap="Resources\Aquila.jpg" bitmask="Resources\AquilaMask.bmp" loadOnUse="true"/>
 	<Image UNID="&rsBritannia;"		bitmap="Resources\Britannia.jpg" bitmask="Resources\BritanniaMask.bmp" loadOnUse="true"/>
-	<Image UNID="&rsCSCBkgnd;"		bitmap="Resources\CSC.jpg" loadOnUse="true" />
+	<Image UNID="&rsCSC;"			bitmap="Resources\CSC.jpg" bitmask="Resources\CSCMask.bmp" loadOnUse="true" />
+	
+	<Image UNID="&rsCSCBkgnd;"		bitmap="Resources\CSCScreen.jpg" loadOnUse="true" />
 	<Image UNID="&rsFleetEmblems;"	bitmap="Resources\FleetEmblems.jpg" bitmask="Resources\FleetEmblemsMask.bmp" loadOnUse="true" />
 
 </TranscendenceModule>

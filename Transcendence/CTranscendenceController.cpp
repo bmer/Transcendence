@@ -47,6 +47,10 @@
 #include "Zip.h"
 #include "Transcendence.h"
 
+#ifdef STEAM_BUILD
+#include "SteamUtil.h"
+#endif
+
 #define SERVICES_TAG							CONSTLIT("Services")
 
 #define CMD_NULL								CONSTLIT("null")
@@ -61,6 +65,7 @@
 #define CMD_SOUNDTRACK_PREV						CONSTLIT("cmdSoundtrackPrev")
 #define CMD_SOUNDTRACK_STOP						CONSTLIT("cmdSoundtrackStop")
 #define CMD_SOUNDTRACK_UPDATE_PLAY_POS			CONSTLIT("cmdSoundtrackUpdatePlayPos")
+#define CMD_UPDATE_HIGH_SCORE_LIST				CONSTLIT("cmdUpdateHighScoreList")
 
 #define CMD_GAME_ADVENTURE						CONSTLIT("gameAdventure")
 #define CMD_GAME_CREATE							CONSTLIT("gameCreate")
@@ -95,10 +100,10 @@
 #define CMD_SERVICE_DOWNLOADS_COMPLETE			CONSTLIT("serviceDownloadsComplete")
 #define CMD_SERVICE_DOWNLOADS_IN_PROGRESS		CONSTLIT("serviceDownloadsInProgress")
 #define CMD_SERVICE_ERROR						CONSTLIT("serviceError")
-#define CMD_SERVICE_EXTENSION_LOAD_BEGIN		CONSTLIT("serviceExtensionLoadBegin")
-#define CMD_SERVICE_EXTENSION_LOAD_END			CONSTLIT("serviceExtensionLoadEnd")
 #define CMD_SERVICE_EXTENSION_LOADED			CONSTLIT("serviceExtensionLoaded")
 #define CMD_SERVICE_FILE_DOWNLOADED				CONSTLIT("serviceFileDownloaded")
+#define CMD_SERVICE_HIGH_SCORE_LIST_ERROR		CONSTLIT("serviceHighScoreListError")
+#define CMD_SERVICE_HIGH_SCORE_LIST_LOADED		CONSTLIT("serviceHighScoreListLoaded")
 #define CMD_SERVICE_HOUSEKEEPING				CONSTLIT("serviceHousekeeping")
 #define CMD_SERVICE_NEWS_LOADED					CONSTLIT("serviceNewsLoaded")
 #define CMD_SERVICE_STATUS						CONSTLIT("serviceStatus")
@@ -424,6 +429,19 @@ ALERROR CTranscendenceController::OnBoot (char *pszCommandLine, SHIOptions *retO
 	CString sCurDir = pathGetExecutablePath(NULL);
 	::SetCurrentDirectory(sCurDir.GetASCIIZPointer());
 
+	//	Add the services that we want (we need to do this before we load settings
+	//	because we will get called back to initialize services).
+
+#ifdef STEAM_BUILD
+	m_Service.AddService(new CSteamService(m_HI));
+#else
+	CHexarcServiceFactory HexarcService;
+	m_Service.AddService(HexarcService.Create(m_HI));
+
+	CXelerusServiceFactory XelerusService;
+	m_Service.AddService(XelerusService.Create(m_HI));
+#endif
+
 	//	Load the settings from a file
 
 	CString sError;
@@ -660,7 +678,7 @@ ALERROR CTranscendenceController::OnCommand (const CString &sCmd, void *pData)
 
 		//	Legacy CTranscendenceWnd takes over
 
-		m_HI.ShowSession(new CIntroSession(m_HI, CTranscendenceWnd::isOpeningTitles));
+		m_HI.ShowSession(new CIntroSession(m_HI, m_Model, CIntroSession::isOpeningTitles));
 
 		//	Start the intro
 
@@ -769,7 +787,7 @@ ALERROR CTranscendenceController::OnCommand (const CString &sCmd, void *pData)
 
 	else if (strEquals(sCmd, CMD_UI_BACK_TO_INTRO))
 		{
-		m_HI.ShowSession(new CIntroSession(m_HI, CTranscendenceWnd::isBlank));
+		m_HI.ShowSession(new CIntroSession(m_HI, m_Model, CIntroSession::isBlank));
 		m_iState = stateIntro;
 		DisplayMultiverseStatus(m_Multiverse.GetServiceStatus());
 		m_Soundtrack.SetGameState(CSoundtrackManager::stateProgramIntro);
@@ -843,7 +861,7 @@ ALERROR CTranscendenceController::OnCommand (const CString &sCmd, void *pData)
 		//	Otherwise start wait animation
 
 		else
-			m_HI.GetSession()->HICommand(CMD_SHOW_WAIT_ANIMATION);
+			m_HI.HISessionCommand(CMD_SHOW_WAIT_ANIMATION);
 
 		//	We set state so we don't repeat any of the actions above. [This 
 		//	could happen if the client sends us this message twice, e.g.,
@@ -1018,7 +1036,7 @@ ALERROR CTranscendenceController::OnCommand (const CString &sCmd, void *pData)
 
 		//	Back to intro screen
 
-		m_HI.ShowSession(new CIntroSession(m_HI, CTranscendenceWnd::isShipStats));
+		m_HI.ShowSession(new CIntroSession(m_HI, m_Model, CIntroSession::isShipStats));
 		m_iState = stateIntro;
 		DisplayMultiverseStatus(m_Multiverse.GetServiceStatus());
 		m_Soundtrack.SetGameState(CSoundtrackManager::stateProgramIntro);
@@ -1181,7 +1199,7 @@ ALERROR CTranscendenceController::OnCommand (const CString &sCmd, void *pData)
 			}
 		else
 			{
-			m_HI.ShowSession(new CIntroSession(m_HI, CTranscendenceWnd::isEndGame));
+			m_HI.ShowSession(new CIntroSession(m_HI, m_Model, CIntroSession::isEndGame));
 			m_iState = stateIntro;
 			DisplayMultiverseStatus(m_Multiverse.GetServiceStatus());
 			m_Soundtrack.SetGameState(CSoundtrackManager::stateProgramIntro);
@@ -1197,7 +1215,7 @@ ALERROR CTranscendenceController::OnCommand (const CString &sCmd, void *pData)
 
 		if (m_iState == stateEndGameStats)
 			{
-			m_HI.ShowSession(new CIntroSession(m_HI, CTranscendenceWnd::isEndGame));
+			m_HI.ShowSession(new CIntroSession(m_HI, m_Model, CIntroSession::isEndGame));
 			m_iState = stateIntro;
 			DisplayMultiverseStatus(m_Multiverse.GetServiceStatus());
 			m_Soundtrack.SetGameState(CSoundtrackManager::stateProgramIntro);
@@ -1427,14 +1445,17 @@ ALERROR CTranscendenceController::OnCommand (const CString &sCmd, void *pData)
 
 		CMultiverseCollection Collection;
 		if (m_Multiverse.GetCollection(&Collection) != NOERROR)
+			{
+			::kernelDebugLogMessage("Failed to GetCollection from Multiverse model.");
 			return NOERROR;
+			}
 
 		TArray<CMultiverseCatalogEntry *> Download;
 		g_pUniverse->SetRegisteredExtensions(Collection, &Download);
 
 		//	Let the Mod Collection session refresh
 
-		m_HI.GetSession()->HICommand(CMD_SERVICE_EXTENSION_LOADED);
+		m_HI.HISessionCommand(CMD_SERVICE_EXTENSION_LOADED);
 
 		//	If we need to download a new version, do so now.
 
@@ -1565,18 +1586,6 @@ ALERROR CTranscendenceController::OnCommand (const CString &sCmd, void *pData)
 			}
 		}
 
-	//	Starting to load extension. We need to temporarily freeze the
-	//	intro pane because we don't want two threads to access CC simultaneously.
-
-	else if (strEquals(sCmd, CMD_SERVICE_EXTENSION_LOAD_BEGIN))
-		{
-		g_pTrans->m_bPaused = true;
-		}
-	else if (strEquals(sCmd, CMD_SERVICE_EXTENSION_LOAD_END))
-		{
-		g_pTrans->m_bPaused = false;
-		}
-
 	//	Extension finished loaded
 
 	else if (strEquals(sCmd, CMD_SERVICE_EXTENSION_LOADED))
@@ -1584,7 +1593,7 @@ ALERROR CTranscendenceController::OnCommand (const CString &sCmd, void *pData)
 		//	Let the current session know. For example, the Mod Collection session
 		//	uses this command to reload its list.
 
-		m_HI.GetSession()->HICommand(CMD_SERVICE_EXTENSION_LOADED);
+		m_HI.HISessionCommand(CMD_SERVICE_EXTENSION_LOADED);
 
 		//	Continue downloading
 
@@ -1665,12 +1674,33 @@ ALERROR CTranscendenceController::OnCommand (const CString &sCmd, void *pData)
 		{
 		//	Tell the current session that we loaded news.
 
-		m_HI.GetSession()->HICommand(CMD_SERVICE_NEWS_LOADED);
+		m_HI.HISessionCommand(CMD_SERVICE_NEWS_LOADED);
 
 		//	Ask the extension collection for a list of missing resource files.
 
 		HICommand(CMD_SERVICE_DOWNLOAD_RESOURCES);
 		}
+
+	//	High score list
+
+	else if (strEquals(sCmd, CMD_SERVICE_HIGH_SCORE_LIST_LOADED))
+		{
+		CAdventureHighScoreList *pHighScoreList = (CAdventureHighScoreList *)pData;
+
+		//	If we're still in the intro, pass it on to it (it will take 
+		//	ownership of it).
+
+		if (m_iState == stateIntro)
+			m_HI.HISessionCommand(CMD_SERVICE_HIGH_SCORE_LIST_LOADED, pHighScoreList);
+
+		//	Otherwise, we free the list
+
+		else
+			delete pHighScoreList;
+		}
+
+	else if (strEquals(sCmd, CMD_SERVICE_HIGH_SCORE_LIST_ERROR))
+		m_HI.HISessionCommand(sCmd);
 
 	else if (strEquals(sCmd, CMD_SERVICE_STATUS))
 		{
@@ -1723,7 +1753,7 @@ ALERROR CTranscendenceController::OnCommand (const CString &sCmd, void *pData)
 	else if (strEquals(sCmd, CMD_SOUNDTRACK_NOW_PLAYING))
 		{
 		m_Soundtrack.NotifyTrackPlaying((CSoundType *)pData);
-		m_HI.GetSession()->HICommand(sCmd, pData);
+		m_HI.HISessionCommand(sCmd, pData);
 		}
 
 	else if (strEquals(sCmd, CMD_SOUNDTRACK_UPDATE_PLAY_POS))
@@ -1731,6 +1761,14 @@ ALERROR CTranscendenceController::OnCommand (const CString &sCmd, void *pData)
 
 	else if (strEquals(sCmd, CMD_SOUNDTRACK_PLAY_PAUSE))
 		m_Soundtrack.TogglePlayPaused();
+
+	//	Update high score list
+
+	else if (strEquals(sCmd, CMD_UPDATE_HIGH_SCORE_LIST))
+		{
+		CAdventureHighScoreList::SSelect *pSelect = (CAdventureHighScoreList::SSelect *)pData;
+		m_HI.AddBackgroundTask(new CReadHighScoreListTask(m_HI, m_Service, *pSelect), 0);
+		}
 
 	//	Exit
 
@@ -1932,6 +1970,18 @@ void CTranscendenceController::OnShutdown (EHIShutdownReasons iShutdownCode)
 		m_Multiverse.Save(pathAddComponent(m_Settings.GetAppDataFolder(), FILESPEC_DOWNLOADS_FOLDER));
 		m_Settings.Save(SETTINGS_FILENAME);
 		}
+	}
+
+void CTranscendenceController::PaintDebugInfo (CG32bitImage &Dest, const RECT &rcScreen)
+
+//	PaintDebugInfo
+//
+//	Paints debug info on top of the screen
+
+	{
+#ifdef DEBUG_SOUNDTRACK_STATE
+	m_Soundtrack.PaintDebugInfo(Dest, rcScreen);
+#endif
 	}
 
 bool CTranscendenceController::RequestCatalogDownload (const TArray<CMultiverseCatalogEntry *> &Downloads)

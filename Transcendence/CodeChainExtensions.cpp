@@ -76,6 +76,8 @@ ICCItem *fnPlySetOld (CEvalContext *pEvalCtx, ICCItem *pArguments, DWORD dwData)
 #define FN_SCR_TRANSLATE			20
 #define FN_SCR_DESC_TRANSLATE		21
 #define FN_SCR_REMOVE_ACTION		22
+#define FN_SCR_ACTION_DESC			23
+#define FN_SCR_IS_ACTION_ENABLED	24
 
 ICCItem *fnScrGet (CEvalContext *pEvalCtx, ICCItem *pArgs, DWORD dwData);
 ICCItem *fnScrGetOld (CEvalContext *pEvalCtx, ICCItem *pArguments, DWORD dwData);
@@ -181,6 +183,10 @@ static PRIMITIVEPROCDEF g_Extensions[] =
 		{	"scrGetListEntry",				fnScrGetOld,		FN_SCR_LIST_ENTRY,	"",		NULL,	PPFLAG_SIDEEFFECTS,	},
 		//	(scrGetListEntry screen) -> entry
 
+		{	"scrIsActionEnabled",			fnScrGet,		FN_SCR_IS_ACTION_ENABLED,	
+			"(scrIsActionEnabled screen actionID) -> True/Nil",		
+			"iv",	0, },
+
 		{	"scrIsFirstOnInit",				fnScrGetOld,		FN_SCR_IS_FIRST_ON_INIT,	"",		NULL,	PPFLAG_SIDEEFFECTS, },
 		//	(scrIsFirstOnInit screen) => True/Nil
 
@@ -194,6 +200,10 @@ static PRIMITIVEPROCDEF g_Extensions[] =
 
 		{	"scrRemoveItem",				fnScrItem,		FN_SCR_REMOVE_ITEM,	"",		NULL,	PPFLAG_SIDEEFFECTS, },
 		//	(scrRemoveItem screen count) => item
+
+		{	"scrSetActionDesc",				fnScrSet,		FN_SCR_ACTION_DESC,
+			"(scrSetActionDesc screen actionID descID)",
+			"ivv",		PPFLAG_SIDEEFFECTS, },
 
 		{	"scrSetActionLabel",			fnScrSet,		FN_SCR_ACTION_LABEL,
 			"(scrSetActionLabel screen actionID label [key] [special])",
@@ -471,21 +481,15 @@ CG32bitPixel GetColorArg (ICCItem *pArg)
 		return CG32bitPixel::Null();
 	}
 
-ALERROR InitCodeChainExtensions (CCodeChain &CC)
+void GetCodeChainExtensions (SPrimitiveDefTable *retpTable)
 
-//	InitCodeChainExtensions
+//	GetCodeChainExtensions
 //
 //	Registers extensions
 
 	{
-	ALERROR error;
-	int i;
-
-	for (i = 0; i < EXTENSIONS_COUNT; i++)
-		if (error = CC.RegisterPrimitive(&g_Extensions[i]))
-			return error;
-
-	return NOERROR;
+	retpTable->pTable = g_Extensions;
+	retpTable->iCount = EXTENSIONS_COUNT;
 	}
 
 ICCItem *fnCanvas (CEvalContext *pEvalCtx, ICCItem *pArgs, DWORD dwData)
@@ -1255,6 +1259,23 @@ ICCItem *fnScrGet (CEvalContext *pEvalCtx, ICCItem *pArgs, DWORD dwData)
 			return pCC->CreateString(sDesc);
 			}
 
+		case FN_SCR_IS_ACTION_ENABLED:
+			{
+			//	Only if valid
+
+			if (!pScreen->IsValid())
+				return pCC->CreateNil();
+
+			//	Parameters
+
+			int iAction;
+			CDockScreenActions &Actions = pScreen->GetActions();
+			if (!Actions.FindByID(pArgs->GetElement(1), &iAction))
+				return pCC->CreateError(CONSTLIT("Invalid action ID"), pArgs->GetElement(1));
+
+			return pCC->CreateBool(Actions.IsVisible(iAction) && Actions.IsEnabled(iAction));
+			}
+
 		case FN_SCR_TRANSLATE:
 			{
 			CString sText = pArgs->GetElement(1)->GetStringValue();
@@ -1355,6 +1376,29 @@ ICCItem *fnScrSet (CEvalContext *pEvalCtx, ICCItem *pArgs, DWORD dwData)
 
 	switch (dwData)
 		{
+		case FN_SCR_ACTION_DESC:
+			{
+			//	Only if valid
+
+			if (!pScreen->IsValid())
+				return pCC->CreateNil();
+
+			//	Parameters
+
+			int iAction;
+			CDockScreenActions &Actions = pScreen->GetActions();
+			if (!Actions.FindByID(pArgs->GetElement(1), &iAction))
+				return pCC->CreateError(CONSTLIT("Invalid action ID"), pArgs->GetElement(1));
+
+			CString sDesc;
+			if (!pArgs->GetElement(2)->IsNil())
+				sDesc = pArgs->GetElement(2)->GetStringValue();
+
+			Actions.SetDesc(iAction, sDesc);
+
+			return pCC->CreateTrue();
+			}
+
 		case FN_SCR_ACTION_LABEL:
 			{
 			//	Only if valid

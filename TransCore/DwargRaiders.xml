@@ -30,8 +30,6 @@
 			thrustRatio=		"6.5"
 			maxSpeed=			"19"
 
-			leavesWreck=		"20"
-
 			attributes=			"dwarg, genericClass, zoanthrope"
 			>
 
@@ -89,8 +87,6 @@
 			thrustRatio=		"5"
 			maxSpeed=			"22"
 
-			leavesWreck=		"50"
-
 			attributes=			"dwarg,genericClass"
 			>
 
@@ -147,7 +143,6 @@
 			maxSpeed=			"12"
 
 			explosionType=		"&vtBlastExplosion4;"
-			leavesWreck=		"100"
 
 			attributes=			"dwarg, genericClass, zoanthrope"
 			>
@@ -178,6 +173,22 @@
 			rotationAccel=		"0.5"
 			/>
 
+		<Interior>
+			<Compartment name="interior"
+					hitPoints=	"180"
+					/>
+			
+			<Compartment name="main drive"
+					type=		"mainDrive"
+					hitPoints=	"80"
+
+					posX=		"-41"
+					posY=		"0"
+					sizeX=		"29"
+					sizeY=		"45"
+					/>
+		</Interior>
+		
 		<Items>
 			<Item				  count="2d6"	item="&itXenotiteFuelRod;"/>
 			<Table>
@@ -260,7 +271,7 @@
 			sortName=			"Dwarg.1.30"
 			>
 
-		<Image imageID="&rsItems1;" imageX="96" imageY="0" imageWidth="96" imageHeight="96"/>
+		<Image imageID="&rsItems4;" imageX="192" imageY="96" imageWidth="96" imageHeight="96"/>
 
 		<Weapon
 				type=				"missile"
@@ -321,10 +332,10 @@
 			description=		"Dwarg masters use this cannon to paralyze their targets."
 			>
 
-		<Image imageID="&rsItems1;" imageX="96" imageY="0" imageWidth="96" imageHeight="96"/>
+		<Image imageID="&rsItems5;" imageX="96" imageY="96" imageWidth="96" imageHeight="96"/>
 
 		<Weapon
-				fireRate=			"15"
+				fireRate=			"16"
 				powerUse=			"20"
 				>
 
@@ -360,8 +371,8 @@
 	<ItemType UNID="&itDwargCnidocystNodule;"
 			name=				"Dwarg cnidocyst nodule"
 			level=				"5"
-			value=				"75"
-			mass=				"10"
+			value=				"50"
+			mass=				"20"
 			attributes=			"Consumable; Dwarg; Missile; NotForSale; NotStandard"
 			frequency=			"uncommon"
 			numberAppearing=	"2d12"
@@ -389,7 +400,7 @@
 			sortName=			"Dwarg.1.20"
 			>
 
-		<Image imageID="&rsItems1;" imageX="96" imageY="0" imageWidth="96" imageHeight="96"/>
+		<Image imageID="&rsItems6;" imageX="96" imageY="96" imageWidth="96" imageHeight="96"/>
 
 		<Weapon
 				type=				"missile"

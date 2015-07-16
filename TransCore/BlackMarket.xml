@@ -33,8 +33,6 @@ PLAYER DATA
 			thrustRatio=		"12.5"
 			maxSpeed=			"22"
 
-			leavesWreck=		"50"
-
 			attributes=			"blackMarket, genericClass, outlaws"
 			>
 
@@ -166,6 +164,8 @@ PLAYER DATA
 			<Sell	criteria="*NU -ID; -NotForSale;"	priceAdj="100"/>
 			<Buy	criteria="*NU +Illegal; -ID; -NotForSale;"	priceAdj="85"/>
 			<Buy	criteria="*NU +military; -ID -NotForSale;"		priceAdj="90"/>
+			<Buy	criteria="*NU +Illegal; -ID;"				priceAdj="10"/>
+			<Buy	criteria="*NU +military; -ID;"				priceAdj="10"/>
 			
 			<Refuel			criteria="f +BasicFuel; L:1-6;" priceAdj="92"/>
 			<RepairArmor	criteria="a L:1-6;" priceAdj="100"/>
@@ -548,11 +548,13 @@ PLAYER DATA
 
 		<Trade currency="credit" max="100000" replenish="5000">
 			<Sell	criteria="cNU +Illegal; -ID; -NotForSale; L:1-9;"	priceAdj="100"	inventoryAdj="100"/>
-			<Sell	criteria="rNU L:1-7; -NotForSale;"	priceAdj="100"	inventoryAdj="100"/>
+			<Sell	criteria="rNU L:1-7; -NotForSale; -notStandard;"	priceAdj="100"	inventoryAdj="100"/>
 			<Sell	criteria="*NU +Illegal; -ID; -NotForSale;"	priceAdj="110"/>
 			<Sell	criteria="*NU -ID; -NotForSale;"	priceAdj="100"/>
 			<Buy	criteria="*NU +Illegal; -ID; -NotForSale;"	priceAdj="85"/>
 			<Buy	criteria="*NU +military; -ID -NotForSale;"		priceAdj="90"/>
+			<Buy	criteria="*NU +Illegal; -ID;"				priceAdj="10"/>
+			<Buy	criteria="*NU +military; -ID;"				priceAdj="10"/>
 			
 			<Refuel			criteria="f +BasicFuel; L:1-7;" priceAdj="94"/>
 			<RepairArmor	criteria="a L:1-9;" priceAdj="110"/>

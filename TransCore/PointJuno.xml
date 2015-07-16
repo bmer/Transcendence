@@ -57,9 +57,9 @@
 		<!-- Trade and Items -->
 		
 		<Trade currency="credit" max="100000" replenish="5000">
-			<Sell	criteria="m +Commonwealth; -Illegal; -Military; -NotForSale; L:1-10;" priceAdj="100" inventoryAdj="200"/>
+			<Sell	criteria="m +Commonwealth; -Illegal; -Military; -NotForSale; -notStandard; L:1-10;" priceAdj="100" inventoryAdj="200"/>
 			<Sell	criteria="*NU -Illegal; -ID; -NotForSale;"	priceAdj="100"/>
-			<Sell	criteria="rNU L:1-9; -Illegal; -NotForSale;"	priceAdj="100"	inventoryAdj="100"/>
+			<Sell	criteria="rNU L:1-9; -Illegal; -NotForSale; -notStandard;"	priceAdj="100"	inventoryAdj="100"/>
 			
 			<Refuel			criteria="f +BasicFuel; L:1-9;" priceAdj="90"/>
 			<RepairArmor	criteria="a L:1-10;" priceAdj="100"/>
@@ -1078,7 +1078,7 @@
 			definiteArticle=	"true"
 			>
 
-		<Image			imageID="&rsStationsPointJuno;" imageX="0" imageY="256" imageWidth="232" imageHeight="200"/>
+		<Image			imageID="&rsCSCWreckage;" imageX="0" imageY="0" imageWidth="350" imageHeight="322"/>
 
 		<Ships>
 			<Table>
@@ -1236,14 +1236,14 @@
 		</DockScreens>
 
 		<DockingPorts>
-			<Port x="0"		y="90" />
-			<Port x="0"		y="-90" />
-			<Port x="60"	y="60" />
-			<Port x="60"	y="-60" />
-			<Port x="90"	y="0" />
-			<Port x="-90"	y="0" />
-			<Port x="-60"	y="60" />
-			<Port x="-60"	y="-60" />
+			<Port x="0"		y="120" />
+			<Port x="0"		y="-120" />
+			<Port x="80"	y="80" />
+			<Port x="80"	y="-80" />
+			<Port x="120"	y="0" />
+			<Port x="-120"	y="0" />
+			<Port x="-80"	y="80" />
+			<Port x="-80"	y="-80" />
 		</DockingPorts>
 
 	</StationType>
@@ -1347,6 +1347,7 @@
 
 	<SystemType UNID="&ssPointJuno;" 
 				backgroundID=		"&rsLightNebulaSpace;"
+				spaceEnvironmentTileSize=	"large"
 				noRandomEncounters=	"true"
 				noExtraEncounters=	"true"
 				>
@@ -1414,6 +1415,7 @@
 								width=			"120"
 								widthVariation=	"60"
 								span=			"90-120"
+								erode=			"50"
 
 								patchType=		"&efNebula;"
 								patchFrequency=	"50"
@@ -1490,6 +1492,7 @@
 								width=			"200"
 								widthVariation=	"100"
 								span=			"120-160"
+								erode=			"50"
 
 								patchType=		"&efNebula;"
 								patchFrequency=	"50"
@@ -1506,6 +1509,7 @@
 								width=			"200"
 								widthVariation=	"100"
 								span=			"120-160"
+								erode=			"50"
 
 								patchType=		"&efNebula;"
 								patchFrequency=	"50"
@@ -1551,5 +1555,6 @@
 	<Image UNID="&rsStationsPointJuno;"	bitmap="Resources\StationsPointJuno.jpg" bitmask="Resources\StationsPointJunoMask.bmp" />
 	<Image UNID="&rsPointJunoBkgnd;"	bitmap="Resources\PointJuno.jpg" loadOnUse="true" />
 	<Image UNID="&rsPointJunoHero;"		bitmap="Resources\PointJunoHero.jpg" bitmask="Resources\PointJunoHeroMask.bmp" loadOnUse="true" />
+	<Image UNID="&rsCSCWreckage;"		bitmap="Resources\CSCWreckage.jpg" bitmask="Resources\CSCWreckageMask.bmp" loadOnUse="true" />
 
 </TranscendenceModule>

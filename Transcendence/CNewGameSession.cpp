@@ -636,6 +636,16 @@ void CNewGameSession::OnLButtonDown (int x, int y, DWORD dwFlags, bool *retbCapt
 	{
 	}
 
+void CNewGameSession::OnMouseWheel (int iDelta, int x, int y, DWORD dwFlags)
+
+//	OnMouseWheel
+//
+//	Handle mouse wheel
+
+	{
+	HandlePageScrollMouseWheel(ID_SETTINGS, iDelta);
+	}
+
 void CNewGameSession::OnPaint (CG32bitImage &Screen, const RECT &rcInvalid)
 
 //	OnPaint
@@ -977,11 +987,13 @@ void CNewGameSession::SetShipClassImage (CShipClass *pClass, int x, int y, int c
 
 	//	New image frame
 
+	bool bAutoMask = (pClass->GetAPIVersion() < 26);
+
 	IAnimatron *pImageFrame = new CAniRect;
 	pImageFrame->SetID(ID_SHIP_CLASS_IMAGE);
 	pImageFrame->SetPropertyVector(PROP_POSITION, CVector(xImage, yImage));
 	pImageFrame->SetPropertyVector(PROP_SCALE, CVector(pImageToUse->GetWidth(), pImageToUse->GetHeight()));
-	pImageFrame->SetFillMethod(new CAniImageFill(pImageToUse, bFree));
+	pImageFrame->SetFillMethod(new CAniImageFill(pImageToUse, bFree, bAutoMask));
 
 	m_pRoot->AddLine(pImageFrame);
 	}

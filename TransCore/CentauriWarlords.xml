@@ -23,7 +23,7 @@
 			sortName=			"CLAW cannon, Centauri"
 			>
 
-		<Image imageID="&rsItems1;" imageX="96" imageY="0" imageWidth="96" imageHeight="96"/>
+		<Image imageID="&rsItems3;" imageX="96" imageY="96" imageWidth="96" imageHeight="96"/>
 
 		<Weapon
 				type=				"missile"
@@ -63,7 +63,7 @@
 			sortName=			"CLAW cannon, Centauri heavy"
 			>
 
-		<Image imageID="&rsItems1;" imageX="96" imageY="0" imageWidth="96" imageHeight="96"/>
+		<Image imageID="&rsItems3;" imageX="192" imageY="96" imageWidth="96" imageHeight="96"/>
 
 		<Weapon
 				type=				"missile"
@@ -103,7 +103,7 @@
 			sortName=			"recoilless cannon, Centauri"
 			>
 
-		<Image imageID="&rsItems1;" imageX="96" imageY="0" imageWidth="96" imageHeight="96"/>
+		<Image imageID="&rsItems1;" imageX="0" imageY="768" imageWidth="96" imageHeight="96"/>
 
 		<Weapon
 				type=				"missile"
@@ -475,8 +475,6 @@
 			thrust=				"200"
 			maxSpeed=			"10"
 
-			leavesWreck=		"50"
-
 			attributes=			"centauriWarlords"
 			>
 
@@ -518,8 +516,6 @@
 			cargoSpace=			"10"
 			thrustRatio=		"1.8"
 			maxSpeed=			"13"
-
-			leavesWreck=		"50"
 
 			attributes=			"centauriWarlords,genericClass"
 			>
@@ -568,8 +564,6 @@
 			cargoSpace=			"5"
 			thrustRatio=		"4.0"
 			maxSpeed=			"13"
-
-			leavesWreck=		"20"
 
 			attributes=			"centauriWarlords,genericClass"
 			>
