@@ -54,6 +54,6 @@ class CTransmuterController :
 		void OnGameWorldCreated ();
 
 		EStates m_iState;					//	Current application state
-		CTransmuterModel m_Model;				//	Game model
+		CTransmuterModel m_Model;			//	Game model
 		CUserSettings m_Settings;			//	User settings
 	};

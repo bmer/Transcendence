@@ -1,4 +1,4 @@
-//	EditorDisplays.h
+//	EditorSessions.h
 //
 //	Displays for CTransmuterSession
 //	Copyright (c) 2015 by Kronosaur Productions, LLC. All Rights Reserved.

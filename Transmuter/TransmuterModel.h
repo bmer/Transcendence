@@ -90,12 +90,8 @@ class CTransmuterModel
 		bool Init (const SInitDesc &Ctx, CString *retsError = NULL);
 		bool InitBackground (CString *retsError = NULL);
 		void InvokeCode (ICCItem *pCode);
-		bool StartGame (bool bNewGame, CString *retsError);
-		bool StartNewCampaign (const SEditorSettings &sEditorSettings, CString *retsError);
-		bool StartNewCampaignBackground (CString *retsError);
 
 	private:
-		bool CreateAllSystems (CSystem **retpStartingSystem, CString *retsError);
 		inline CString GetSaveFilePath (void) const { return (m_SaveFileFolders.GetCount() == 0 ? NULL_STR : m_SaveFileFolders[0]); }
 		bool LoadUniverse (CString *retsError = NULL);
 

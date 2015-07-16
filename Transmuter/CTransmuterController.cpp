@@ -11,8 +11,6 @@
 #define FOLDER_GAMEWORLDS						CONSTLIT("GameWorlds")
 #define FOLDER_SAVE_FILES						CONSTLIT("Games")
 
-#define CMD_GAMEWORLD_SELECTED					CONSTLIT("cmdGameWorldSelected")
-
 #define CMD_INTRO_SHOW_UI						CONSTLIT("cmdIntroShowUI")
 
 #define CMD_MODEL_EDITOR_CREATED				CONSTLIT("cmdModelEditorCreated")
@@ -54,48 +52,7 @@ ALERROR CTransmuterController::OnBoot (char *pszCommandLine, SHIOptions *retOpti
 	CString sCurDir = pathGetExecutablePath(NULL);
 	::SetCurrentDirectory(sCurDir.GetASCIIZPointer());
 
-	//	Load settings (don't worry if we fail).
-
-	m_Settings.Load(m_HI, FILENAME_SETTINGS, g_UserSettings, &sError);
-
-	if (m_Settings.LoadCommandLine(pszCommandLine, retsError) != NOERROR)
-		return ERR_FAIL;
-
-
 	return NOERROR;
-	}
-
-void CTransmuterController::OnGameWorldSelected ()
-
-//	OnGameWorldSelected
-
-	{
-	CString sError;
-
-	//	Check for error.
-
-	}
-
-void CTransmuterController::OnGameWorldLoaded ()
-
-//	OnGameWorldSelected
-
-	{
-	CString sError;
-
-	//	Check for error.
-
-	}
-
-void CTransmuterController::OnGameWorldCreated ()
-
-//	OnGameWorldSelected
-
-	{
-	CString sError;
-
-	//	Check for error.
-
 	}
 
 void CTransmuterController::OnCleanUp (void)
@@ -132,48 +89,6 @@ ALERROR CTransmuterController::OnCommand (const CString &sCmd, void *pData)
 	if (strEquals(sCmd, CMD_MODEL_INIT_DONE))
 		OnModelInitDone((CInitModelTask *)pData);
 
-	//	User has selected the "Setup new Game World" button
-
-	else if (strEquals(sCmd, CMD_UI_NEW_GAMEWORLD))
-		{
-		if (m_HI.OpenPopupSession(new CChooseExtensionsForNewGameWorld(m_HI, m_Model), &sError) != NOERROR)
-			{
-			m_HI.OpenPopupSession(new CMessageSession(m_HI, ERR_UI_ERROR, strPatternSubst(ERR_CANT_SHOW_CAMPAIGNS, sError), CMD_NULL));
-			return NOERROR;
-			}
-		}
-
-	//	User has chosen an existing GameWorld to start.
-
-	else if (strEquals(sCmd, CMD_GAMEWORLD_SELECTED))
-		OnGameWorldSelected(*(SGameWorldSettings *)pData);
-
-	//	User has selected the "Load existing GameWorld" button
-
-	else if (strEquals(sCmd, CMD_UI_LOAD_GAMEWORLD))
-		{
-		}
-
-
-	//	Invoke code from a dialog command
-
-	else if (strEquals(sCmd, CMD_MODEL_INVOKE_CODE))
-		{
-		ICCItem *pCode = (ICCItem *)pData;
-		m_Model.InvokeCode(pCode);
-		pCode->Discard(&m_Model.GetUniverse().GetCC());
-		}
-
-	//	User has asked to exit the program.
-
-	else if (strEquals(sCmd, CMD_UI_EXIT))
-		m_HI.Exit();
-
-	//	Otherwise, we pass the command straight to the session and let it
-	//	handle it.
-
-	else
-		m_HI.GetSession()->HICommand(sCmd, pData);
 
 	return NOERROR;
 	}
@@ -198,10 +113,7 @@ ALERROR CTransmuterController::OnInit (CString *retsError)
 	if (!m_Model.Init(Ctx, retsError))
 		return ERR_FAIL;
 
-	//	Show the intro screen
-
-	m_iState = stateIntro;
-	m_HI.ShowSession(new CIntroSession(m_HI));
+	m_HI.ShowSession(new CTransmuterSession(m_HI));
 
 	return NOERROR;
 	}

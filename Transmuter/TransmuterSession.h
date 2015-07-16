@@ -1,37 +1,20 @@
 //	TransmuterSession.h
 //
-//	CSC America
+//	Transmuter
 //	Copyright (c) 2015 by Kronosaur Productions, LLC. All Rights Reserved.
 
 #pragma once
 
-#include "EditorComponents.h"
-
-//	"Panels make up the screen."
-class CPanelSession : public IHISession
-	{
-	public:
-		CPanelSession (CHumanInterface &HI, CTransmuterModel &Model, int FocusFrame=0) : IHISession(HI),
-				m_Model(Model),
-				iFocusPanel(iFocusPanel)
-			{ } 
-
-		// IHISession virtuals
-
-		virtual ALERROR OnCommand (const CString &sCmd, void *pData = NULL);
-		virtual ALERROR OnInit (CString *retsError);
-		virtual void OnUpdate (bool bTopMost);
-
-	private:
-		CTransmuterModel &m_Model;
-		TArray<CPanelSession *> m_descendentPanels;
-		int iFocusPanel;
-	};
+class CTransmuterSession;
+class CTextEditorSession;
+class CTextEditorTabSession;
+class CNavigationSession;
+class CCommandRibbonSession;
 
 class CTransmuterSession : public IHISession, public CUniverse::INotifications
 	{
 	public:
-		CTransmuterSession (CHumanInterface &HI, CTransmuterModel &Model, TArray<CPanelSession *> Panels);
+		CTransmuterSession (CHumanInterface &HI, CTransmuterModel &Model);
 
 		//	IHISession virtuals
 
@@ -48,40 +31,108 @@ class CTransmuterSession : public IHISession, public CUniverse::INotifications
 		virtual void OnRButtonUp (int x, int y, DWORD dwFlags);
 		virtual void OnUpdate (bool bTopMost);
 
-		//	CUniverse::INotifications virtuals
-
-		//  virtual void OnObjDestroyed (SDestroyCtx &Ctx);
-
 	private:
 		CTransmuterModel &m_Model;
-		TArray<CPanelSession *> m_Panels;
+		CTextEditorSession *m_textEditorSession;
+		CNavigationSession *m_navigationSession;
+		CCommandRibbonSession *m_commandRibbonSession;
+		int iFocus;
 	};
 
-class CIntroSession : public IHISession
+class CTextEditorSession : public IHISession
 	{
 	public:
-		CIntroSession (CHumanInterface &HI) : IHISession(HI),
-				m_iState(stateNone)
-			{ }
+		CTextEditorSession (CHumanInterface &HI, CTransmuterSession &mainTransmuterSession);
 
 		//	IHISession virtuals
 
+		virtual void OnChar (char chChar, DWORD dwKeyData);
+		virtual void OnCleanUp (void);
 		virtual ALERROR OnCommand (const CString &sCmd, void *pData = NULL);
 		virtual ALERROR OnInit (CString *retsError);
+		virtual void OnLButtonDblClick (int x, int y, DWORD dwFlags);
+		virtual void OnLButtonDown (int x, int y, DWORD dwFlags, bool *retbCapture);
+		virtual void OnLButtonUp (int x, int y, DWORD dwFlags);
+		virtual void OnMouseMove (int x, int y, DWORD dwFlags);
 		virtual void OnPaint (CG32bitImage &Screen, const RECT &rcInvalid);
+		virtual void OnRButtonDown (int x, int y, DWORD dwFlags);
+		virtual void OnRButtonUp (int x, int y, DWORD dwFlags);
 		virtual void OnUpdate (bool bTopMost);
 
 	private:
-		enum EStates
-			{
-			stateNone,
+		CTransmuterSession &m_mainTransmuterSession;
+		TArray<CTextEditorTabSession *> m_textEditorTabSessions;
+		int iFocusTab;
+	};
 
-			stateLogo,						//	Kronosaur Productions logo
-			stateTitle,						//	Transmuter title card
-			stateAttract,					//	Attract screen (with main menu)
-			};
+class CTextEditorTabSession : public IHISession
+	{
+	public:
+		CTextEditorTabSession(CHumanInterface &HI, CTextEditorSession &parentTextEditorSession);
 
-		void ShowMainMenu (void);
 
-		EStates m_iState;
+		//	IHISession virtuals
+
+		virtual void OnChar (char chChar, DWORD dwKeyData);
+		virtual void OnCleanUp (void);
+		virtual ALERROR OnCommand (const CString &sCmd, void *pData = NULL);
+		virtual ALERROR OnInit (CString *retsError);
+		virtual void OnLButtonDblClick (int x, int y, DWORD dwFlags);
+		virtual void OnLButtonDown (int x, int y, DWORD dwFlags, bool *retbCapture);
+		virtual void OnLButtonUp (int x, int y, DWORD dwFlags);
+		virtual void OnMouseMove (int x, int y, DWORD dwFlags);
+		virtual void OnPaint (CG32bitImage &Screen, const RECT &rcInvalid);
+		virtual void OnRButtonDown (int x, int y, DWORD dwFlags);
+		virtual void OnRButtonUp (int x, int y, DWORD dwFlags);
+		virtual void OnUpdate (bool bTopMost);
+	private:
+		CTextEditorSession &m_parentTextEditorSession;
+	};
+
+class CNavigationSession : public IHISession
+	{
+	public:
+		CNavigationSession (CHumanInterface &HI, CTransmuterSession &m_mainTransmuterSession);
+
+		//	IHISession virtuals
+
+		virtual void OnChar (char chChar, DWORD dwKeyData);
+		virtual void OnCleanUp (void);
+		virtual ALERROR OnCommand (const CString &sCmd, void *pData = NULL);
+		virtual ALERROR OnInit (CString *retsError);
+		virtual void OnLButtonDblClick (int x, int y, DWORD dwFlags);
+		virtual void OnLButtonDown (int x, int y, DWORD dwFlags, bool *retbCapture);
+		virtual void OnLButtonUp (int x, int y, DWORD dwFlags);
+		virtual void OnMouseMove (int x, int y, DWORD dwFlags);
+		virtual void OnPaint (CG32bitImage &Screen, const RECT &rcInvalid);
+		virtual void OnRButtonDown (int x, int y, DWORD dwFlags);
+		virtual void OnRButtonUp (int x, int y, DWORD dwFlags);
+		virtual void OnUpdate (bool bTopMost);
+
+	private:
+		CTransmuterSession &m_mainTransmuterSession;
+	};
+
+class CCommandRibbonSession : public IHISession
+	{
+	public:
+		CCommandRibbonSession (CHumanInterface &HI, CTransmuterSession &m_mainTransmuterSession);
+
+		//	IHISession virtuals
+
+		virtual void OnChar (char chChar, DWORD dwKeyData);
+		virtual void OnCleanUp (void);
+		virtual ALERROR OnCommand (const CString &sCmd, void *pData = NULL);
+		virtual ALERROR OnInit (CString *retsError);
+		virtual void OnLButtonDblClick (int x, int y, DWORD dwFlags);
+		virtual void OnLButtonDown (int x, int y, DWORD dwFlags, bool *retbCapture);
+		virtual void OnLButtonUp (int x, int y, DWORD dwFlags);
+		virtual void OnMouseMove (int x, int y, DWORD dwFlags);
+		virtual void OnPaint (CG32bitImage &Screen, const RECT &rcInvalid);
+		virtual void OnRButtonDown (int x, int y, DWORD dwFlags);
+		virtual void OnRButtonUp (int x, int y, DWORD dwFlags);
+		virtual void OnUpdate (bool bTopMost);
+
+	private:
+		CTransmuterSession &m_mainTransmuterSession;
 	};

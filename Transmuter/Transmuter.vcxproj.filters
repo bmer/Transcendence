@@ -36,9 +36,6 @@
     <ClInclude Include="UserSettingsDef.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="EditorComponents.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CTransmuterController.cpp">
@@ -53,10 +50,7 @@
     <ClCompile Include="CTransmuterSession.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CTextEditor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CContextPanel.cpp">
+    <ClCompile Include="CTextEditorSession.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -14,5 +14,5 @@
 #include "XMLUtil.h"
 #include "Resource.h"
 #include "Transmuter.h"
-#include "Sessions.h"
+#include "TransmuterSession.h"
 #include "UserSettingsDef.h"
