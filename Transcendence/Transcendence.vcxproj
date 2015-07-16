@@ -525,6 +525,9 @@
     <ProjectReference Include="..\..\Alchemy\XMLUtil\XMLUtil.vcxproj">
       <Project>{482b1658-7f28-4e62-94b6-ed71259c5f44}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\..\Alchemy\zlib-1.2.7\contrib\vstudio\vc10\zlibstat.vcxproj">
+      <Project>{745dec58-ebb3-47a9-a9b8-4c6627c01bf8}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\Mammoth\TSE\TSE.vcxproj">
       <Project>{797712ea-a2b5-4e30-a2f9-5998e90afecc}</Project>
     </ProjectReference>

@@ -14,7 +14,7 @@ class CCommandRibbonSession;
 class CTransmuterSession : public IHISession, public CUniverse::INotifications
 	{
 	public:
-		CTransmuterSession (CHumanInterface &HI, CTransmuterModel &Model);
+		CTransmuterSession (CHumanInterface &HI, CTransmuterModel m_Model);
 
 		//	IHISession virtuals
 
@@ -32,10 +32,10 @@ class CTransmuterSession : public IHISession, public CUniverse::INotifications
 		virtual void OnUpdate (bool bTopMost);
 
 	private:
-		CTransmuterModel &m_Model;
 		CTextEditorSession *m_textEditorSession;
 		CNavigationSession *m_navigationSession;
 		CCommandRibbonSession *m_commandRibbonSession;
+		CTransmuterModel m_Model;
 		int iFocus;
 	};
 

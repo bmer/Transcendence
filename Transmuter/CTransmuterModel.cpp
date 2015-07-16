@@ -108,8 +108,8 @@ bool CTransmuterModel::LoadUniverse (CString *retsError)
 		//	Load the Transcendence Data Definition file that describes the universe.
 
 		CUniverse::SInitDesc Ctx;
-		Ctx.sFilespec = CONSTLIT("America.tdb");
-		Ctx.sSourceFilespec = CONSTLIT("..\\AmericaCore\\America.xml");
+		Ctx.sFilespec = CONSTLIT("Transcendence.tdb");
+		Ctx.sSourceFilespec = CONSTLIT("..\\TransCore\\Transcendence.xml");
 		Ctx.sCollectionFolder = m_sCollectionFolder;
 		Ctx.ExtensionFolders = m_ExtensionFolders;
 		Ctx.pHost = m_pController;

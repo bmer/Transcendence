@@ -113,7 +113,7 @@ ALERROR CTransmuterController::OnInit (CString *retsError)
 	if (!m_Model.Init(Ctx, retsError))
 		return ERR_FAIL;
 
-	m_HI.ShowSession(new CTransmuterSession(m_HI));
+	m_HI.ShowSession(new CTransmuterSession(m_HI, m_Model));
 
 	return NOERROR;
 	}

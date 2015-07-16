@@ -90,6 +90,7 @@ class CTransmuterModel
 		bool Init (const SInitDesc &Ctx, CString *retsError = NULL);
 		bool InitBackground (CString *retsError = NULL);
 		void InvokeCode (ICCItem *pCode);
+		inline TArray<CString> GetExtensionFolderStrings() { return m_ExtensionFolders; }
 
 	private:
 		inline CString GetSaveFilePath (void) const { return (m_SaveFileFolders.GetCount() == 0 ? NULL_STR : m_SaveFileFolders[0]); }
