@@ -223,7 +223,7 @@ void CTranscendenceWnd::Animate (CG32bitImage &TheScreen, CGameSession *pSession
 				//	Update the screen
 
 				if (bTopMost)
-					g_pHI->GetScreenMgr().Blt();
+					g_pHI->GetScreenMgr().Render();
 
 				//	Figure out how long it took to blt
 
@@ -328,7 +328,7 @@ void CTranscendenceWnd::Animate (CG32bitImage &TheScreen, CGameSession *pSession
 				//	Update the screen
 
 				if (bTopMost)
-					g_pHI->GetScreenMgr().Blt();
+					g_pHI->GetScreenMgr().Render();
 
 				//	Update the universe (at 1/4 rate)
 
@@ -397,7 +397,7 @@ void CTranscendenceWnd::Animate (CG32bitImage &TheScreen, CGameSession *pSession
 				//	Update the screen
 
 				if (bTopMost)
-					g_pHI->GetScreenMgr().Blt();
+					g_pHI->GetScreenMgr().Render();
 
 				//	Update the universe
 
@@ -432,7 +432,7 @@ void CTranscendenceWnd::Animate (CG32bitImage &TheScreen, CGameSession *pSession
 				m_pTC->PaintDebugInfo(TheScreen, m_rcScreen);
 
 				if (bTopMost)
-					g_pHI->GetScreenMgr().Blt();
+					g_pHI->GetScreenMgr().Render();
 				break;
 				}
 
@@ -466,7 +466,7 @@ void CTranscendenceWnd::Animate (CG32bitImage &TheScreen, CGameSession *pSession
 				//	Update the screen
 
 				if (bTopMost)
-					g_pHI->GetScreenMgr().Blt();
+					g_pHI->GetScreenMgr().Render();
 
 				//	Update the universe
 
@@ -552,29 +552,8 @@ void CTranscendenceWnd::ComputeScreenSize (void)
 //	Computes g_cxScreen and g_cyScreen
 
 	{
-	//	By default we use the current resolution (unless in windowed mode)
-
-	if (m_pTC->GetOptionBoolean(CGameSettings::windowedMode))
-		{
-		RECT rcClient;
-		::GetClientRect(m_hWnd, &rcClient);
-
-		g_cxScreen = RectWidth(rcClient);
-		g_cyScreen = RectHeight(rcClient);
-		}
-	else
-		{
-		g_cxScreen = ::GetSystemMetrics(SM_CXSCREEN);
-		g_cyScreen = ::GetSystemMetrics(SM_CYSCREEN);
-		}
-
-	//	Switch to 1024 resolution, if requested
-
-	if (m_pTC->GetOptionBoolean(CGameSettings::force1024Res))
-		{
-		g_cxScreen = 1024;
-		g_cyScreen = 768;
-		}
+	g_cxScreen = g_pHI->GetScreenMgr().GetWidth();
+	g_cyScreen = g_pHI->GetScreenMgr().GetHeight();
 	}
 
 IPlayerController *CTranscendenceWnd::CreatePlayerController (void)

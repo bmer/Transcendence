@@ -548,9 +548,11 @@ ALERROR CTranscendenceController::OnBoot (char *pszCommandLine, SHIOptions *retO
 	retOptions->m_bForceExclusiveMode = (m_Settings.GetBoolean(CGameSettings::forceExclusive) || m_Settings.GetBoolean(CGameSettings::force1024Res));
 	retOptions->m_bForceNonExclusiveMode = (m_Settings.GetBoolean(CGameSettings::forceNonExclusive) && !retOptions->m_bForceExclusiveMode);
 	retOptions->m_bForceScreenSize = m_Settings.GetBoolean(CGameSettings::force1024Res);
+	retOptions->m_bNoGPUAcceleration = m_Settings.GetBoolean(CGameSettings::noGPUAcceleration);
 	retOptions->m_iSoundVolume = m_Settings.GetInteger(CGameSettings::soundVolume);
 	retOptions->m_sMusicFolder = m_Settings.GetString(CGameSettings::musicPath);
 	retOptions->m_bDebugVideo = m_Settings.GetBoolean(CGameSettings::debugVideo);
+	retOptions->m_cyMaxScreen = (m_Settings.GetInteger(CGameSettings::maxResolution) <= 0 ? -1 : Max(600, m_Settings.GetInteger(CGameSettings::maxResolution)));
 
 	return NOERROR;
 	}
