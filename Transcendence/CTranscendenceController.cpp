@@ -259,7 +259,7 @@ void CTranscendenceController::DisplayMultiverseStatus (const CString &sStatus, 
 		const int TOP_SPACING = 8;
 
 		RECT rcRect;
-		VI.GetWidescreenRect(m_HI.GetScreen(), &rcRect);
+		VI.GetWidescreenRect(&rcRect);
 
 		CAniSequencer *pRoot;
 		CAniSequencer::Create(CVector(rcRect.left, rcRect.bottom - (MediumFont.GetHeight() + TOP_SPACING)), &pRoot);
@@ -1881,6 +1881,7 @@ ALERROR CTranscendenceController::OnInit (CString *retsError)
 
 	m_Soundtrack.SetMusicEnabled(!GetOptionBoolean(CGameSettings::noMusic));
 	m_Soundtrack.SetVolume(GetOptionInteger(CGameSettings::musicVolume));
+	m_Soundtrack.SetDebugMode(GetOptionBoolean(CGameSettings::debugSoundtrack));
 	m_Soundtrack.SetGameState(CSoundtrackManager::stateProgramLoad);
 
 	//	Initialize legacy window
