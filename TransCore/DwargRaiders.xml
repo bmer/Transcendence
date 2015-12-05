@@ -285,7 +285,6 @@
 				powerUse=			"120"
 
 				effect=				"&efBlastShellDefault;"
-				fireEffect=			"&efBlastFireDefault;"
 				sound=				"&snRecoillessCannon;"
 				>
 		</Weapon>
@@ -343,21 +342,33 @@
 				<Missile ammoID="&itDwargCnidocystNodule;"
 						type=			"missile"
 
-						damage=			"ion:4d6; EMP4"
+						damage=			"ion:4d6; EMP:4"
 						missileSpeed=	"50"
 						lifetime=		"180"
-						maneuverability="1"
+						maneuverRate=	"18"
 
 						sound=			"&snRecoillessCannon;"
 						>
 
 					<Effect>
+						<Ray
+								style=			"lightning"
+								shape=			"tapered"
+								length=			"60"
+								width=			"10"
+								intensity=		"50"
+								
+								primaryColor=	"#a0f0ff"
+								secondaryColor=	"#f0f0ff"
+								>
+						</Ray>
+						
 						<Starburst
-								style=			"lightningStar"
+								style=			"morningStar"
 								spikeCount=		"2d6+2"
 								spikeLength=	"2d10"
-								primaryColor=	"0xa0, 0xf0, 0xff"
-								secondaryColor=	"0xf0, 0xf0, 0xff"
+								primaryColor=	"#a0f0ff"
+								secondaryColor=	"#f0f0ff"
 								/>
 					</Effect>
 
@@ -413,27 +424,8 @@
 				powerUse=			"250"
 
 				effect=				"&efThermoShellDefault;"
-				fireEffect=			"&efThermoFireDefault;"
 				sound=				"&snRecoillessCannon;"
 				>
-
-			<HitEffect
-					sound="&snArmorHit1;"
-					>
-				<Image imageID="&rsExplosionsAG48;"
-						imageX="0"
-						imageY="0"
-						imageWidth="48"
-						imageHeight="48"
-						imageFrameCount="16"
-						imageTicksPerFrame="2"/>
-				<Flare
-						style=			"fadingBlast"
-						radius=			"65"
-						primaryColor=	"0xff, 0xff, 0xf0"
-						lifetime=		"8"
-						/>
-			</HitEffect>
 		</Weapon>
 
 	</ItemType>

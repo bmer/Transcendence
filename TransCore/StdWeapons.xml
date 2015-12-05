@@ -41,18 +41,6 @@
 
 				effect=				"&efMissileNAMI;"
 				>
-
-			<HitEffect
-					sound="&snArmorHit1;"
-					>
-				<Image imageID="&rsExplosionsAG48;"
-						imageX="0"
-						imageY="0"
-						imageWidth="48"
-						imageHeight="48"
-						imageFrameCount="16"
-						imageTicksPerFrame="2"/>
-			</HitEffect>
 		</Weapon>
 
 		<Invoke>
@@ -224,23 +212,11 @@
 				charges=			"true"
 
 				missileSpeed=		"40"
-				maneuverability=	"2"
+				maneuverRate=		"9"
 				sound=				"&snMissileLauncher;"
 
 				effect=				"&efMissileNAMI;"
 				>
-
-			<HitEffect
-					sound="&snArmorHit1;"
-					>
-				<Image imageID="&rsExplosionsAG48;"
-						imageX="0"
-						imageY="0"
-						imageWidth="48"
-						imageHeight="48"
-						imageFrameCount="16"
-						imageTicksPerFrame="2"/>
-			</HitEffect>
 		</Weapon>
 
 		<Invoke>
@@ -481,7 +457,6 @@
 				powerUse=			"30"
 
 				effect=				"&efBlastShellDefault;"
-				fireEffect=			"&efBlastFireDefault;"
 				sound=				"&snRecoillessCannon;"
 				>
 		</Weapon>
@@ -623,23 +598,24 @@
 						>
 					
 					<Effect>
-						<ParticleJet
+						<ParticleSystem
+								style=				"jet"
 								fixedPos=			"true"
 								emitRate=			"40"
-								tangentSpeed=		"3d2-3"
+								tangentSpeed=		"-3-3"
 								particleLifetime=	"10-30"
-								XformTime=			"10"
+								XformTime=			"15"
 								>
 							<ParticleEffect>
 								<Particle
 										style=			"plain"
 										minWidth=		"1"
 										maxWidth=		"3"
-										primaryColor=	"#ffffc0"
-										secondaryColor=	"#7e7e74"
+										primaryColor=	"#f1f6ff"
+										secondaryColor=	"#73767d"
 										/>
 							</ParticleEffect>
-						</ParticleJet>
+						</ParticleSystem>
 						
 						<Ray
 								style=			"smooth"
@@ -650,12 +626,13 @@
 								>
 							<Events>
 								<GetParameters>
-									(block (damageHP)
-										(setq damageHP (@ gData 'damageHP))
-					
+									(block (
+										(damageHP (@ gData 'damageHP))
+										(speed (@ gData 'speed))
+										)
 										{
-											length:	(mathScale damageHP	4 40 (divide (@ gData 'speed) 2) (@ gData 'speed) 50)
-											width: (mathScale damageHP 4 40 12 36 50)
+											length:	(mathScale damageHP	2 30 speed (@ speed 2) 50)
+											width: (mathScale damageHP 2 30 12 28 50)
 											}
 										)
 								</GetParameters>
@@ -727,7 +704,6 @@
 				powerUse=			"60"
 
 				effect=				"&efLaserBeamDefault;"
-				hitEffect=			"&efGreenLaserHitEffect;" 
 				sound=				"&snLaserCannon;"
 				>
 		</Weapon>
@@ -900,7 +876,11 @@
 				>
 
 			<Effect>
-				<Image imageID="&rsMissiles4;" imageX="0" imageY="0" imageWidth="16" imageHeight="16" imageFrameCount="4" imageTicksPerFrame="1" randomStartFrame="true"/>
+				<Particle
+						style=			"line"
+						primaryColor=	"#ccf7ff"
+						secondaryColor=	"#2e3233"
+						/>
 			</Effect>
 		</Weapon>
 
@@ -934,7 +914,6 @@
 				powerUse=			"100"
 
 				effect=				"&efBlastShellDefault;"
-				fireEffect=			"&efBlastFireDefault;"
 				sound=				"&snRecoillessCannon;"
 				>
 
@@ -1008,7 +987,6 @@
 				powerUse=			"100"
 
 				effect=				"&efSlamCannonShell;"
-				fireEffect=			"&efBlastFireDefault;"
 				sound=				"&snRecoillessCannon;"
 				>
 		</Weapon>
@@ -1042,7 +1020,6 @@
 				powerUse=			"140"
 
 				effect=				"&efLaserBeamDefault;"
-				hitEffect=			"&efGreenLaserHitEffect;" 
 				sound=				"&snLaserCannon;"
 				>
 		</Weapon>
@@ -1075,7 +1052,6 @@
 				powerUse=			"70"
 
 				effect=				"&efLaserBeamDefault;"
-				hitEffect=			"&efGreenLaserHitEffect;" 
 				sound=				"&snLaserCannon;"
 				>
 		</Weapon>
@@ -1115,7 +1091,6 @@
 						hitPoints=		"4"
 
 						effect=			"&efAkanCannonShell;"
-						fireEffect=		"&efBlastFireDefault;"
 						sound=			"&snRecoillessCannon;"
 						>
 				</Missile>
@@ -1177,21 +1152,14 @@
 		<Weapon
 				type=				"beam"
 
-				damage=				"ion:4d6; EMP3"
+				damage=				"ion:4d6; EMP:3"
 				fireRate=			"20"
 				lifetime=			"30"
 				powerUse=			"200"
 
+				effect=				"&efIonizingBeam;"
 				sound=				"&snLaserCannon;"
 				>
-			<Effect>
-				<Beam
-						beamType=			"lightning"
-						primaryColor=		"0xa0, 0xf0, 0xff"
-						secondaryColor=		"0x00, 0xa9, 0xff"
-						intensity=			"4"
-						/>
-			</Effect>
 		</Weapon>
 
 	</ItemType>
@@ -1290,20 +1258,8 @@
 				recoil=				"2"
 
 				effect=				"&efBlastShellDefault;"
-				fireEffect=			"&efBlastFireDefault;"
 				sound=				"&snRecoillessCannon;"
 				>
-			<HitEffect
-					sound="&snArmorHit1;"
-					>
-				<Image imageID="&rsMediumExplosions;" 
-						imageX="0" 
-						imageY="0" 
-						imageWidth="64" 
-						imageHeight="64"
-						imageFrameCount="16"
-						imageTicksPerFrame="2"/>
-			</HitEffect>
 		</Weapon>
 
 	</ItemType>
@@ -1433,7 +1389,6 @@
 				powerUse=			"250"
 
 				effect=				"&efBlastShellDefault;"
-				fireEffect=			"&efBlastFireDefault;"
 				sound=				"&snRecoillessCannon;"
 				>
 
@@ -1471,21 +1426,8 @@
 				powerUse=			"200"
 
 				effect=				"&efSlamCannonShell;"
-				fireEffect=			"&efBlastFireDefault;"
 				sound=				"&snRecoillessCannon;"
 				>
-
-			<HitEffect
-					sound="&snArmorHit1;"
-					>
-				<Image imageID="&rsExplosionsAG48;"
-						imageX="0"
-						imageY="0"
-						imageWidth="48"
-						imageHeight="48"
-						imageFrameCount="16"
-						imageTicksPerFrame="2"/>
-			</HitEffect>
 		</Weapon>
 	</ItemType>
 
@@ -1517,7 +1459,6 @@
 				powerUse=			"300"
 
 				effect=				"&efLaserBeamDefault;"
-				hitEffect=			"&efXRayLaserHitEffect;" 
 				sound=				"&snLaserCannon;"
 				>
 		</Weapon>
@@ -1559,7 +1500,6 @@
 						hitPoints=		"4"
 
 						effect=			"&efAkanCannonShell;"
-						fireEffect=		"&efBlastFireDefault;"
 						sound=			"&snRecoillessCannon;"
 						>
 				</Missile>
@@ -1601,15 +1541,15 @@
 						maneuverRate=	"18"
 						 
 						effect=			"&efBlastShellDefault;"
-						fireEffect=		"&efBlastFireDefault;"
 						sound=			"&snRecoillessCannon;"
 						>
 
 					<Effect>
-						<ParticleJet
+						<ParticleSystem
+								style=				"jet"
 								fixedPos=			"true"
 								emitRate=			"40"
-								tangentSpeed=		"3d2-3"
+								tangentSpeed=		"-3-3"
 								particleLifetime=	"10-30"
 								XformTime=			"10"
 								>
@@ -1622,7 +1562,7 @@
 										secondaryColor=	"#7e7e74"
 										/>
 							</ParticleEffect>
-						</ParticleJet>
+						</ParticleSystem>
 						
 						<Ray
 								style=			"smooth"
@@ -1637,26 +1577,14 @@
 										(setq damageHP (@ gData 'damageHP))
 					
 										{
-											length:	(mathScale damageHP	4 40 (divide (@ gData 'speed) 2) (@ gData 'speed) 50)
-											width: (mathScale damageHP 4 40 12 36 50)
+											length:	(mathScale damageHP	2 30 (divide (@ gData 'speed) 2) (@ gData 'speed) 50)
+											width: (mathScale damageHP 2 30 12 36 50)
 											}
 										)
 								</GetParameters>
 							</Events>
 						</Ray>
 					</Effect>
-
-					<HitEffect
-							sound="&snArmorHit1;"
-							>
-						<Image imageID="&rsExplosionsAG48;"
-								imageX="0"
-								imageY="0"
-								imageWidth="48"
-								imageHeight="48"
-								imageFrameCount="16"
-								imageTicksPerFrame="2"/>
-					</HitEffect>
 				</Missile>
 			</Missiles>
 		</Weapon>
@@ -1691,21 +1619,8 @@
 				recoil=				"2"
 
 				effect=				"&efBlastShellDefault;"
-				fireEffect=			"&efBlastFireDefault;"
 				sound=				"&snRecoillessCannon;"
 				>
-
-			<HitEffect
-					sound="&snArmorHit1;"
-					>
-				<Image imageID="&rsMediumExplosions;" 
-						imageX="0" 
-						imageY="0" 
-						imageWidth="64" 
-						imageHeight="64"
-						imageFrameCount="16"
-						imageTicksPerFrame="2"/>
-			</HitEffect>
 		</Weapon>
 	</ItemType>
 
@@ -1794,21 +1709,16 @@
 		<Weapon
 				type=				"beam"
 
-				damage=				"ion:5d6; deviceDisrupt2"
+				damage=				"ion:5d6; deviceDisrupt:2"
 				fireRate=			"20"
 				lifetime=			"30"
 				powerUse=			"800"
 
+				effect=				"&efEIDisruptorBeam;"
+				fireEffect=			"&efEIDisruptorFire;"
+				hitEffect=			"&efEIDisruptorHit;"
 				sound=				"&snLaserCannon;"
 				>
-			<Effect>
-				<Beam
-						beamType=			"lightning"
-						primaryColor=		"0xf0, 0xff, 0xa0"
-						secondaryColor=		"0xa9, 0xff, 0x00"
-						intensity=			"5"
-						/>
-			</Effect>
 		</Weapon>
 
 	</ItemType>
@@ -1839,6 +1749,7 @@
 				powerUse=			"500"
 
 				effect=				"&efEIBlasterBeam;"
+				fireEffect=			"&efEIBlasterFire;"
 				hitEffect=			"&efEIBlasterHit;" 
 				sound=				"&snLaserCannon;"
 				>
@@ -1871,15 +1782,11 @@
 				passthrough=		"50"
 				powerUse=			"750"
 
+				effect=				"&efStarCannonBeam;"
+				fireEffect=			"&efStarCannonFire;"
+				hitEffect=			"&efStarCannonHit;"
 				sound=				"&snLaserCannon;"
 				>
-			<Effect>
-				<Beam
-						beamType=			"starblaster"
-						primaryColor=		"0x00, 0x80, 0xff"
-						secondaryColor=		"0x80, 0xc0, 0xff"
-						/>
-			</Effect>
 		</Weapon>
 	</ItemType>
 
@@ -1912,27 +1819,8 @@
 				recoil=				"2"
 
 				effect=				"&efThermoShellDefault;"
-				fireEffect=			"&efThermoFireDefault;"
 				sound=				"&snRecoillessCannon;"
 				>
-
-			<HitEffect
-					sound="&snArmorHit1;"
-					>
-				<Image imageID="&rsMediumExplosions;" 
-						imageX="0" 
-						imageY="0" 
-						imageWidth="64" 
-						imageHeight="64"
-						imageFrameCount="16"
-						imageTicksPerFrame="2"/>
-				<Flare
-						style=			"fadingBlast"
-						radius=			"100"
-						primaryColor=	"0xff, 0xff, 0xf0"
-						lifetime=		"8"
-						/>
-			</HitEffect>
 		</Weapon>
 
 	</ItemType>
@@ -2063,27 +1951,8 @@
 						lifetime=		"100"
 
 						effect=			"&efThermoCannonShell;"
-						fireEffect=		"&efThermoFireDefault;"
 						sound=			"&snRecoillessCannon;"
 						>
-
-					<HitEffect
-							sound="&snArmorHit1;"
-							>
-						<Image imageID="&rsMediumExplosions;" 
-								imageX="0" 
-								imageY="0" 
-								imageWidth="64" 
-								imageHeight="64"
-								imageFrameCount="16"
-								imageTicksPerFrame="2"/>
-						<Flare
-								style=			"fadingBlast"
-								radius=			"95"
-								primaryColor=	"0xff, 0xff, 0xf0"
-								lifetime=		"8"
-								/>
-					</HitEffect>
 				</Missile>
 			</Missiles>
 
@@ -2119,27 +1988,8 @@
 				powerUse=			"500"
 
 				effect=				"&efThermoShellDefault;"
-				fireEffect=			"&efThermoFireDefault;"
 				sound=				"&snRecoillessCannon;"
 				>
-
-			<HitEffect
-					sound="&snArmorHit1;"
-					>
-				<Image imageID="&rsMediumExplosions;" 
-						imageX="0" 
-						imageY="0" 
-						imageWidth="64" 
-						imageHeight="64"
-						imageFrameCount="16"
-						imageTicksPerFrame="2"/>
-				<Flare
-						style=			"fadingBlast"
-						radius=			"95"
-						primaryColor=	"0xff, 0xff, 0xf0"
-						lifetime=		"8"
-						/>
-			</HitEffect>
 		</Weapon>
 
 	</ItemType>
@@ -2175,27 +2025,8 @@
 				recoil=				"2"
 
 				effect=				"&efThermoShellDefault;"
-				fireEffect=			"&efThermoFireDefault;"
 				sound=				"&snRecoillessCannon;"
 				>
-
-			<HitEffect
-					sound="&snArmorHit1;"
-					>
-				<Image imageID="&rsExplosionsAG96;" 
-						imageX="0" 
-						imageY="0" 
-						imageWidth="96" 
-						imageHeight="96"
-						imageFrameCount="16"
-						imageTicksPerFrame="2"/>
-				<Flare
-						style=			"fadingBlast"
-						radius=			"150"
-						primaryColor=	"0xff, 0xff, 0xf0"
-						lifetime=		"8"
-						/>
-			</HitEffect>
 		</Weapon>
 	</ItemType>
 
@@ -2225,6 +2056,7 @@
 				powerUse=			"1000"
 
 				effect=				"&efEIBlasterBeam;"
+				fireEffect=			"&efEIBlasterFire;"
 				hitEffect=			"&efEIBlasterHit;" 
 				sound=				"&snLaserCannon;"
 				>
@@ -2336,27 +2168,8 @@
 						hitPoints=		"10"
 
 						effect=			"&efThermoCannonShell;"
-						fireEffect=		"&efThermoFireDefault;"
 						sound=			"&snRecoillessCannon;"
 						>
-
-					<HitEffect
-							sound="&snArmorHit1;"
-							>
-						<Image imageID="&rsMediumExplosions;" 
-								imageX="0" 
-								imageY="0" 
-								imageWidth="64" 
-								imageHeight="64"
-								imageFrameCount="16"
-								imageTicksPerFrame="2"/>
-						<Flare
-								style=			"fadingBlast"
-								radius=			"95"
-								primaryColor=	"0xff, 0xff, 0xf0"
-								lifetime=		"8"
-								/>
-					</HitEffect>
 				</Missile>
 			</Missiles>
 
@@ -2404,7 +2217,8 @@
 						<Image imageID="&rsWeapons8DB32;" imageX="0" imageY="0" imageWidth="32" imageHeight="32" rotationCount="20"/>
 						
 						<Group angleOffset="180" radiusOffset="8">
-							<ParticleJet
+							<ParticleSystem
+									style=				"jet"
 									fixedPos=			"true"
 									emitRate=			"80"
 									tangentSpeed=		"3d2-3"
@@ -2420,7 +2234,7 @@
 											secondaryColor=	"#7e7e74"
 											/>
 								</ParticleEffect>
-							</ParticleJet>
+							</ParticleSystem>
 				
 							<Ray
 									style=			"smooth"
@@ -2453,7 +2267,7 @@
 							damage=				"thermo:6d12+6; momentum3; WMD4"
 							missileSpeed=		"50"
 							lifetime=			"60"
-							maneuverability=	"4"
+							maneuverRate=		"9"
 
 							multiTarget=		"true"
 							autoAcquireTarget=	"true"
@@ -2462,29 +2276,9 @@
 						<Effect>
 							<Image imageID="&rsMissiles3;" imageX="48" imageY="0" imageWidth="16" imageHeight="16" rotationCount="20"/>
 						</Effect>
-
-						<HitEffect
-								sound="&snArmorHit1;"
-								>
-							<Image imageID="&rsMediumExplosions;" 
-									imageX="0" 
-									imageY="0" 
-									imageWidth="64" 
-									imageHeight="64"
-									imageFrameCount="16"
-									imageTicksPerFrame="2"/>
-							<Flare
-									style=			"fadingBlast"
-									radius=			"95"
-									primaryColor=	"0xff, 0xff, 0xf0"
-									lifetime=		"8"
-									/>
-						</HitEffect>
 					</Fragment>
-
 				</Missile>
 			</Missiles>
-
 		</Weapon>
 
 	</ItemType>
@@ -2517,6 +2311,7 @@
 				powerUse=			"2000"
 
 				effect=				"&efEIBlasterBeam;"
+				fireEffect=			"&efEIBlasterFire;"
 				hitEffect=			"&efEIBlasterHit;" 
 				sound=				"&snLaserCannon;"
 				>
@@ -2581,6 +2376,7 @@
 				powerUse=			"1200"
 
 				effect=				"&efEIBlasterBeam;"
+				fireEffect=			"&efEIBlasterFire;"
 				hitEffect=			"&efEIBlasterHit;" 
 				sound=				"&snLaserCannon;"
 				>
@@ -2620,27 +2416,8 @@
 				counterUpdateRate=	"6"
 
 				effect=				"&efThermoShellDefault;"
-				fireEffect=			"&efThermoFireDefault;"
 				sound=				"&snRecoillessCannon;"
 				>
-
-			<HitEffect
-					sound="&snArmorHit1;"
-					>
-				<Image imageID="&rsMediumExplosions;" 
-						imageX="0" 
-						imageY="0" 
-						imageWidth="64" 
-						imageHeight="64"
-						imageFrameCount="16"
-						imageTicksPerFrame="2"/>
-				<Flare
-						style=			"fadingBlast"
-						radius=			"95"
-						primaryColor=	"0xff, 0xff, 0xf0"
-						lifetime=		"8"
-						/>
-			</HitEffect>
 		</Weapon>
 
 	</ItemType>
@@ -2699,41 +2476,56 @@
 		<Image imageID="&rsItemsEI3;" imageX="288" imageY="96" imageWidth="96" imageHeight="96"/>
 
 		<Weapon
+				type=				"particles"
+				damage=				"plasma:70; WMD:4"
+				
 				fireRate=			"20"
-
-				type=				"missile"
-
-				lifetime=			"60"
 				hitPoints=			"10"
-				damage=				"plasma:10d12+8; WMD4"
+
 				powerUse=			"3000"
-
-				missileSpeed=		"40"
-				sound=				"&snLaserCannon;"
+				sound=				"&snRecoillessCannon;"
 				>
-
-			<Effect>
-				<MoltenBolt
-						width=				"16"
-						growth=				"24"
-						primaryColor=		"0xfe, 0xff, 0xce"
-						secondaryColor=		"0xff, 0xeb, 0x26"
-						/>
-			</Effect>
-
-			<HitEffect
-					sound="&snArmorHit1;"
+			
+			<ParticleSystem
+					style=				"comet"
+					emitLifetime=		"1"
+					emitRate=			"100"
+					emitSpeed=			"35-45"
+					emitWidth=			"50"
+					spreadAngle=		"3"
+					
+					particleLifetime=	"60"
+					particleEffect=		"&efPlasmaParticleDefault;"
 					>
-				<Image imageID="&rsMediumExplosions;" 
-						imageX="0" 
-						imageY="0" 
-						imageWidth="64" 
-						imageHeight="64"
-						imageFrameCount="16"
-						imageTicksPerFrame="2"/>
-			</HitEffect>
+			</ParticleSystem>
+			
+			<Effect>
+				<ParticleSystem
+						style=				"jet"
+						fixedPos=			"true"
+						emitRate=			"2-4"
+						tangentSpeed=		"-8-8"
+						particleLifetime=	"10"
+						XformTime=			"30"
+						>
+					<ParticleEffect>
+						<Orb
+								instance=			"owner"
+						
+								style=				"smooth"
+								animate=			"fade"
+								radius=				"20"
+								lifetime=			"10"
+								intensity=			"20"
+						
+								blendMode=			"screen"
+								primaryColor=		"#feff00"
+								secondaryColor=		"#ff7f00"
+								/>
+					</ParticleEffect>
+				</ParticleSystem>
+			</Effect>
 		</Weapon>
-
 	</ItemType>
 
 <!-- AMMUNITION & MISSILES -->
@@ -2768,18 +2560,6 @@
 				effect=			"&efMissileNAMI;"
 				sound=			"&snMissileLauncher;"
 				>
-
-			<HitEffect
-					sound="&snArmorHit1;"
-							>
-				<Image imageID="&rsExplosionsAG48;"
-						imageX="0"
-						imageY="0"
-						imageWidth="48"
-						imageHeight="48"
-						imageFrameCount="16"
-						imageTicksPerFrame="2"/>
-			</HitEffect>
 		</Missile>
 	</ItemType>
 
@@ -2812,25 +2592,13 @@
 				sound=			"&snMissileLauncher;"
 				>
 
-			<HitEffect
-					sound="&snArmorHit1;"
-							>
-				<Image imageID="&rsExplosionsAG48;"
-						imageX="0"
-						imageY="0"
-						imageWidth="48"
-						imageHeight="48"
-						imageFrameCount="16"
-						imageTicksPerFrame="2"/>
-			</HitEffect>
-
 			<Fragment
 					count=			"6d6"
 					type=			"missile"
 					lifetime=		"10"
 					damage=			"kinetic:2d6; WMD1"
 					missileSpeed=	"32-48"
-							>
+					>
 
 				<Effect>
 					<ImageAndTail
@@ -2880,18 +2648,6 @@
 			effect=			"&efMissileNAMI;"
 			sound=			"&snMissileLauncher;"
 			>
-
-			<HitEffect
-					sound="&snArmorHit1;"
-							>
-				<Image imageID="&rsMediumExplosions;"
-						imageX="0"
-						imageY="0"
-						imageWidth="64"
-						imageHeight="64"
-						imageFrameCount="16"
-						imageTicksPerFrame="2"/>
-			</HitEffect>
 		</Missile>
 	</ItemType>
 
@@ -2919,23 +2675,11 @@
 				damage=			"blast:5d6; momentum4; WMD5"
 				missileSpeed=	"40"
 				hitPoints=		"10"
-				maneuverability="2"
+				maneuverRate=	"9"
 						 
 				effect=			"&efMissileNAMI;"
 				sound=			"&snMissileLauncher;"
 				>
-
-			<HitEffect
-					sound="&snArmorHit1;"
-							>
-				<Image imageID="&rsExplosionsAG48;"
-						imageX="0"
-						imageY="0"
-						imageWidth="48"
-						imageHeight="48"
-						imageFrameCount="16"
-						imageTicksPerFrame="2"/>
-			</HitEffect>
 		</Missile>
 	</ItemType>
 
@@ -2966,20 +2710,9 @@
 				hitPoints=		"10"
 						 
 				effect=			"&efMissileNAMI;"
+				hitEffect=		"&efRadioactiveHitEffect;"
 				sound=			"&snMissileLauncher;"
 				>
-
-			<HitEffect
-					sound="&snArmorHit1;"
-							>
-				<Image imageID="&rsExplosion2AG128;"
-						imageX="0"
-						imageY="0"
-						imageWidth="128"
-						imageHeight="128"
-						imageFrameCount="16"
-						imageTicksPerFrame="2"/>
-			</HitEffect>
 		</Missile>
 	</ItemType>
 
@@ -3007,23 +2740,11 @@
 				damage=			"blast:10d6; momentum4; WMD6"
 				missileSpeed=	"40"
 				hitPoints=		"15"
-				maneuverability="2"
+				maneuverRate=	"9"
 						 
 				sound=			"&snMissileLauncher;"
 				effect=			"&efMissileNAMI;"
 				>
-						
-			<HitEffect
-					sound="&snArmorHit1;"
-					>
-				<Image imageID="&rsMediumExplosions;" 
-						imageX="0" 
-						imageY="0" 
-						imageWidth="64" 
-						imageHeight="64"
-						imageFrameCount="16"
-						imageTicksPerFrame="2"/>
-			</HitEffect>
 		</Missile>
 	</ItemType>
 
@@ -3054,23 +2775,12 @@
 				hitPoints=		"20"
 				lifetime=		"120"
 
-				maneuverability="2"
+				maneuverRate=	"9"
 
 				effect=			"&efMissileNAMI;"
+				hitEffect=		"&efThermoFragmentExplosion;"
 				sound=			"&snMissileLauncher;"
 				>
-
-			<HitEffect
-					sound="&snArmorHit1;"
-							>
-				<Image imageID="&rsExplosionsAG128;"
-						imageX="0"
-						imageY="0"
-						imageWidth="128"
-						imageHeight="128"
-						imageFrameCount="16"
-						imageTicksPerFrame="2"/>
-			</HitEffect>
 
 			<Fragment
 					count=			"1"
@@ -3080,18 +2790,10 @@
 					minRadius=		"1"
 					maxRadius=		"4"
 					missileSpeed=	"0"
-							>
-
-				<Effect>
-					<Flare
-							style=			"fadingBlast"
-							radius=			"170"
-							primaryColor=	"0xff, 0xff, 0xf0"
-							lifetime=		"8"
-									/>
-				</Effect>
+					
+					hitEffect=		"&efThermoFragmentHit;"
+					>
 			</Fragment>
-
 		</Missile>
 	</ItemType>
 
@@ -3127,18 +2829,6 @@
 				effect=			"&efMissileMAG;"
 				sound=			"&snMissileLauncher;"
 				>
-
-			<HitEffect
-					sound="&snArmorHit1;"
-							>
-				<Image imageID="&rsExplosionsAG48;"
-						imageX="0"
-						imageY="0"
-						imageWidth="48"
-						imageHeight="48"
-						imageFrameCount="16"
-						imageTicksPerFrame="2"/>
-			</HitEffect>
 		</Missile>
 	</ItemType>
 
@@ -3172,18 +2862,6 @@
 				effect=			"&efMissileMAG;"
 				sound=			"&snMissileLauncher;"
 				>
-
-			<HitEffect
-					sound="&snArmorHit1;"
-							>
-				<Image imageID="&rsMediumExplosions;"
-						imageX="0"
-						imageY="0"
-						imageWidth="64"
-						imageHeight="64"
-						imageFrameCount="16"
-						imageTicksPerFrame="2"/>
-			</HitEffect>
 		</Missile>
 	</ItemType>
 
@@ -3219,18 +2897,6 @@
 				effect=			"&efMissileMAG;"
 				sound=			"&snMissileLauncher;"
 				>
-
-			<HitEffect
-					sound="&snArmorHit1;"
-							>
-				<Image imageID="&rsExplosionsAG48;"
-						imageX="0"
-						imageY="0"
-						imageWidth="48"
-						imageHeight="48"
-						imageFrameCount="16"
-						imageTicksPerFrame="2"/>
-			</HitEffect>
 
 			<Fragment
 					count=			"5d6"
@@ -3290,18 +2956,6 @@
 				effect=			"&efMissileMAG;"
 				sound=			"&snMissileLauncher;"
 				>
-
-			<HitEffect
-					sound="&snArmorHit1;"
-							>
-				<Image imageID="&rsExplosionsAG48;"
-						imageX="0"
-						imageY="0"
-						imageWidth="48"
-						imageHeight="48"
-						imageFrameCount="16"
-						imageTicksPerFrame="2"/>
-			</HitEffect>
 		</Missile>
 	</ItemType>
 
@@ -3337,18 +2991,6 @@
 				sound=			"&snMissileLauncher;"
 				>
 
-			<HitEffect
-					sound="&snArmorHit1;"
-							>
-				<Image imageID="&rsExplosionsAG48;"
-						imageX="0"
-						imageY="0"
-						imageWidth="48"
-						imageHeight="48"
-						imageFrameCount="16"
-						imageTicksPerFrame="2"/>
-			</HitEffect>
-
 			<Fragment
 					count=			"20-28"
 					type=			"missile"
@@ -3374,18 +3016,6 @@
 						</ParticleEffect>
 					</SmokeTrail>
 				</Effect>
-
-				<HitEffect
-						sound="&snArmorHit1;"
-								>
-					<Image imageID="&rsExplosionsAG48;"
-							imageX="0"
-							imageY="0"
-							imageWidth="48"
-							imageHeight="48"
-							imageFrameCount="16"
-							imageTicksPerFrame="2"/>
-				</HitEffect>
 			</Fragment>
 
 		</Missile>
@@ -3421,18 +3051,6 @@
 				effect=			"&efMissileMAG;"
 				sound=			"&snMissileLauncher;"
 				>
-
-			<HitEffect
-					sound="&snArmorHit1;"
-							>
-				<Image imageID="&rsExplosionsAG96;"
-						imageX="0"
-						imageY="0"
-						imageWidth="96"
-						imageHeight="96"
-						imageFrameCount="16"
-						imageTicksPerFrame="2"/>
-			</HitEffect>
 		</Missile>
 	</ItemType>
 
@@ -3464,20 +3082,9 @@
 				hitPoints=		"30"
 						 
 				effect=			"&efMissileMAG;"
+				hitEffect=		"&efThermoFragmentExplosion;"
 				sound=			"&snMissileLauncher;"
 				>
-
-			<HitEffect
-					sound="&snArmorHit1;"
-							>
-				<Image imageID="&rsExplosionsAG128;"
-						imageX="0"
-						imageY="0"
-						imageWidth="128"
-						imageHeight="128"
-						imageFrameCount="16"
-						imageTicksPerFrame="2"/>
-			</HitEffect>
 
 			<Fragment
 					count=			"1"
@@ -3487,16 +3094,9 @@
 					minRadius=		"1"
 					maxRadius=		"4"
 					missileSpeed=	"0"
-							>
-
-				<Effect>
-					<Flare
-							style=			"fadingBlast"
-							radius=			"190"
-							primaryColor=	"0xff, 0xff, 0xf0"
-							lifetime=		"8"
-									/>
-				</Effect>
+					
+					hitEffect=		"&efThermoFragmentHit;"
+					>
 			</Fragment>
 		</Missile>
 	</ItemType>
@@ -3562,18 +3162,6 @@
 				effect=			"&efMissileStrelka;"
 				sound=			"&snRecoillessCannon;"
 				>
-
-			<HitEffect
-					sound="&snArmorHit1;"
-							>
-				<Image imageID="&rsExplosionsAG48;"
-						imageX="0"
-						imageY="0"
-						imageWidth="48"
-						imageHeight="48"
-						imageFrameCount="16"
-						imageTicksPerFrame="2"/>
-			</HitEffect>
 		</Missile>
 	</ItemType>
 
@@ -3605,24 +3193,6 @@
 				effect=			"&efMissileStrelka;"
 				sound=			"&snRecoillessCannon;"
 				>
-
-			<HitEffect
-					sound="&snArmorHit1;"
-							>
-				<Image imageID="&rsExplosionsAG48;"
-						imageX="0"
-						imageY="0"
-						imageWidth="48"
-						imageHeight="48"
-						imageFrameCount="16"
-						imageTicksPerFrame="2"/>
-				<Flare
-						style=			"fadingBlast"
-						radius=			"65"
-						primaryColor=	"0xff, 0xff, 0xf0"
-						lifetime=		"8"
-								/>
-			</HitEffect>
 		</Missile>
 	</ItemType>
 
@@ -3652,6 +3222,7 @@
 				hitPoints=		"5"
 
 				effect=			"&efMissileStrelka;"
+				hitEffect=		"&efBlastHitDefault;"
 				sound=			"&snRecoillessCannon;"
 				>
 
@@ -3663,22 +3234,7 @@
 					missileSpeed=	"40-60"
 
 					effect=			"&efThermoShellDefault;"
-							>
-				<HitEffect>
-					<Image imageID="&rsExplosionsAG48;"
-							imageX="0"
-							imageY="0"
-							imageWidth="48"
-							imageHeight="48"
-							imageFrameCount="16"
-							imageTicksPerFrame="2"/>
-					<Flare
-							style=			"fadingBlast"
-							radius=			"40"
-							primaryColor=	"0xff, 0xff, 0xf0"
-							lifetime=		"8"
-									/>
-				</HitEffect>
+					>
 			</Fragment>
 		</Missile>
 	</ItemType>
@@ -3715,6 +3271,7 @@
 
 				failSafe=		"10"
 
+				hitEffect=		"&efBlastHitDefault;"
 				sound=			"&snMissileLauncher;"
 				>
 
@@ -3732,25 +3289,7 @@
 					lifetime=		"8"
 
 					effect=			"&efThermoShellDefault;"
-							>
-
-				<HitEffect
-						sound="&snArmorHit1;"
-								>
-					<Image imageID="&rsExplosionsAG48;"
-							imageX="0"
-							imageY="0"
-							imageWidth="48"
-							imageHeight="48"
-							imageFrameCount="16"
-							imageTicksPerFrame="2"/>
-					<Flare
-							style=			"fadingBlast"
-							radius=			"220"
-							primaryColor=	"0xff, 0xff, 0xf0"
-							lifetime=		"8"
-									/>
-				</HitEffect>
+					>
 			</Fragment>
 		</Missile>
 	</ItemType>
@@ -3778,7 +3317,7 @@
 
 				damage=			"thermo:3d12; WMD6"
 				missileSpeed=	"10"
-				maneuverability="2"
+				maneuverRate=	"9"
 				lifetime=		"2400"
 				hitPoints=		"20"
 				stealth=		"6"
@@ -3786,6 +3325,7 @@
 				failSafe=		"10"
 
 				sound=			"&snMissileLauncher;"
+				hitEffect=		"&efBlastHitDefault;"
 				>
 
 			<Effect>
@@ -3802,27 +3342,8 @@
 					lifetime=		"8"
 
 					effect=			"&efThermoShellDefault;"
-							>
-
-				<HitEffect
-						sound="&snArmorHit1;"
-								>
-					<Image imageID="&rsExplosionsAG48;"
-							imageX="0"
-							imageY="0"
-							imageWidth="48"
-							imageHeight="48"
-							imageFrameCount="16"
-							imageTicksPerFrame="2"/>
-					<Flare
-							style=			"fadingBlast"
-							radius=			"220"
-							primaryColor=	"0xff, 0xff, 0xf0"
-							lifetime=		"8"
-									/>
-				</HitEffect>
+					>
 			</Fragment>
-
 		</Missile>
 	</ItemType>
 
@@ -3856,23 +3377,6 @@
 				effect=			"&efMissileRasiermesser;"
 				sound=			"&snMissileLauncher;"
 				>
-			<HitEffect
-					sound="&snArmorHit1;"
-							>
-				<Image imageID="&rsMediumExplosions;"
-						imageX="0"
-						imageY="0"
-						imageWidth="64"
-						imageHeight="64"
-						imageFrameCount="16"
-						imageTicksPerFrame="2"/>
-				<Flare
-						style=			"fadingBlast"
-						radius=			"100"
-						primaryColor=	"0xff, 0xff, 0xf0"
-						lifetime=		"8"
-								/>
-			</HitEffect>
 		</Missile>
 	</ItemType>
 
@@ -3900,28 +3404,11 @@
 				damage=			"thermo:10d20; momentum3; WMD7"
 				missileSpeed=	"65"
 				hitPoints=		"20"
-				maneuverability="2"
+				maneuverRate=	"9"
 						 
 				effect=			"&efMissileRasiermesser;"
 				sound=			"&snMissileLauncher;"
 				>
-			<HitEffect
-					sound="&snArmorHit1;"
-							>
-				<Image imageID="&rsMediumExplosions;"
-						imageX="0"
-						imageY="0"
-						imageWidth="64"
-						imageHeight="64"
-						imageFrameCount="16"
-						imageTicksPerFrame="2"/>
-				<Flare
-						style=			"fadingBlast"
-						radius=			"95"
-						primaryColor=	"0xff, 0xff, 0xf0"
-						lifetime=		"8"
-								/>
-			</HitEffect>
 		</Missile>
 	</ItemType>
 
@@ -3954,7 +3441,7 @@
 				hitPoints=		"40"
 
 				effect=			"&efMissileNAMIHeavy;"
-				hitEffect=		"&efFusionExplosion1;"
+				hitEffect=		"&efThermoFragmentExplosion;"
 				sound=			"&snMissileLauncher;"
 				>
 
@@ -3966,16 +3453,9 @@
 					minRadius=		"2"
 					maxRadius=		"6"
 					missileSpeed=	"0"
-							>
-
-				<Effect>
-					<Flare
-							style=			"fadingBlast"
-							radius=			"300"
-							primaryColor=	"0xff, 0xff, 0xf0"
-							lifetime=		"8"
-									/>
-				</Effect>
+					
+					hitEffect=		"&efThermoFragmentHit;"
+					>
 			</Fragment>
 
 			<Fragment
@@ -3985,7 +3465,7 @@
 					lifetime=		"1d12+12"
 					damage=			"blast:2d6; WMD1"
 					missileSpeed=	"25-55"
-							>
+					>
 
 				<Effect>
 					<ImageAndTail
@@ -4062,14 +3542,15 @@
 
 					multiTarget=		"true"
 					autoAcquireTarget=	"true"
-					maneuverability=	"2"
-							>
+					maneuverRate=		"9"
+					>
 
 				<Effect>
 					<Image imageID="&rsMissileNAMI;" imageX="0" imageY="0" imageWidth="24" imageHeight="24" rotationCount="40"/>
 
 					<Group angleOffset="180" radiusOffset="10">
-						<ParticleJet
+						<ParticleSystem
+								style=				"jet"
 								fixedPos=			"true"
 								emitRate=			"30"
 								tangentSpeed=		"3d2-3"
@@ -4085,7 +3566,7 @@
 										secondaryColor=	"#7e7e74"
 												/>
 							</ParticleEffect>
-						</ParticleJet>
+						</ParticleSystem>
 
 						<Ray
 								style=			"smooth"
@@ -4098,24 +3579,6 @@
 										/>
 					</Group>
 				</Effect>
-
-				<HitEffect
-						sound="&snArmorHit1;"
-								>
-					<Image imageID="&rsExplosionsAG48;"
-							imageX="0"
-							imageY="0"
-							imageWidth="48"
-							imageHeight="48"
-							imageFrameCount="16"
-							imageTicksPerFrame="2"/>
-					<Flare
-							style=			"fadingBlast"
-							radius=			"65"
-							primaryColor=	"0xff, 0xff, 0xf0"
-							lifetime=		"8"
-									/>
-				</HitEffect>
 			</Fragment>
 		</Missile>
 	</ItemType>
@@ -4147,7 +3610,7 @@
 				hitPoints=		"40"
 
 				effect=			"&efMissileNAMIHeavy;"
-				hitEffect=		"&efFusionExplosion1;"
+				hitEffect=		"&efThermoFragmentExplosion;"
 				sound=			"&snMissileLauncher;"
 				>
 
@@ -4159,16 +3622,9 @@
 					minRadius=		"3"
 					maxRadius=		"8"
 					missileSpeed=	"0"
-							>
-
-				<Effect>
-					<Flare
-							style=			"fadingBlast"
-							radius=			"450"
-							primaryColor=	"0xff, 0xff, 0xf0"
-							lifetime=		"8"
-									/>
-				</Effect>
+					
+					hitEffect=		"&efThermoFragmentHit;"
+					>
 			</Fragment>
 
 			<Fragment
@@ -4304,7 +3760,8 @@
 			>
 		
 		<Effect>
-			<ParticleJet
+			<ParticleSystem
+					style=				"jet"
 					emitRate=			"20"
 					emitSpeed=			"30-45"
 					particleLifetime=	"7-20"
@@ -4319,7 +3776,7 @@
 							secondaryColor=	"#5b777a"
 							/>
 				</ParticleEffect>
-			</ParticleJet>
+			</ParticleSystem>
 			
 			<Ray
 					style=			"smooth"
@@ -4333,8 +3790,8 @@
 							(setq damageHP (@ gData 'damageHP))
 
 							{
-								length:	(mathScale damageHP	6 80 16 64 50)
-								width: (mathScale damageHP 6 80 12 48 50)
+								length:	(mathScale damageHP	5 64 16 64 50)
+								width: (mathScale damageHP 5 64 12 48 50)
 								intensity: 10
 								}
 							)
@@ -4355,17 +3812,62 @@
 							(setq damageHP (@ gData 'damageHP))
 
 							{
-								length:
-									(mathScale 
-										damageHP						; average damage of weapon
-										6								; min damage
-										80								; max damage
-										30								; min beam length
-										110								; max beam length
-										50								; scale gamma
-										)
-								width: (mathScale damageHP 6 80 12 44 50)
+								length:	(mathScale damageHP 5 64 30 110 50)
+								width: (mathScale damageHP 5 64 12 44 50)
 								intensity: 30
+								}
+							)
+					</GetParameters>
+				</Events>
+			</Ray>
+		</Effect>
+	</EffectType>
+
+	<EffectType UNID="&efEIBlasterFire;"
+			instance=			"owner"
+			>
+		<Effect>
+			<Orb	style=			"flare"
+					animate=		"fade"
+					intensity=		"50"
+					primaryColor=	"#ff9500"
+					secondaryColor=	"#804a00"
+					
+					lifetime=		"3"
+					>
+				<Events>
+					<GetParameters>
+						(block (
+							(damageHP (@ gData 'damageHP))
+							)
+							
+							{
+								radius: (mathScale damageHP 10 140 12 28 50)
+								}
+							)
+					</GetParameters>
+				</Events>
+			</Orb>
+			
+			<Ray	style=			"jagged"
+					shape=			"tapered"
+					intensity=		"50"
+					xformRotation=	"180"
+					primaryColor=	"#ff9500"
+					secondaryColor=	"#804a00"
+					
+					lifetime=		"3"
+					animateOpacity= "fade"
+					>
+				<Events>
+					<GetParameters>
+						(block (
+							(damageHP (@ gData 'damageHP))
+							)
+							
+							{
+								length: (mathScale damageHP 10 140 24 56 50)
+								width: (mathScale damageHP 10 140 18 42 50)
 								}
 							)
 					</GetParameters>
@@ -4383,129 +3885,305 @@
 					shape=			"tapered"
 					primaryColor=	"#ff9500"
 					secondaryColor=	"#804a00"
-					/>
-		</Effect>
+					>
+				<Events>
+					<GetParameters>
+						(block (damageHP primaryColor secondaryColor)
+							(setq damageHP (@ gData 'damageHP))
 
+							{
+								length: (mathScale damageHP 10 140 60 260 50)
+								width: (mathScale damageHP 10 140 20 40 50)
+								intensity: 60
+								}
+							)
+					</GetParameters>
+				</Events>
+			</Ray>
+			
+			<ParticleComet
+					particleCount=	"200"
+					primaryColor=	"#ff9500"
+					>
+				<Events>
+					<GetParameters>
+						(block (
+							(damageHP (@ gData 'damageHP))
+							)
+
+							{ 
+								particleCount: (mathScale damageHP 10 140 100 300 50)
+								length: (mathScale damageHP 10 140 60 220 50)
+								width: (mathScale damageHP 10 140 6 16 50)
+								}
+							)
+					</GetParameters>
+				</Events>
+			</ParticleComet>
+		</Effect>
+	</EffectType>
+
+	<EffectType UNID="&efEIBlasterHit;"
+			sound="&snArmorHit1;"
+			>
+		<Effect>
+			<Orb	style=			"diffraction"
+					animate=		"fade"
+					intensity=		"50"
+					
+					blendMode=		"screen"
+					primaryColor=	"#ffca80"
+					secondaryColor=	"#ff9500"
+					>
+				<Events>
+					<GetParameters>
+						(block (
+							(damageHP (@ gData 'damageHP))
+							)
+							
+							{
+								radius: (if (= damageHP 0) 10 (mathScale damageHP 10 140 30 70 50))
+								lifetime: (if (= damageHP 0) 4 (mathScale damageHP 10 140 12 48 50))
+								}
+							)
+					</GetParameters>
+				</Events>
+			</Orb>
+			
+			<ParticleSystem
+					style=			"radiate"
+					emitSpeed=		"4-8"
+					particleLifetime="8"
+					>
+				<ParticleEffect>
+					<Particle
+							style=			"plain"
+							minWidth=		"1"
+							maxWidth=		"3"
+							primaryColor=	"#ffca80"
+							secondaryColor=	"#ff9500"
+							/>
+				</ParticleEffect>
+				
+				<Events>
+					<GetParameters>
+						(block (
+							(damageHP (@ gData 'damageHP))
+							)
+							
+							{
+								lifetime: (if (= damageHP 0) 10 (mathScale damageHP 10 140 12 48 50))
+								emitRate: (mathScale damageHP 10 140 50 200 50)
+								emitLifetime: (if (= damageHP 0) 2 (mathScale damageHP 10 140 6 24 50))
+								}
+							)
+					</GetParameters>
+				</Events>
+			</ParticleSystem>
+		</Effect>
+		
 		<Events>
 			<GetParameters>
-				(block (damageHP primaryColor secondaryColor)
-					(setq damageHP (@ gData 'damageHP))
-
+				(block (
+					(damageHP (@ gData 'damageHP))
+					)
+							
 					{
-						length:
-							(mathScale 
-								damageHP						; average damage of weapon
-								5								; min damage
-								70								; max damage
-								60								; min beam length
-								260								; max beam length
-								50								; scale gamma
-								)
-						width: (mathScale damageHP 5 70 20 40 50)
-						intensity: 40
+						noSound: (= damageHP 0)
 						}
 					)
 			</GetParameters>
 		</Events>
 	</EffectType>
-
-	<Effect UNID="&efEIBlasterHit;">
-		<Variants>
-			<Effect maxValue="0">
-				<ParticleCloud
-						style=				"splash"
-						lifetime=			"15"
-						emitDuration=		"5"
-						emitRate=			"10"
-						emitSpeed=			"5-10"
-						particleLifetime=	"10"
-						>
-					<ParticleEffect>
-						<Particle
-								style=			"plain"
-								minWidth=		"1"
-								maxWidth=		"3"
-								primaryColor=	"#ffca80"
-								secondaryColor=	"#ff9500"
-								/>
-					</ParticleEffect>
-				</ParticleCloud>
-			</Effect>
+	
+	<EffectType UNID="&efEIDisruptorFire;"
+			instance=			"owner"
+			>
+		<Effect>
+			<Orb	style=			"flare"
+					animate=		"fade"
+					intensity=		"50"
+					primaryColor=	"#f0ffa0"
+					secondaryColor=	"#a9ff00"
+					
+					lifetime=		"3"
+					>
+				<Events>
+					<GetParameters>
+						(block (
+							(damageHP (@ gData 'damageHP))
+							)
+							
+							{
+								radius: (mathScale damageHP 10 140 12 28 50)
+								}
+							)
+					</GetParameters>
+				</Events>
+			</Orb>
 			
-			<Effect maxValue="21" 
-					sound="&snArmorHit1;">
-				<ParticleCloud
-						style=			"splash" 
-						lifetime=		"20" 
-						emitDuration=	"60"
-						emitRate=		"20-25"
-						emitSpeed=		"1-6"
-						particleLifetime="4"
-						>
-					<ParticleEffect>
-						<Particle
-								style=			"plain"
-								maxWidth=		"1-2"
-								primaryColor=	"#ffca80"
-								secondaryColor=	"#ff9500"
-								/>
-					</ParticleEffect>
-				</ParticleCloud>
-			</Effect>
-			
-			<Effect maxValue="31" 
-					sound="&snArmorHit1;">
-				<ParticleCloud
-						style=			"splash" 
-						lifetime=		"20" 
-						emitDuration=	"60"
-						emitRate=		"30-37"
-						emitSpeed=		"1-6"
-						particleLifetime="5"
-						>
-					<ParticleEffect>
-						<Particle
-								style=			"plain"
-								maxWidth=		"1-2"
-								primaryColor=	"#ffca80"
-								secondaryColor=	"#ff9500"
-								/>
-					</ParticleEffect>
-				</ParticleCloud>
-			</Effect>
+			<Ray	style=			"jagged"
+					shape=			"tapered"
+					intensity=		"50"
+					xformRotation=	"180"
+					primaryColor=	"#f0ffa0"
+					secondaryColor=	"#a9ff00"
+					
+					lifetime=		"3"
+					animateOpacity= "fade"
+					>
+				<Events>
+					<GetParameters>
+						(block (
+							(damageHP (@ gData 'damageHP))
+							)
+							
+							{
+								length: (mathScale damageHP 10 140 24 56 50)
+								width: (mathScale damageHP 10 140 18 42 50)
+								}
+							)
+					</GetParameters>
+				</Events>
+			</Ray>
+		</Effect>
+	</EffectType>
 
-			<Effect
-					sound="&snArmorHit1;">
-				<ParticleCloud
-						style=			"splash" 
-						lifetime=		"20" 
-						emitDuration=	"60"
-						emitRate=		"40-50"
-						emitSpeed=		"1-6"
-						particleLifetime="5"
-						>
-					<ParticleEffect>
-						<Particle
-								style=			"plain"
-								maxWidth=		"1-2"
-								primaryColor=	"#ffca80"
-								secondaryColor=	"#ff9500"
-								/>
-					</ParticleEffect>
-				</ParticleCloud>
-			</Effect>
-		</Variants>
-	</Effect>
+	<EffectType UNID="&efEIDisruptorBeam;"
+			instance=			"creator"
+			>
+		<Effect>
+			<Ray
+					style=			"jagged"
+					shape=			"tapered"
+					primaryColor=	"#f0ffa0"
+					secondaryColor=	"#a9ff00"
+					>
+				<Events>
+					<GetParameters>
+						(block (damageHP primaryColor secondaryColor)
+							(setq damageHP (@ gData 'damageHP))
+
+							{
+								length: (mathScale damageHP 10 140 60 260 50)
+								width: (mathScale damageHP 10 140 20 40 50)
+								intensity: 60
+								}
+							)
+					</GetParameters>
+				</Events>
+			</Ray>
+			
+			<Ray
+					style=			"lightning"
+					shape=			"tapered"
+					primaryColor=	"#f0ffa0"
+					secondaryColor=	"#a9ff00"
+					>
+				<Events>
+					<GetParameters>
+						(block (
+							(damageHP (@ gData 'damageHP))
+							(weaponUNID (@ gData 'weaponUNID))
+							
+							(damageDeviceDisrupt (itmGetProperty weaponUNID 'damageDeviceDisrupt))
+							(intensity (+ 20 (* damageDeviceDisrupt 10)))
+							)
+							{
+								length: (mathScale damageHP 10 140 60 260 50)
+								width: (mathScale damageHP 10 140 10 20 50)
+								intensity: intensity
+								}
+							)
+					</GetParameters>
+				</Events>
+			</Ray>
+		</Effect>
+	</EffectType>
+
+	<EffectType UNID="&efEIDisruptorHit;"
+			sound="&snArmorHit1;"
+			>
+		<Effect>
+			<Orb	style=			"diffraction"
+					animate=		"fade"
+					intensity=		"50"
+					
+					blendMode=		"screen"
+					primaryColor=	"#f0ffa0"
+					secondaryColor=	"#a9ff00"
+					>
+				<Events>
+					<GetParameters>
+						(block (
+							(damageHP (@ gData 'damageHP))
+							)
+							
+							{
+								radius: (if (= damageHP 0) 10 (mathScale damageHP 10 140 30 70 50))
+								lifetime: (if (= damageHP 0) 4 (mathScale damageHP 10 140 12 48 50))
+								}
+							)
+					</GetParameters>
+				</Events>
+			</Orb>
+			
+			<ParticleSystem
+					style=			"radiate"
+					emitSpeed=		"4-8"
+					particleLifetime="8"
+					>
+				<ParticleEffect>
+					<Particle
+							style=			"plain"
+							minWidth=		"1"
+							maxWidth=		"3"
+							primaryColor=	"#f0ffa0"
+							secondaryColor=	"#a9ff00"
+							/>
+				</ParticleEffect>
+				
+				<Events>
+					<GetParameters>
+						(block (
+							(damageHP (@ gData 'damageHP))
+							)
+							
+							{
+								lifetime: (if (= damageHP 0) 10 (mathScale damageHP 10 140 12 48 50))
+								emitRate: (mathScale damageHP 10 140 50 200 50)
+								emitLifetime: (if (= damageHP 0) 2 (mathScale damageHP 10 140 6 24 50))
+								}
+							)
+					</GetParameters>
+				</Events>
+			</ParticleSystem>
+		</Effect>
+		
+		<Events>
+			<GetParameters>
+				(block (
+					(damageHP (@ gData 'damageHP))
+					)
+							
+					{
+						noSound: (= damageHP 0)
+						}
+					)
+			</GetParameters>
+		</Events>
+	</EffectType>
 	
 	<EffectType UNID="&efMissileMAG;"
 			instance=			"creator"
 			>
 		
 		<Effect>
-			<ParticleJet
+			<ParticleSystem
+					style=				"jet"
 					fixedPos=			"true"
-					emitRate=			"20"
-					tangentSpeed=		"3d2-3"
+					emitRate=			"40"
+					tangentSpeed=		"-3-3"
 					particleLifetime=	"10-30"
 					XformTime=			"30"
 					>
@@ -4513,12 +4191,12 @@
 					<Particle
 							style=			"plain"
 							minWidth=		"1"
-							maxWidth=		"5"
+							maxWidth=		"4"
 							primaryColor=	"#f1f6ff"
 							secondaryColor=	"#73767d"
 							/>
 				</ParticleEffect>
-			</ParticleJet>
+			</ParticleSystem>
 			
 			<Image	imageID=			"&rsMissiles;"
 					imageX=				"0"
@@ -4530,7 +4208,7 @@
 					/>
 		</Effect>
 	</EffectType>
-
+	
 	<EffectType UNID="&efMissileNAMI;"
 			instance=			"creator"
 			>
@@ -4545,23 +4223,24 @@
 					/>
 			
 			<Group angleOffset="180" radiusOffset="10">
-				<ParticleJet
+				<ParticleSystem
+						style=				"jet"
 						fixedPos=			"true"
 						emitRate=			"40"
-						tangentSpeed=		"3d2-3"
+						tangentSpeed=		"-3-3"
 						particleLifetime=	"20-60"
-						XformTime=			"30"
+						XformTime=			"40"
 						>
 					<ParticleEffect>
 						<Particle
 								style=			"plain"
 								minWidth=		"1"
-								maxWidth=		"6"
+								maxWidth=		"5"
 								primaryColor=	"#ffffc0"
 								secondaryColor=	"#7e7e74"
 								/>
 					</ParticleEffect>
-				</ParticleJet>
+				</ParticleSystem>
 				
 				<Ray
 						style=			"smooth"
@@ -4590,23 +4269,24 @@
 					/>
 			
 			<Group angleOffset="180" radiusOffset="10">
-				<ParticleJet
+				<ParticleSystem
+						style=				"jet"
 						fixedPos=			"true"
 						emitRate=			"60"
-						tangentSpeed=		"3d2-3"
+						tangentSpeed=		"-3-3"
 						particleLifetime=	"20-60"
-						XformTime=			"20"
+						XformTime=			"50"
 						>
 					<ParticleEffect>
 						<Particle
 								style=			"plain"
 								minWidth=		"1"
-								maxWidth=		"5"
-								primaryColor=	"#ffffc0"
+								maxWidth=		"6"
+								primaryColor=	"#ffffb2"
 								secondaryColor=	"#7e7e74"
 								/>
 					</ParticleEffect>
-				</ParticleJet>
+				</ParticleSystem>
 				
 				<Ray
 						style=			"smooth"
@@ -4635,23 +4315,24 @@
 					/>
 			
 			<Group angleOffset="180" radiusOffset="10">
-				<ParticleJet
+				<ParticleSystem
+						style=				"jet"
 						fixedPos=			"true"
 						emitRate=			"80"
-						tangentSpeed=		"3d2-3"
+						tangentSpeed=		"-3-3"
 						particleLifetime=	"20-60"
-						XformTime=			"20"
+						XformTime=			"50"
 						>
 					<ParticleEffect>
 						<Particle
 								style=			"plain"
 								minWidth=		"1"
-								maxWidth=		"4"
-								primaryColor=	"#ffffc0"
-								secondaryColor=	"#7e7e74"
+								maxWidth=		"6"
+								primaryColor=	"#f1f6ff"
+								secondaryColor=	"#73767d"
 								/>
 					</ParticleEffect>
-				</ParticleJet>
+				</ParticleSystem>
 				
 				<Ray
 						style=			"smooth"
@@ -4680,23 +4361,24 @@
 					/>
 			
 			<Group angleOffset="180" radiusOffset="10">
-				<ParticleJet
+				<ParticleSystem
+						style=				"jet"
 						fixedPos=			"true"
-						emitRate=			"30"
-						tangentSpeed=		"3d2-3"
+						emitRate=			"40"
+						tangentSpeed=		"-3-3"
 						particleLifetime=	"15-45"
-						XformTime=			"20"
+						XformTime=			"30"
 						>
 					<ParticleEffect>
 						<Particle
 								style=			"plain"
 								minWidth=		"1"
 								maxWidth=		"4"
-								primaryColor=	"#ffffc0"
+								primaryColor=	"#fff2e5"
 								secondaryColor=	"#7e7e74"
 								/>
 					</ParticleEffect>
-				</ParticleJet>
+				</ParticleSystem>
 				
 				<Ray
 						style=			"smooth"
@@ -4731,8 +4413,8 @@
 							(setq damageHP (@ gData 'damageHP))
 
 							{
-								length:	(mathScale damageHP	6 80 16 64 50)
-								width: (mathScale damageHP 6 80 6 24 50)
+								length:	(mathScale damageHP	5 64 16 64 50)
+								width: (mathScale damageHP 5 64 6 24 50)
 								intensity: 10
 								}
 							)
@@ -4753,8 +4435,8 @@
 							(setq damageHP (@ gData 'damageHP))
 
 							{
-								length:	(mathScale damageHP	6 80 16 64 50)
-								width: (mathScale damageHP 6 80 6 24 50)
+								length:	(mathScale damageHP	5 64 16 64 50)
+								width: (mathScale damageHP 5 64 6 24 50)
 								intensity: 10
 								}
 							)
@@ -4775,16 +4457,8 @@
 							(setq damageHP (@ gData 'damageHP))
 
 							{
-								length:
-									(mathScale 
-										damageHP						; average damage of weapon
-										6								; min damage
-										80								; max damage
-										30								; min beam length
-										110								; max beam length
-										50								; scale gamma
-										)
-								width: (mathScale damageHP 6 80 12 44 50)
+								length:	(mathScale damageHP 5 64 30 110 50)
+								width: (mathScale damageHP 5 64 12 44 50)
 								intensity: 30
 								}
 							)
@@ -4794,12 +4468,195 @@
 		</Effect>
 	</EffectType>
 	
+	<EffectType UNID="&efStarCannonFire;"
+			instance=			"owner"
+			>
+		<Effect>
+			<Orb	style=			"flare"
+					animate=		"fade"
+					intensity=		"50"
+					primaryColor=	"#0080ff"
+					secondaryColor=	"#80c0ff"
+					
+					lifetime=		"3"
+					>
+				<Events>
+					<GetParameters>
+						(block (
+							(damageHP (@ gData 'damageHP))
+							)
+							
+							{
+								radius: (mathScale damageHP 10 140 12 28 50)
+								}
+							)
+					</GetParameters>
+				</Events>
+			</Orb>
+			
+			<Ray	style=			"jagged"
+					shape=			"tapered"
+					intensity=		"50"
+					xformRotation=	"180"
+					primaryColor=	"#0080ff"
+					secondaryColor=	"#80c0ff"
+					
+					lifetime=		"3"
+					animateOpacity= "fade"
+					>
+				<Events>
+					<GetParameters>
+						(block (
+							(damageHP (@ gData 'damageHP))
+							)
+							
+							{
+								length: (mathScale damageHP 10 140 24 56 50)
+								width: (mathScale damageHP 10 140 18 42 50)
+								}
+							)
+					</GetParameters>
+				</Events>
+			</Ray>
+		</Effect>
+	</EffectType>
+
+	<EffectType UNID="&efStarCannonBeam;"
+			instance=			"creator"
+			>
+		<Effect>
+			<Ray
+					style=			"smooth"
+					shape=			"tapered"
+					primaryColor=	"#0080ff"
+					secondaryColor=	"#80c0ff"
+					>
+				<Events>
+					<GetParameters>
+						(block (damageHP primaryColor secondaryColor)
+							(setq damageHP (@ gData 'damageHP))
+
+							{
+								length: (mathScale damageHP 10 140 60 260 50)
+								width: (mathScale damageHP 10 140 15 30 50)
+								intensity: 60
+								}
+							)
+					</GetParameters>
+				</Events>
+			</Ray>
+			
+			<ParticleComet
+					particleCount=	"200"
+					primaryColor=	"#80c0ff"
+					>
+				<Events>
+					<GetParameters>
+						(block (
+							(damageHP (@ gData 'damageHP))
+							)
+
+							{ 
+								particleCount: (mathScale damageHP 10 140 100 300 50)
+								length: (mathScale damageHP 10 140 60 220 50)
+								width: (mathScale damageHP 10 140 6 16 50)
+								}
+							)
+					</GetParameters>
+				</Events>
+			</ParticleComet>
+			
+			<Starburst
+					style=			"plain"
+					spikeCount=		"1d6+3"
+					spikeLength=	"15-30"
+					
+					primaryColor=	"#d8ecff"
+					secondaryColor=	"#0080ff"
+					/>
+		</Effect>
+	</EffectType>
+
+	<EffectType UNID="&efStarCannonHit;"
+			sound="&snArmorHit1;"
+			>
+		<Effect>
+			<Orb	style=			"diffraction"
+					animate=		"fade"
+					intensity=		"50"
+					
+					blendMode=		"screen"
+					primaryColor=	"#80c0ff"
+					secondaryColor=	"#0080ff"
+					>
+				<Events>
+					<GetParameters>
+						(block (
+							(damageHP (@ gData 'damageHP))
+							)
+							
+							{
+								radius: (if (= damageHP 0) 10 (mathScale damageHP 10 140 30 70 50))
+								lifetime: (if (= damageHP 0) 4 (mathScale damageHP 10 140 12 48 50))
+								}
+							)
+					</GetParameters>
+				</Events>
+			</Orb>
+			
+			<ParticleSystem
+					style=			"radiate"
+					emitSpeed=		"4-8"
+					particleLifetime="8"
+					>
+				<ParticleEffect>
+					<Particle
+							style=			"plain"
+							minWidth=		"1"
+							maxWidth=		"3"
+							primaryColor=	"#80c0ff"
+							secondaryColor=	"#0080ff"
+							/>
+				</ParticleEffect>
+				
+				<Events>
+					<GetParameters>
+						(block (
+							(damageHP (@ gData 'damageHP))
+							)
+							
+							{
+								lifetime: (if (= damageHP 0) 10 (mathScale damageHP 10 140 12 48 50))
+								emitRate: (mathScale damageHP 10 140 50 200 50)
+								emitLifetime: (if (= damageHP 0) 2 (mathScale damageHP 10 140 6 24 50))
+								}
+							)
+					</GetParameters>
+				</Events>
+			</ParticleSystem>
+		</Effect>
+		
+		<Events>
+			<GetParameters>
+				(block (
+					(damageHP (@ gData 'damageHP))
+					)
+							
+					{
+						noSound: (= damageHP 0)
+						}
+					)
+			</GetParameters>
+		</Events>
+	</EffectType>
+	
 	<EffectType UNID="&efThermoCannonShell;"
 			instance=			"creator"
 			>
 		
 		<Effect>
-			<ParticleJet
+			<ParticleSystem
+					style=				"jet"
 					emitRate=			"20"
 					emitSpeed=			"50-60"
 					particleLifetime=	"20-60"
@@ -4814,7 +4671,7 @@
 							secondaryColor=	"#5b777a"
 							/>
 				</ParticleEffect>
-			</ParticleJet>
+			</ParticleSystem>
 			
 			<Ray
 					style=			"smooth"

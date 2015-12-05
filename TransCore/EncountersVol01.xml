@@ -785,47 +785,47 @@
 				>
 
 			<Effect>
-				<Shape
-						directional=		"true"
-						scaleLength=		"72" 
-						scaleWidth=			"6"
-
-						color=				"0x00, 0xfc, 0x00"
-						opacity=			"140"
+				<Ray
+						style=			"jagged"
+						shape=			"straight"
+						length=			"72"
+						
+						primaryColor=	"#00d5ff"
+						secondaryColor=	"#006b80"
 						>
-					<Point x="0"	y="0"/>
-					<Point x="-35"	y="50"/>
-					<Point x="-100"	y="0"/>
-					<Point x="-35"	y="-50"/>
-				</Shape>
-
-				<Shape
-						directional=		"true"
-						scaleLength=		"72" 
-						scaleWidth=			"3"
-
-						color=				"0xe0, 0xfc, 0xe0"
-						opacity=			"255"
+					<Events>
+						<GetParameters>
+							(block (
+								(damageHP (@ gData 'damageHP))
+								)
+								{
+									width: (mathScale damageHP 10 140 20 40 50)
+									intensity: 80
+									}
+								)
+						</GetParameters>
+					</Events>
+				</Ray>
+			
+				<ParticleComet
+						particleCount=	"200"
+						primaryColor=	"#00d5ff"
 						>
-					<Point x="0"	y="0"/>
-					<Point x="-35"	y="50"/>
-					<Point x="-100"	y="0"/>
-					<Point x="-35"	y="-50"/>
-				</Shape>
+					<Events>
+						<GetParameters>
+							(block (
+								(damageHP (@ gData 'damageHP))
+								)
 
-				<Shape
-						directional=		"true"
-						scaleLength=		"64" 
-						scaleWidth=			"2"
-
-						color=				"0xff, 0xff, 0xff"
-						opacity=			"255"
-						>
-					<Point x="0"	y="0"/>
-					<Point x="-25"	y="50"/>
-					<Point x="-100"	y="0"/>
-					<Point x="-25"	y="-50"/>
-				</Shape>
+								{
+									particleCount: (mathScale damageHP 10 140 100 300 50)
+									length: 72 ;(mathScale damageHP 10 140 60 220 50)
+									width: 9
+									}
+								)
+						</GetParameters>
+					</Events>
+				</ParticleComet>
 			</Effect>
 		</Weapon>
 
@@ -1423,27 +1423,8 @@
 				charges=			"true"
 
 				effect=				"&efThermoShellDefault;"
-				fireEffect=			"&efThermoFireDefault;"
 				sound=				"&snRecoillessCannon;"
 				>
-
-			<HitEffect
-					sound="&snArmorHit1;"
-					>
-				<Image imageID="&rsExplosionsAG96;" 
-						imageX="0" 
-						imageY="0" 
-						imageWidth="96" 
-						imageHeight="96"
-						imageFrameCount="16"
-						imageTicksPerFrame="2"/>
-				<Flare
-						style=			"fadingBlast"
-						radius=			"130"
-						primaryColor=	"0xff, 0xff, 0xf0"
-						lifetime=		"8"
-						/>
-			</HitEffect>
 		</Weapon>
 
 	</ItemType>
@@ -1677,16 +1658,8 @@
 							(setq damageHP (@ gData 'damageHP))
 
 							{
-								length:
-									(mathScale 
-										damageHP						; average damage of weapon
-										2								; min damage
-										60								; max damage
-										60								; min beam length
-										220								; max beam length
-										50								; scale gamma
-										)
-								width: (mathScale damageHP 2 60 10 20 50)
+								length:	(mathScale damageHP 5 64 60 220 50)
+								width: (mathScale damageHP 5 64 10 20 50)
 								intensity: 20
 								}
 							)
@@ -1715,21 +1688,14 @@
 		<Weapon
 				type=				"beam"
 
-				damage=				"ion:2d8+2; blinding3"
+				damage=				"ion:2d8+2; blinding:3"
 				fireRate=			"15"
 				lifetime=			"30"
 				powerUse=			"50"
 
+				effect=				"&efIonizingBeam;"
 				sound=				"&snLaserCannon;"
 				>
-			<Effect>
-				<Beam
-						beamType=			"lightning"
-						primaryColor=		"0xa0, 0xf0, 0xff"
-						secondaryColor=		"0x00, 0xa9, 0xff"
-						intensity=			"1"
-						/>
-			</Effect>
 		</Weapon>
 
 	</ItemType>
@@ -4114,7 +4080,7 @@
 				damage=				"kinetic:4d6"
 				missileSpeed=		"12"
 				fireRate=			"30"
-				maneuverability=	"2"
+				maneuverRate=		"9"
 				lifetime=			"360"
 				powerUse=			"100"
 
@@ -4444,6 +4410,7 @@
 
 						failsafe=		"10"
 
+						hitEffect=		"&efThermoFragmentExplosion;"
 						sound=			"&snMissileLauncher;"
 						>
 
@@ -4468,17 +4435,6 @@
 						<Image imageID="&rsMissiles;" imageX="0" imageY="48" imageWidth="16" imageHeight="16" imageFrameCount="12" imageTicksPerFrame="3"/>
 					</Effect>
 
-					<HitEffect
-							sound="&snArmorHit1;"
-							>
-						<Flare
-								style=			"fadingBlast"
-								radius=			"150"
-								primaryColor=	"0xff, 0xff, 0xf0"
-								lifetime=		"8"
-								/>
-					</HitEffect>
-
 					<Fragment 
 							count=				"48"
 							type=				"missile"
@@ -4488,6 +4444,7 @@
 							lifetime=			"5"
 							
 							effect=				"&efThermoShellDefault;"
+							hitEffect=			"&efThermoFragmentHit;"
 							>
 					</Fragment>
 				</Missile>
@@ -5002,11 +4959,43 @@
 				powerUse=			"60"
 
 				missileSpeed=		"20"
+				
+				hitEffect=			"&efRadioactiveHitEffect;"
 				sound=				"&snLaserCannon;"
 				>
 
+			<Configuration aimTolerance="5">
+				<Shot angle="3d5-9"/>
+			</Configuration>
+			
 			<Effect>
-				<Image imageID="&rsMediumExplosions;" imageX="0" imageY="128" imageWidth="64" imageHeight="64" imageFrameCount="16" imageTicksPerFrame="5" blend="brighten" />
+				<Orb	style=			"firecloud"
+						animate=		"explode"
+						lifetime=		"60"
+
+						blendMode=		"screen"
+						primaryColor=	"#00ff2b"
+						secondaryColor=	"#008015"
+						>
+					<Events>
+						<GetParameters>
+							(block (
+								(damageHP (@ gData 'damageHP))
+								(weaponUNID (@ gData 'weaponUNID))
+								)
+							
+								{
+									radius: (if (= damageHP 0) 10 (mathScale damageHP 5 64 20 45 50))
+									;lifetime: (if (= damageHP 0) 4 (mathScale damageHP 5 64 12 48 50))
+								
+									intensity: (seededRandom weaponUNID 50 70)
+									distortion: (mathScale damageHP 5 64 50 0 100)
+									detail: (seededRandom weaponUNID 20 25)
+									}
+								)
+						</GetParameters>
+					</Events>
+				</Orb>
 			</Effect>
 		</Weapon>
 	</ItemType>
